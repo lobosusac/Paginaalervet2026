@@ -14,13 +14,19 @@ const CONFIG = {
   // Mientras esté vacío, los botones de calendario quedan desactivados.
   calendario: '',                     // TODO Alervet: pegar el enlace de reservas
 
-  // Lectura de disponibilidad desde Google Calendar.
-  // Requiere que el calendario sea público. Mientras esté sin configurar,
-  // los bloques de hora se muestran como «consultar», nunca como libres:
-  // prometer una hora que ya está tomada es peor que no prometer nada.
+  // Dirección del Apps Script que consulta el calendario y guarda las
+  // reservas. Es la vía recomendada: corre dentro de la cuenta de Google
+  // de la clínica, así que el calendario NO necesita ser público.
+  // Ver integracion/google-apps-script.gs y el README.
+  reservas: {
+    endpoint: ''                      // TODO Alervet: URL de la app web de Apps Script
+  },
+
+  // Alternativa sin Apps Script: leer un calendario público con una clave
+  // de API. Solo se usa si no hay endpoint configurado arriba.
   googleCalendar: {
-    apiKey: '',                       // TODO Alervet: clave de API restringida por dominio
-    calendarId: ''                    // TODO Alervet: ID del calendario público
+    apiKey: '',
+    calendarId: ''
   },
 
   // Horario de atención. 0 = domingo … 6 = sábado. null = cerrado.
@@ -120,6 +126,17 @@ function bloquesDe(fecha) {
  * interfaz sepa que no puede afirmar disponibilidad.
  */
 async function horasOcupadas(fecha) {
+  // Vía preferida: el Apps Script devuelve solo las horas ocupadas,
+  // nunca los detalles de los eventos.
+  if (CONFIG.reservas.endpoint) {
+    const url = CONFIG.reservas.endpoint
+      + '?accion=disponibilidad&fecha=' + fechaISO(fecha);
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('El calendario respondió ' + r.status);
+    const datos = await r.json();
+    return new Set(datos.ocupadas || []);
+  }
+
   const { apiKey, calendarId } = CONFIG.googleCalendar;
   if (!apiKey || !calendarId) return null;
 
@@ -161,6 +178,13 @@ async function horasOcupadas(fecha) {
   return ocupadas;
 }
 
+/** "2026-09-22" en hora local, no en UTC (toISOString corre el día). */
+function fechaISO(f) {
+  const mes = String(f.getMonth() + 1).padStart(2, '0');
+  const dia = String(f.getDate()).padStart(2, '0');
+  return `${f.getFullYear()}-${mes}-${dia}`;
+}
+
 /** "lunes 22 de septiembre" — sin la coma que mete el formato local. */
 function fechaLarga(f) {
   return f.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -197,12 +221,9 @@ function pintarBloques(rejilla, fecha, ocupadas) {
     }
 
     if (clase === 'libre' || clase === 'consultar') {
-      elemento = document.createElement('a');
-      elemento.href = waLink(
-        `Hola, quiero agendar una cita el ${fechaLarga(fecha)} de ${rango}.`
-      );
-      elemento.target = '_blank';
-      elemento.rel = 'noopener';
+      elemento = document.createElement('button');
+      elemento.type = 'button';
+      elemento.addEventListener('click', () => abrirReserva(fecha, h));
     } else {
       elemento = document.createElement('div');
       elemento.setAttribute('aria-disabled', 'true');
@@ -235,12 +256,12 @@ function iniciarAgenda(raiz) {
     boton.setAttribute('aria-selected', 'true');
 
     let ocupadas = null;
-    let mensaje = 'Estos son nuestros bloques de atención. Escríbenos por WhatsApp y te confirmamos cuáles están libres.';
+    let mensaje = 'Estos son nuestros bloques de atención. Toca uno y te confirmamos si está libre.';
     let error = false;
 
     try {
       ocupadas = await horasOcupadas(fecha);
-      if (ocupadas) mensaje = 'Disponibilidad tomada de nuestro calendario. Toca un bloque libre para agendarlo por WhatsApp.';
+      if (ocupadas) mensaje = 'Disponibilidad tomada de nuestro calendario. Toca un bloque libre para reservar.';
     } catch (e) {
       mensaje = 'No pudimos consultar el calendario en este momento. Escríbenos por WhatsApp y te confirmamos la disponibilidad.';
       error = true;
@@ -272,6 +293,128 @@ function iniciarAgenda(raiz) {
     tiraDias.appendChild(boton);
 
     if (i === 0) mostrar(fecha, boton);
+  });
+}
+
+
+/* ── Ventana de reserva ─────────────────────────────────────
+   Recoge los datos del paciente y los envía al Apps Script,
+   que crea el evento en el calendario y avisa a la clínica.
+   Si no hay endpoint configurado, cae a WhatsApp para no
+   perder la solicitud.
+   --------------------------------------------------------- */
+
+let reservaActual = null;   // { fecha, hora }
+
+function abrirReserva(fecha, hora) {
+  const dlg = document.getElementById('reserva');
+  if (!dlg) return;
+
+  reservaActual = { fecha, hora };
+
+  dlg.querySelector('[data-cuando]').textContent =
+    `${fechaLarga(fecha)} · ${formatHora(hora)} a ${formatHora(hora + 1)}`;
+
+  // Volver al estado inicial por si se reabre tras una reserva.
+  dlg.querySelector('[data-paso-form]').hidden = false;
+  dlg.querySelector('[data-paso-ok]').hidden = true;
+  dlg.querySelector('.reserva-pie').hidden = false;
+  dlg.querySelector('[data-error]').hidden = true;
+  dlg.querySelector('form').reset();
+
+  dlg.showModal();
+}
+
+/** Arma el texto que se manda por WhatsApp o va en el evento. */
+function resumenReserva(datos, fecha, hora) {
+  return [
+    `Solicitud de cita · ${fechaLarga(fecha)} de ${formatHora(hora)} a ${formatHora(hora + 1)}`,
+    `Tutor: ${datos.tutor}`,
+    `Teléfono: ${datos.telefono}`,
+    `Mascota: ${datos.mascota}`,
+    `Raza: ${datos.raza}`,
+    `Edad: ${datos.edad}`,
+    `Consulta: ${datos.consulta}`,
+    datos.motivo ? `Motivo: ${datos.motivo}` : ''
+  ].filter(Boolean).join('\n');
+}
+
+function iniciarReserva() {
+  const dlg = document.getElementById('reserva');
+  if (!dlg) return;
+
+  const form   = dlg.querySelector('form');
+  const error  = dlg.querySelector('[data-error]');
+  const enviar = dlg.querySelector('[data-enviar]');
+
+  dlg.querySelectorAll('[data-cerrar]').forEach(b => {
+    b.addEventListener('click', () => dlg.close());
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity() || !reservaActual) return;
+
+    const { fecha, hora } = reservaActual;
+    const datos = Object.fromEntries(
+      [...new FormData(form).entries()].map(([k, v]) => [k, String(v).trim()])
+    );
+
+    error.hidden = true;
+    enviar.setAttribute('aria-busy', 'true');
+    const textoBoton = enviar.textContent;
+    enviar.textContent = 'Enviando…';
+
+    try {
+      if (CONFIG.reservas.endpoint) {
+        const inicio = new Date(fecha);
+        inicio.setHours(hora, 0, 0, 0);
+
+        const r = await fetch(CONFIG.reservas.endpoint, {
+          method: 'POST',
+          // text/plain evita la petición previa de CORS, que Apps Script
+          // no sabe responder. El cuerpo sigue siendo JSON.
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            accion: 'reservar',
+            inicio: inicio.toISOString(),
+            duracionMin: 60,
+            ...datos
+          })
+        });
+
+        const respuesta = await r.json().catch(() => ({}));
+        if (!r.ok || respuesta.ok === false) {
+          const fallo = new Error(respuesta.mensaje || 'No se pudo guardar la reserva.');
+          // El servidor sabe por qué falló («esa hora acaba de ocuparse»),
+          // y eso le dice al cliente qué hacer. Lo marcamos para mostrarlo tal cual.
+          fallo.delServidor = Boolean(respuesta.mensaje);
+          throw fallo;
+        }
+      } else {
+        // Sin servidor configurado: la solicitud viaja por WhatsApp.
+        window.open(waLink(resumenReserva(datos, fecha, hora)), '_blank', 'noopener');
+      }
+
+      // Confirmación
+      dlg.querySelector('[data-paso-form]').hidden = true;
+      dlg.querySelector('.reserva-pie').hidden = true;
+      const ok = dlg.querySelector('[data-paso-ok]');
+      ok.querySelector('[data-resumen]').innerHTML =
+        `<b>${datos.mascota}</b> · ${datos.consulta}<br>` +
+        `${fechaLarga(fecha)}<br>` +
+        `${formatHora(hora)} a ${formatHora(hora + 1)}`;
+      ok.hidden = false;
+
+    } catch (err) {
+      error.textContent = err && err.delServidor
+        ? err.message
+        : 'No pudimos enviar tu solicitud. Intenta de nuevo o escríbenos por WhatsApp.';
+      error.hidden = false;
+    } finally {
+      enviar.removeAttribute('aria-busy');
+      enviar.textContent = textoBoton;
+    }
   });
 }
 
@@ -363,7 +506,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ── Disponibilidad ──────────────────────────────────────── */
+  /* ── Disponibilidad y reservas ───────────────────────────── */
+  iniciarReserva();
   document.querySelectorAll('[data-agenda]').forEach(iniciarAgenda);
 
   /* ── Año en el pie ───────────────────────────────────────── */

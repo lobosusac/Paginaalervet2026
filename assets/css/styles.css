@@ -461,3 +461,67 @@ a:hover{color:var(--teal)}
   .slots{grid-template-columns:repeat(2,1fr)}
   .agenda{padding:22px 18px}
 }
+
+/* ─── Ventana de reserva ──────────────────────────────────
+   Se abre al tocar un bloque de hora libre.
+   --------------------------------------------------------- */
+.reserva{
+  border:0;padding:0;border-radius:var(--radius);background:var(--surface);
+  color:var(--body);max-width:560px;width:calc(100% - 32px);
+  box-shadow:0 24px 70px -20px rgba(20,48,45,.45);
+}
+.reserva::backdrop{background:rgba(18,48,45,.55);backdrop-filter:blur(3px)}
+
+.reserva-head{
+  padding:24px 26px 20px;border-bottom:1px solid var(--line);
+  display:flex;gap:16px;align-items:flex-start;
+}
+.reserva-head div{flex:1}
+.reserva-head h3{margin-bottom:6px}
+.reserva-cuando{
+  display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:.92rem;
+  color:var(--teal-dark);background:var(--teal-wash);padding:7px 14px;border-radius:100px;
+}
+.reserva-cerrar{
+  flex-shrink:0;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+  background:var(--ground);color:var(--ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;line-height:1;
+}
+.reserva-cerrar:hover{background:var(--sunk)}
+
+.reserva-cuerpo{padding:24px 26px;max-height:62vh;overflow-y:auto}
+.reserva-pie{padding:18px 26px 24px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap}
+/* Una clase con display gana al atributo hidden: hay que decirlo explícito. */
+.reserva-pie[hidden],
+.reserva-ok[hidden],
+.form[hidden]{display:none}
+.reserva-pie .btn{flex:1;min-width:140px}
+
+.reserva-error{
+  background:#F8EBE9;color:#8C382F;border-radius:var(--radius-s);
+  padding:13px 16px;font-size:.92rem;margin-bottom:18px;
+}
+.reserva-error[hidden]{display:none}
+
+/* Confirmación */
+.reserva-ok{text-align:center;padding:16px 4px 8px}
+.reserva-ok .tick{
+  width:64px;height:64px;border-radius:50%;background:var(--teal-wash);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px;
+}
+.reserva-ok .tick svg{width:32px;height:32px;color:var(--teal-dark)}
+.reserva-ok h3{margin-bottom:12px}
+.reserva-ok p{color:var(--body)}
+.reserva-ok .resumen{
+  margin-top:22px;padding:16px 18px;background:var(--ground);border-radius:var(--radius-s);
+  text-align:left;font-size:.93rem;
+}
+.reserva-ok .resumen b{color:var(--ink)}
+
+.btn[aria-busy="true"]{opacity:.7;pointer-events:none}
+
+@media (max-width:560px){
+  .reserva{max-width:none;width:100%;margin:0;border-radius:var(--radius) var(--radius) 0 0;
+    position:fixed;bottom:0;left:0;right:0;top:auto;max-height:92vh}
+  .reserva-cuerpo{max-height:56vh}
+}

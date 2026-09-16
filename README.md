@@ -57,56 +57,78 @@ pierde ninguna solicitud mientras se decide el alojamiento definitivo.
 Si más adelante se quiere recibir los formularios por correo, se puede conectar
 un servicio como Formspree o Web3Forms sin cambiar el diseño.
 
-## Conectar la disponibilidad con Google Calendar
+## Reservas en línea con Google Calendar
 
-La portada tiene una sección «Horarios disponibles» que parte el horario
-en bloques de una hora. Mientras no haya calendario conectado, los bloques
-se muestran como **«Consultar»** — nunca como disponibles. Es deliberado:
-decirle a alguien que las 10:00 está libre cuando ya está tomada es peor
-que no decir nada.
+La portada tiene una sección «Horarios disponibles»: el cliente elige día,
+toca un bloque de hora libre, llena sus datos y recibe el mensaje «Un asesor
+te contactará a la brevedad». Al mismo tiempo, la solicitud aparece como
+evento en el calendario de la clínica y llega un aviso por correo y por
+WhatsApp.
 
-Para que muestre disponibilidad real hay tres caminos.
+Eso necesita algo que corra del lado del servidor, porque un sitio estático
+no puede escribir en un calendario ni mandar mensajes. Ese papel lo hace
+`integracion/google-apps-script.gs`, que corre **dentro de la cuenta de
+Google de la clínica**. Así el calendario nunca tiene que ser público.
 
-### Opción A — Página de citas de Google Calendar (recomendada)
+### Instalación
 
-Google Calendar incluye «Horarios de citas»: genera una página pública
-donde el cliente ve los espacios libres y reserva solo. Google actualiza
-la disponibilidad y envía las confirmaciones.
+1. Entrar a [script.google.com](https://script.google.com) con la cuenta de
+   la clínica y crear un proyecto nuevo.
+2. Pegar el contenido de `integracion/google-apps-script.gs`.
+3. Ajustar el bloque `AJUSTES` del inicio: correo de aviso y, si se quiere,
+   la URL de WhatsApp.
+4. **Implementar › Nueva implementación › Aplicación web**, con:
+   - *Ejecutar como:* yo (la cuenta de la clínica)
+   - *Quién tiene acceso:* cualquier usuario
+5. Autorizar los permisos que pide (calendario y envío de correo).
+6. Copiar la URL que termina en `/exec` y ponerla en `CONFIG.reservas.endpoint`,
+   dentro de `assets/js/main.js`.
 
-Se pega ese enlace en `CONFIG.calendario` y los botones «Agendar por
-Google Calendar» se activan solos.
+Después de cada cambio en el script hay que crear una **implementación nueva**;
+guardar no basta.
 
-**Ventajas:** sin código, sin claves, el calendario sigue siendo privado.
-**Límite:** la página de reservas es de Google, no tiene el diseño del sitio.
+### Qué hace el script
 
-### Opción B — Leer el calendario desde el navegador
+- **Disponibilidad:** devuelve solo la lista de horas ocupadas, nunca los
+  detalles de los eventos. El calendario sigue privado.
+- **Reserva:** valida los datos, comprueba que la hora siga libre (por si
+  alguien la tomó mientras se llenaba el formulario), crea el evento titulado
+  «Por confirmar · Mascota (Tutor)» en color amarillo, y avisa.
+- **Freno a envíos repetidos:** máximo tres solicitudes por teléfono al día.
 
-Se rellenan `CONFIG.googleCalendar.apiKey` y `.calendarId`, y la rejilla
-del sitio marca los bloques ocupados con su propio diseño.
+### El aviso por WhatsApp
 
-⚠️ **Exige que el calendario sea público.** Cualquiera podría leer los
-eventos, incluidos nombres de clientes y de sus mascotas. Si se toma este
-camino:
+`MailApp` manda el correo sin configurar nada. WhatsApp no tiene forma
+oficial y gratuita de recibir un mensaje desde un script, así que hay que
+elegir:
 
-- Usar un calendario **aparte**, solo para bloquear horas, sin datos de
-  pacientes. Los eventos pueden llamarse simplemente «Ocupado».
-- Restringir la clave de API por dominio en Google Cloud Console, para
-  que solo funcione desde alervet.com.
+| Opción | Costo | A tener en cuenta |
+|---|---|---|
+| **Solo correo** | Gratis | Ya funciona. Google Calendar además avisa al teléfono cuando entra el evento |
+| **CallMeBot** | Gratis | Los datos del paciente pasan por un tercero ajeno a la clínica |
+| **WhatsApp Cloud API** (Meta) | Gratis dentro de límites | Es la vía oficial. Requiere cuenta de Meta Business y configurar plantillas |
 
-### Opción C — Una función en el servidor
+La opción por correo ya cubre el caso: cuando el evento entra al calendario,
+la app de Google Calendar del teléfono da la notificación al instante.
 
-Un Cloudflare Worker con una cuenta de servicio consulta solo las horas
-ocupadas y devuelve eso al sitio. El calendario sigue privado y el diseño
-es propio, pero agrega infraestructura que mantener.
+Si se elige CallMeBot o Cloud API, se pega la URL en `AJUSTES.WHATSAPP_URL`
+usando `{texto}` donde va el mensaje.
+
+### Sin el script configurado
+
+El sitio funciona igual: los bloques de hora dicen «Consultar» en lugar de
+«Disponible», y al reservar la solicitud se envía por WhatsApp con todos los
+datos ya escritos. No se pierde ninguna cita.
 
 ## Pendientes antes de publicar
 
 Están marcados en el código como `TODO Alervet`:
 
 - [ ] Confirmar la dirección exacta de la clínica
-- [ ] **Decidir cómo conectar la disponibilidad** (ver la sección anterior).
-      Mientras tanto, los botones «Agendar por Google Calendar» están
-      desactivados y los bloques de hora dicen «Consultar»
+- [ ] **Instalar el Apps Script** (ver la sección anterior) y pegar su URL en
+      `CONFIG.reservas.endpoint`. Mientras tanto los bloques dicen «Consultar»
+      y las reservas salen por WhatsApp
+- [ ] **Decidir el canal de aviso de WhatsApp** (correo, CallMeBot o Cloud API)
 - [ ] **Precio de la prueba de alergias a domicilio** — hoy muestra «Consúltanos»
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
