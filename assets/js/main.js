@@ -1,16 +1,14 @@
 /* ============================================================
    Alervet — comportamiento del sitio
    ------------------------------------------------------------
-   TODO Alervet: confirmar los datos de CONFIG antes de publicar.
-   El sitio actual muestra dos teléfonos distintos (3481 9108 en
-   la portada y 4120 9477 en servicio a domicilio).
+   Los datos de contacto y el horario se editan aquí, en CONFIG.
+   No hace falta tocar ningún HTML.
    ============================================================ */
 
 const CONFIG = {
-  whatsapp: '50234819108',            // TODO: confirmar número de WhatsApp
-  telefono: '3481 9108',              // TODO: confirmar teléfono principal
-  telefonoAlt: '4120 9477',           // TODO: ¿se conserva como segundo número?
-  correo: '',                         // TODO: falta correo de contacto
+  whatsapp: '50234819108',            // Con código de país (502) y sin espacios
+  telefono: '3481 9108',              // Número principal
+  correo: '',                         // TODO Alervet: falta el correo de contacto
 
   // Horario de atención. 0 = domingo … 6 = sábado. null = cerrado.
   horario: {

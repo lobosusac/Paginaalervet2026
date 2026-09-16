@@ -60,8 +60,6 @@ un servicio como Formspree o Web3Forms sin cambiar el diseño.
 
 Están marcados en el código como `TODO Alervet`:
 
-- [ ] Confirmar el teléfono principal — el sitio actual muestra dos distintos
-      (3481 9108 en la portada y 4120 9477 en servicio a domicilio)
 - [ ] Confirmar la dirección exacta de la clínica
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
@@ -74,6 +72,9 @@ Están marcados en el código como `TODO Alervet`:
 - [ ] Confirmar que los precios siguen vigentes
 
 ## Decisiones tomadas
+
+- **Teléfono principal: 3481 9108.** Es el único número que aparece en el
+  sitio. El 4120 9477 que mostraba la página de domicilio ya no se usa.
 
 - **ReuPets se eliminó por completo** del sitio: sucursal cerrada.
 - **El número de cuenta bancaria ya no aparece publicado.** Se envía por
