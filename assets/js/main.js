@@ -14,10 +14,19 @@ const CONFIG = {
   // Mientras esté vacío, los botones de calendario quedan desactivados.
   calendario: '',                     // TODO Alervet: pegar el enlace de reservas
 
+  // Lectura de disponibilidad desde Google Calendar.
+  // Requiere que el calendario sea público. Mientras esté sin configurar,
+  // los bloques de hora se muestran como «consultar», nunca como libres:
+  // prometer una hora que ya está tomada es peor que no prometer nada.
+  googleCalendar: {
+    apiKey: '',                       // TODO Alervet: clave de API restringida por dominio
+    calendarId: ''                    // TODO Alervet: ID del calendario público
+  },
+
   // Horario de atención. 0 = domingo … 6 = sábado. null = cerrado.
   horario: {
     0: null,
-    1: [9, 17], 2: [9, 17], 3: [9, 17], 4: [9, 17], 5: [9, 17],
+    1: [8, 16], 2: [8, 16], 3: [8, 16], 4: [8, 16], 5: [8, 16],
     6: [8, 15]
   }
 };
@@ -29,7 +38,7 @@ function waLink(mensaje) {
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
 }
 
-/** Convierte 17 → "5:00 pm", 9 → "9:00 am". */
+/** Convierte 16 → "4:00 pm", 8 → "8:00 am". */
 function formatHora(h) {
   const suf = h >= 12 ? 'pm' : 'am';
   const doce = h % 12 === 0 ? 12 : h % 12;
@@ -64,6 +73,206 @@ function estadoActual(ahora = new Date()) {
     }
   }
   return { abierto: false, texto: 'Cerrado' };
+}
+
+
+/* ── Disponibilidad por bloques de hora ─────────────────────
+   La rejilla muestra el horario de atención partido en bloques
+   de una hora. Si hay un calendario configurado, marca como
+   ocupados los que ya tienen una cita.
+   --------------------------------------------------------- */
+
+/** Devuelve los próximos días en que la clínica abre. */
+function proximosDias(cantidad = 7, desde = new Date()) {
+  const dias = [];
+  const base = new Date(desde);
+  base.setHours(0, 0, 0, 0);
+  for (let i = 0; dias.length < cantidad && i < 30; i++) {
+    const f = new Date(base);
+    f.setDate(base.getDate() + i);
+    const bloques = bloquesDe(f);
+    if (!bloques.length) continue;
+
+    // Si hoy ya cerró, no tiene sentido ofrecerlo: el primer día
+    // que se muestra pasa a ser el siguiente con atención.
+    if (i === 0) {
+      const ultimo = new Date(f);
+      ultimo.setHours(bloques[bloques.length - 1], 0, 0, 0);
+      if (ultimo <= desde) continue;
+    }
+    dias.push(f);
+  }
+  return dias;
+}
+
+/** Bloques de una hora que cubren el horario de ese día. */
+function bloquesDe(fecha) {
+  const turno = CONFIG.horario[fecha.getDay()];
+  if (!turno) return [];
+  const bloques = [];
+  for (let h = turno[0]; h < turno[1]; h++) bloques.push(h);
+  return bloques;
+}
+
+/**
+ * Horas ya ocupadas según Google Calendar.
+ * Devuelve null cuando no hay calendario configurado, para que la
+ * interfaz sepa que no puede afirmar disponibilidad.
+ */
+async function horasOcupadas(fecha) {
+  const { apiKey, calendarId } = CONFIG.googleCalendar;
+  if (!apiKey || !calendarId) return null;
+
+  const inicio = new Date(fecha); inicio.setHours(0, 0, 0, 0);
+  const fin = new Date(fecha); fin.setHours(23, 59, 59, 999);
+
+  const url = 'https://www.googleapis.com/calendar/v3/calendars/'
+    + encodeURIComponent(calendarId) + '/events'
+    + '?key=' + encodeURIComponent(apiKey)
+    + '&timeMin=' + inicio.toISOString()
+    + '&timeMax=' + fin.toISOString()
+    + '&singleEvents=true&orderBy=startTime&maxResults=250';
+
+  const respuesta = await fetch(url);
+  if (!respuesta.ok) throw new Error('Google Calendar respondió ' + respuesta.status);
+
+  const bloques = bloquesDe(fecha);
+  const ocupadas = new Set();
+
+  for (const evento of (await respuesta.json()).items || []) {
+    if (evento.status === 'cancelled') continue;
+    if (evento.transparency === 'transparent') continue;  // marcado como "disponible"
+
+    // Un evento de día completo bloquea la jornada entera.
+    if (evento.start && evento.start.date) {
+      bloques.forEach(h => ocupadas.add(h));
+      continue;
+    }
+    if (!evento.start || !evento.start.dateTime) continue;
+
+    const desde = new Date(evento.start.dateTime);
+    const hasta = new Date(evento.end.dateTime);
+    for (const h of bloques) {
+      const a = new Date(fecha); a.setHours(h, 0, 0, 0);
+      const b = new Date(fecha); b.setHours(h + 1, 0, 0, 0);
+      if (desde < b && hasta > a) ocupadas.add(h);   // se solapan
+    }
+  }
+  return ocupadas;
+}
+
+/** "lunes 22 de septiembre" — sin la coma que mete el formato local. */
+function fechaLarga(f) {
+  return f.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' })
+          .replace(',', '');
+}
+
+/** Dibuja los bloques de un día en la rejilla. */
+function pintarBloques(rejilla, fecha, ocupadas) {
+  const ahora = new Date();
+  const bloques = bloquesDe(fecha);
+  rejilla.textContent = '';
+
+  if (!bloques.length) {
+    const cerrado = document.createElement('p');
+    cerrado.className = 'agenda-cerrado';
+    cerrado.textContent = 'Ese día no atendemos.';
+    rejilla.appendChild(cerrado);
+    return;
+  }
+
+  for (const h of bloques) {
+    const inicio = new Date(fecha); inicio.setHours(h, 0, 0, 0);
+    const rango = `${formatHora(h)} a ${formatHora(h + 1)}`;
+
+    let clase, estado, elemento;
+    if (inicio <= ahora) {
+      clase = 'pasado'; estado = 'Ya pasó';
+    } else if (ocupadas && ocupadas.has(h)) {
+      clase = 'ocupado'; estado = 'No disponible';
+    } else if (ocupadas) {
+      clase = 'libre'; estado = 'Disponible';
+    } else {
+      clase = 'consultar'; estado = 'Consultar';
+    }
+
+    if (clase === 'libre' || clase === 'consultar') {
+      elemento = document.createElement('a');
+      elemento.href = waLink(
+        `Hola, quiero agendar una cita el ${fechaLarga(fecha)} de ${rango}.`
+      );
+      elemento.target = '_blank';
+      elemento.rel = 'noopener';
+    } else {
+      elemento = document.createElement('div');
+      elemento.setAttribute('aria-disabled', 'true');
+    }
+
+    elemento.className = 'slot ' + clase;
+    const hora = document.createElement('span');
+    hora.className = 'hora';
+    hora.textContent = rango;
+    const txt = document.createElement('span');
+    txt.className = 'estado';
+    txt.textContent = estado;
+    elemento.append(hora, txt);
+    rejilla.appendChild(elemento);
+  }
+}
+
+/** Monta el selector de días y la rejilla de bloques. */
+function iniciarAgenda(raiz) {
+  const tiraDias = raiz.querySelector('[data-dias]');
+  const rejilla  = raiz.querySelector('[data-slots]');
+  const aviso    = raiz.querySelector('[data-aviso]');
+  if (!tiraDias || !rejilla) return;
+
+  const dias = proximosDias(7);
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+
+  const mostrar = async (fecha, boton) => {
+    tiraDias.querySelectorAll('.dia').forEach(b => b.setAttribute('aria-selected', 'false'));
+    boton.setAttribute('aria-selected', 'true');
+
+    let ocupadas = null;
+    let mensaje = 'Estos son nuestros bloques de atención. Escríbenos por WhatsApp y te confirmamos cuáles están libres.';
+    let error = false;
+
+    try {
+      ocupadas = await horasOcupadas(fecha);
+      if (ocupadas) mensaje = 'Disponibilidad tomada de nuestro calendario. Toca un bloque libre para agendarlo por WhatsApp.';
+    } catch (e) {
+      mensaje = 'No pudimos consultar el calendario en este momento. Escríbenos por WhatsApp y te confirmamos la disponibilidad.';
+      error = true;
+    }
+
+    pintarBloques(rejilla, fecha, ocupadas);
+    if (aviso) {
+      aviso.textContent = mensaje;
+      aviso.classList.toggle('error', error);
+    }
+  };
+
+  dias.forEach((fecha, i) => {
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'dia';
+    boton.setAttribute('role', 'tab');
+    boton.setAttribute('aria-selected', 'false');
+
+    const dia = document.createElement('b');
+    const esHoy = fecha.getTime() === hoy.getTime();
+    dia.textContent = esHoy ? 'Hoy' : fecha.toLocaleDateString('es-GT', { weekday: 'short' }).replace('.', '');
+    const num = document.createElement('i');
+    num.textContent = String(fecha.getDate());
+    boton.append(dia, num);
+
+    boton.setAttribute('aria-label', fechaLarga(fecha));
+    boton.addEventListener('click', () => mostrar(fecha, boton));
+    tiraDias.appendChild(boton);
+
+    if (i === 0) mostrar(fecha, boton);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -153,6 +362,9 @@ document.addEventListener('DOMContentLoaded', () => {
       window.open(waLink(lineas.join('\n')), '_blank', 'noopener');
     });
   });
+
+  /* ── Disponibilidad ──────────────────────────────────────── */
+  document.querySelectorAll('[data-agenda]').forEach(iniciarAgenda);
 
   /* ── Año en el pie ───────────────────────────────────────── */
   document.querySelectorAll('[data-year]').forEach(el => {

@@ -57,13 +57,56 @@ pierde ninguna solicitud mientras se decide el alojamiento definitivo.
 Si más adelante se quiere recibir los formularios por correo, se puede conectar
 un servicio como Formspree o Web3Forms sin cambiar el diseño.
 
+## Conectar la disponibilidad con Google Calendar
+
+La portada tiene una sección «Horarios disponibles» que parte el horario
+en bloques de una hora. Mientras no haya calendario conectado, los bloques
+se muestran como **«Consultar»** — nunca como disponibles. Es deliberado:
+decirle a alguien que las 10:00 está libre cuando ya está tomada es peor
+que no decir nada.
+
+Para que muestre disponibilidad real hay tres caminos.
+
+### Opción A — Página de citas de Google Calendar (recomendada)
+
+Google Calendar incluye «Horarios de citas»: genera una página pública
+donde el cliente ve los espacios libres y reserva solo. Google actualiza
+la disponibilidad y envía las confirmaciones.
+
+Se pega ese enlace en `CONFIG.calendario` y los botones «Agendar por
+Google Calendar» se activan solos.
+
+**Ventajas:** sin código, sin claves, el calendario sigue siendo privado.
+**Límite:** la página de reservas es de Google, no tiene el diseño del sitio.
+
+### Opción B — Leer el calendario desde el navegador
+
+Se rellenan `CONFIG.googleCalendar.apiKey` y `.calendarId`, y la rejilla
+del sitio marca los bloques ocupados con su propio diseño.
+
+⚠️ **Exige que el calendario sea público.** Cualquiera podría leer los
+eventos, incluidos nombres de clientes y de sus mascotas. Si se toma este
+camino:
+
+- Usar un calendario **aparte**, solo para bloquear horas, sin datos de
+  pacientes. Los eventos pueden llamarse simplemente «Ocupado».
+- Restringir la clave de API por dominio en Google Cloud Console, para
+  que solo funcione desde alervet.com.
+
+### Opción C — Una función en el servidor
+
+Un Cloudflare Worker con una cuenta de servicio consulta solo las horas
+ocupadas y devuelve eso al sitio. El calendario sigue privado y el diseño
+es propio, pero agrega infraestructura que mantener.
+
 ## Pendientes antes de publicar
 
 Están marcados en el código como `TODO Alervet`:
 
 - [ ] Confirmar la dirección exacta de la clínica
-- [ ] **Enlace de Google Calendar para reservas** — mientras no esté, los
-      botones «Agendar por Google Calendar» aparecen desactivados
+- [ ] **Decidir cómo conectar la disponibilidad** (ver la sección anterior).
+      Mientras tanto, los botones «Agendar por Google Calendar» están
+      desactivados y los bloques de hora dicen «Consultar»
 - [ ] **Precio de la prueba de alergias a domicilio** — hoy muestra «Consúltanos»
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
@@ -81,6 +124,10 @@ Están marcados en el código como `TODO Alervet`:
   domicilio, así que su tarjeta no ofrece esa opción.
 - **Consulta dermatológica: dos modalidades.** Q275 en clínica y Q400 a
   domicilio, cada una con sus propios botones de agendar.
+- **Horario: lunes a viernes de 8:00 a 16:00 y sábados de 8:00 a 15:00.**
+  Se define en `CONFIG.horario` y alimenta la tabla de horarios, el
+  indicador de abierto/cerrado, los bloques de disponibilidad y los datos
+  estructurados para Google.
 - **Teléfono principal: 3481 9108.** Es el único número que aparece en el
   sitio. El 4120 9477 que mostraba la página de domicilio ya no se usa.
 
