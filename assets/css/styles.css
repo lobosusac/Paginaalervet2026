@@ -361,3 +361,38 @@ a:hover{color:var(--teal)}
   border-top:1px solid rgba(255,255,255,.16);padding-top:24px;
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.87rem;
 }
+
+/* ─── Modalidades de atención ─────────────────────────────
+   Un servicio puede prestarse en clínica y a domicilio, con
+   precios distintos. Cada modalidad es una caja con su propio
+   precio y sus propios botones de agendar.
+   --------------------------------------------------------- */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+.opt{
+  border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:24px 24px 26px;background:var(--surface);
+  display:flex;flex-direction:column;
+}
+.section-alt .opt{background:var(--ground)}
+.opt-label{
+  display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+  font-size:.76rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--teal-dark);background:var(--teal-wash);
+  padding:6px 13px;border-radius:100px;margin-bottom:16px;
+}
+.opt-label svg{width:15px;height:15px}
+.opt .price{margin:0 0 4px}
+.opt-note{font-size:.91rem;color:var(--muted);line-height:1.5;margin-top:10px}
+.opt-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.opt-actions .btn{width:100%}
+
+/* Google Calendar: acción secundaria, para que WhatsApp siga siendo la principal. */
+.btn-cal{background:var(--surface);color:var(--teal-dark);border-color:var(--teal)}
+.btn-cal:hover{background:var(--teal-wash);color:var(--teal-darker)}
+.section-alt .btn-cal{background:var(--ground)}
+
+/* Mientras no haya enlace de calendario configurado. */
+.btn-cal[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.btn-cal[aria-disabled="true"]:hover{transform:none;background:var(--surface)}
+
+.opt-single{max-width:420px}

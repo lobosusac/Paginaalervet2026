@@ -10,6 +10,10 @@ const CONFIG = {
   telefono: '3481 9108',              // Número principal
   correo: '',                         // TODO Alervet: falta el correo de contacto
 
+  // Enlace público para reservar cita (Google Calendar / página de citas).
+  // Mientras esté vacío, los botones de calendario quedan desactivados.
+  calendario: '',                     // TODO Alervet: pegar el enlace de reservas
+
   // Horario de atención. 0 = domingo … 6 = sábado. null = cerrado.
   horario: {
     0: null,
@@ -103,6 +107,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const { abierto, texto } = estadoActual();
     el.textContent = texto;
     el.classList.add(abierto ? 'open' : 'shut');
+  });
+
+  /* ── Botones de Google Calendar ──────────────────────────── */
+  document.querySelectorAll('[data-cal]').forEach(el => {
+    if (CONFIG.calendario) {
+      el.href = CONFIG.calendario;
+      el.target = '_blank';
+      el.rel = 'noopener';
+    } else {
+      // Sin enlace configurado el botón no debe navegar a ningún lado.
+      el.setAttribute('aria-disabled', 'true');
+      el.removeAttribute('href');
+      el.title = 'Pendiente de configurar el enlace de reservas';
+    }
   });
 
   /* ── Enlaces de WhatsApp ─────────────────────────────────── */

@@ -40,6 +40,7 @@ Todo está en un solo lugar: al inicio de `assets/js/main.js`, en `CONFIG`.
 const CONFIG = {
   whatsapp: '50234819108',   // número de WhatsApp, con código de país y sin signos
   telefono: '3481 9108',
+  calendario: '',            // enlace de reservas de Google Calendar
   ...
 };
 ```
@@ -61,6 +62,9 @@ un servicio como Formspree o Web3Forms sin cambiar el diseño.
 Están marcados en el código como `TODO Alervet`:
 
 - [ ] Confirmar la dirección exacta de la clínica
+- [ ] **Enlace de Google Calendar para reservas** — mientras no esté, los
+      botones «Agendar por Google Calendar» aparecen desactivados
+- [ ] **Precio de la prueba de alergias a domicilio** — hoy muestra «Consúltanos»
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
 - [ ] Fotos reales: clínica, retrato de la Dra. González, vial de inmunoterapia
@@ -73,6 +77,10 @@ Están marcados en el código como `TODO Alervet`:
 
 ## Decisiones tomadas
 
+- **Consulta general: solo en clínica.** Ese servicio no se presta a
+  domicilio, así que su tarjeta no ofrece esa opción.
+- **Consulta dermatológica: dos modalidades.** Q275 en clínica y Q400 a
+  domicilio, cada una con sus propios botones de agendar.
 - **Teléfono principal: 3481 9108.** Es el único número que aparece en el
   sitio. El 4120 9477 que mostraba la página de domicilio ya no se usa.
 
