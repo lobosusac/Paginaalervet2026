@@ -121,7 +121,7 @@ a:hover{color:var(--teal)}
   height:var(--header);display:flex;align-items:center;gap:20px;
 }
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
-.logo img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:11px;padding:3px;border:1px solid var(--line)}
+.logo img{width:50px;height:50px;object-fit:contain}
 .logo-text{display:flex;flex-direction:column;line-height:1}
 .logo-text b{font-family:Fraunces,serif;font-size:1.32rem;color:var(--teal-dark);letter-spacing:-.02em}
 .logo-text span{font-size:.66rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;font-weight:700}
@@ -409,8 +409,8 @@ a:hover{color:var(--teal)}
 .site-footer ul{list-style:none;margin:0;padding:0}
 .site-footer li{margin-bottom:11px;font-size:.95rem}
 .footer-logo{display:flex;align-items:center;gap:11px;margin-bottom:16px}
-.footer-logo img{width:44px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:5px}
-.footer-logo b{font-family:Fraunces,serif;font-size:1.35rem;color:#fff}
+.footer-logo img{width:96px;height:96px;object-fit:contain;background:#fff;border-radius:14px;padding:7px}
+
 .footer-bottom{
   border-top:1px solid rgba(255,255,255,.16);padding-top:24px;
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.87rem;
