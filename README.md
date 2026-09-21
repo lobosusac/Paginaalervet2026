@@ -21,6 +21,9 @@ public/                     LO ÚNICO QUE SE PUBLICA
   assets/css/styles.css     Toda la hoja de estilos (paleta y tipografía arriba del archivo)
   assets/js/main.js         Menú, horarios, calendario, reservas y WhatsApp
   assets/img/               Imágenes del sitio
+  404.html                  Página para direcciones mal escritas
+
+wrangler.jsonc              Ajustes de publicación en Cloudflare
 
 integracion/                NO se publica
   google-apps-script.gs     El puente con Google Calendar
@@ -174,6 +177,20 @@ los tres topes. Si eso importa, la calculadora puede moverse al Apps Script:
 el navegador manda los kilómetros y recibe el monto, sin que nada del
 criterio salga del servidor. Son unas pocas líneas más en
 `integracion/google-apps-script.gs`.
+
+## Publicación
+
+El sitio se publica en Cloudflare conectado a este repositorio: cada envío
+a la rama de producción se publica solo, en menos de un minuto.
+
+Los ajustes están en `wrangler.jsonc`. El que importa es
+`assets.directory`, fijado en `./public`: es lo que impide que el Apps
+Script y el README queden descargables desde el dominio.
+
+Dirección de prueba: `alervet.lobos-usac.workers.dev`. Al conectar
+alervet.com conviene poner `workers_dev` en `false`, para que el sitio
+responda solo en el dominio propio y no queden dos direcciones con el
+mismo contenido, cosa que a los buscadores no les gusta.
 
 ## Pendientes antes de publicar
 

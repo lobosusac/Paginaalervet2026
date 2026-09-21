@@ -1,0 +1,23 @@
+{
+  // Configuración de publicación en Cloudflare.
+  //
+  // Sin este archivo, Cloudflare improvisa los ajustes en cada
+  // publicación («Proceed with setup? → yes» en el registro). Dejarlos
+  // escritos hace que toda publicación sea idéntica a la anterior.
+  "name": "alervet",
+  "compatibility_date": "2026-09-21",
+
+  "assets": {
+    // Lo único que se publica. Todo lo que quede fuera de esta carpeta
+    // —el Apps Script, el README— no es accesible desde internet.
+    "directory": "./public",
+
+    // Página propia cuando alguien escribe mal una dirección.
+    "not_found_handling": "404-page"
+  },
+
+  // Dirección de prueba alervet.lobos-usac.workers.dev.
+  // Al conectar alervet.com se puede poner en false para que el sitio
+  // responda únicamente en el dominio propio.
+  "workers_dev": true
+}
