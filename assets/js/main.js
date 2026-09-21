@@ -172,10 +172,25 @@ async function horasOcupadas(fecha) {
   if (CONFIG.reservas.endpoint) {
     const url = CONFIG.reservas.endpoint
       + '?accion=disponibilidad&fecha=' + fechaISO(fecha);
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('El calendario respondió ' + r.status);
-    const datos = await r.json();
-    return new Set(datos.ocupadas || []);
+
+    let r;
+    try {
+      r = await fetch(url);
+    } catch (e) {
+      // Ni siquiera hubo respuesta: sin conexión, o el navegador bloqueó
+      // la petición a otro dominio.
+      throw new Error('SIN_RESPUESTA');
+    }
+    if (!r.ok) throw new Error('HTTP_' + r.status);
+
+    const texto = await r.text();
+    try {
+      return new Set(JSON.parse(texto).ocupadas || []);
+    } catch (e) {
+      // Llegó algo que no es JSON: casi siempre la pantalla de inicio de
+      // sesión de Google, porque la app web no está abierta a cualquiera.
+      throw new Error('NO_ES_JSON');
+    }
   }
 
   const { apiKey, calendarId } = CONFIG.googleCalendar;
@@ -217,6 +232,25 @@ async function horasOcupadas(fecha) {
     }
   }
   return ocupadas;
+}
+
+/**
+ * Traduce el fallo a algo que le sirva a quien mantiene el sitio.
+ * Los tres casos distinguen problemas muy distintos, y confundirlos
+ * hace perder horas.
+ */
+function explicarFallo(e) {
+  const clave = e && e.message;
+  if (clave === 'NO_ES_JSON') {
+    return 'El calendario respondió algo inesperado: probablemente la app web no está abierta a cualquier usuario.';
+  }
+  if (clave === 'SIN_RESPUESTA') {
+    return 'No se pudo contactar al calendario.';
+  }
+  if (clave && clave.startsWith('HTTP_')) {
+    return 'El calendario respondió con un error ' + clave.slice(5) + '.';
+  }
+  return 'No pudimos consultar el calendario en este momento.';
 }
 
 /** "2026-09-22" en hora local, no en UTC (toISOString corre el día). */
@@ -329,8 +363,9 @@ function iniciarAgenda(raiz) {
       ocupadas = await horasOcupadas(fecha);
       if (ocupadas) mensaje = 'Disponibilidad tomada de nuestro calendario. Toca un bloque libre para reservar.';
     } catch (e) {
-      mensaje = 'No pudimos consultar el calendario en este momento. Escríbenos por WhatsApp y te confirmamos la disponibilidad.';
+      mensaje = explicarFallo(e) + ' Mientras tanto, escríbenos por WhatsApp y te confirmamos la disponibilidad.';
       error = true;
+      console.error('[Alervet] Falló la consulta de disponibilidad:', e);
     }
 
     pintarBloques(rejilla, fecha, ocupadas);
@@ -475,21 +510,28 @@ function iniciarReserva() {
         const inicio = new Date(fecha);
         inicio.setHours(hora, 0, 0, 0);
 
-        const r = await fetch(CONFIG.reservas.endpoint, {
-          method: 'POST',
-          // text/plain evita la petición previa de CORS, que Apps Script
-          // no sabe responder. El cuerpo sigue siendo JSON.
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            accion: 'reservar',
-            inicio: inicio.toISOString(),
-            duracionMin: 60,
-            ...datos
-          })
-        });
+        let r;
+        try {
+          r = await fetch(CONFIG.reservas.endpoint, {
+            method: 'POST',
+            // text/plain evita la petición previa de CORS, que Apps Script
+            // no sabe responder. El cuerpo sigue siendo JSON.
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              accion: 'reservar',
+              inicio: inicio.toISOString(),
+              duracionMin: 60,
+              ...datos
+            })
+          });
+        } catch (fallo) {
+          console.error('[Alervet] No hubo respuesta del calendario:', fallo);
+          throw new Error('SIN_RESPUESTA');
+        }
 
         const respuesta = await r.json().catch(() => ({}));
         if (!r.ok || respuesta.ok === false) {
+          console.error('[Alervet] El calendario rechazó la reserva:', r.status, respuesta);
           const fallo = new Error(respuesta.mensaje || 'No se pudo guardar la reserva.');
           // El servidor sabe por qué falló («esa hora acaba de ocuparse»),
           // y eso le dice al cliente qué hacer. Lo marcamos para mostrarlo tal cual.
