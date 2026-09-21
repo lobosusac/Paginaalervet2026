@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!-- Fondo de acupuntura: agujas de mango espiralado, puntos de meridiano
+       con la línea que los enlaza, círculo zen y arcos de movimiento. -->
+  <defs>
+    <radialGradient id="ac-menta"><stop offset="0" stop-color="#30937b" stop-opacity=".26"/><stop offset="1" stop-color="#30937b" stop-opacity="0"/></radialGradient>
+    <radialGradient id="ac-hoja"><stop offset="0" stop-color="#6ea03c" stop-opacity=".22"/><stop offset="1" stop-color="#6ea03c" stop-opacity="0"/></radialGradient>
+    <radialGradient id="ac-agua"><stop offset="0" stop-color="#13779d" stop-opacity=".22"/><stop offset="1" stop-color="#13779d" stop-opacity="0"/></radialGradient>
+
+    <!-- Aguja de acupuntura: mango en espiral y cuerpo muy fino -->
+    <symbol id="aguja" viewBox="0 0 44 230">
+      <g fill="none" stroke="currentColor" stroke-width="3.4">
+        <ellipse cx="22" cy="14" rx="10" ry="5.5"/><ellipse cx="22" cy="26" rx="10" ry="5.5"/>
+        <ellipse cx="22" cy="38" rx="10" ry="5.5"/><ellipse cx="22" cy="50" rx="10" ry="5.5"/>
+      </g>
+      <path d="M22 58v164" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Punto de meridiano -->
+    <symbol id="punto" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="3" opacity=".45"/>
+      <circle cx="40" cy="40" r="20" fill="#ffffff" fill-opacity=".45" stroke="currentColor" stroke-width="3.6"/>
+      <circle cx="40" cy="40" r="8" fill="currentColor"/>
+    </symbol>
+
+    <!-- Círculo zen, de un solo trazo -->
+    <symbol id="enso" viewBox="0 0 220 220">
+      <path d="M156 44a86 86 0 1026 82" fill="none" stroke="currentColor"
+            stroke-width="15" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="huella-ac" viewBox="0 0 110 110">
+      <g fill="none" stroke="currentColor" stroke-width="3.4">
+        <ellipse cx="24" cy="44" rx="10" ry="14" transform="rotate(-22 24 44)"/>
+        <ellipse cx="45" cy="29" rx="10" ry="15" transform="rotate(-8 45 29)"/>
+        <ellipse cx="68" cy="30" rx="10" ry="15" transform="rotate(10 68 30)"/>
+        <ellipse cx="88" cy="47" rx="10" ry="14" transform="rotate(25 88 47)"/>
+        <path d="M56 52c17 0 30 12 30 25 0 12-10 19-21 19-4 0-6-1.5-9-1.5s-5 1.5-9 1.5c-11 0-21-7-21-19 0-13 13-25 30-25z"/>
+      </g>
+    </symbol>
+
+    <!-- Arcos de movilidad -->
+    <symbol id="movimiento" viewBox="0 0 140 140">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M30 108a56 56 0 0180 0" stroke-width="6"/>
+        <path d="M50 122a36 36 0 0140 0" stroke-width="5" opacity=".7"/>
+        <path d="M12 92a76 76 0 01116 0" stroke-width="4.5" opacity=".45"/>
+      </g>
+    </symbol>
+  
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
+  </defs>
+
+  <g mask="url(#desvanecer)">
+
+  <circle cx="100"  cy="180" r="400" fill="url(#ac-menta)"/>
+  <circle cx="1310" cy="140" r="420" fill="url(#ac-hoja)"/>
+  <circle cx="1290" cy="880" r="400" fill="url(#ac-agua)"/>
+  <circle cx="110"  cy="880" r="360" fill="url(#ac-menta)"/>
+
+  <g fill="none" stroke="#30937b" stroke-opacity=".12" stroke-width="2.5">
+    <circle cx="700" cy="1700" r="1280"/><circle cx="700" cy="1810" r="1410"/>
+  </g>
+
+  <!-- El meridiano: una línea que recorre el borde y va tocando sus puntos -->
+  <path d="M84 250C150 360 116 470 180 560s70 190 26 280" fill="none"
+        stroke="#30937b" stroke-opacity=".30" stroke-width="3.4" stroke-linecap="round"/>
+  <use href="#punto" x="52"  y="218" width="64" height="64" color="#30937b" opacity=".40"/>
+  <use href="#punto" x="118" y="428" width="52" height="52" color="#6ea03c" opacity=".34"/>
+  <use href="#punto" x="176" y="602" width="58" height="58" color="#30937b" opacity=".38"/>
+  <use href="#punto" x="176" y="792" width="46" height="46" color="#13779d" opacity=".30"/>
+
+  <path d="M1322 236c-70 106-40 214-104 302s-66 198-24 286" fill="none"
+        stroke="#13779d" stroke-opacity=".26" stroke-width="3.2" stroke-linecap="round"/>
+  <use href="#punto" x="1292" y="206" width="60" height="60" color="#13779d" opacity=".36"/>
+  <use href="#punto" x="1236" y="408" width="50" height="50" color="#30937b" opacity=".34"/>
+  <use href="#punto" x="1176" y="588" width="56" height="56" color="#6ea03c" opacity=".32"/>
+  <use href="#punto" x="1186" y="784" width="44" height="44" color="#13779d" opacity=".28"/>
+
+  <!-- Agujas -->
+  <use href="#aguja" x="212" y="60"  width="52" height="272" color="#30937b" opacity=".26" transform="rotate(18 238 196)"/>
+  <use href="#aguja" x="300" y="128" width="42" height="220" color="#13779d" opacity=".20" transform="rotate(32 321 238)"/>
+  <use href="#aguja" x="1108" y="92" width="50" height="262" color="#6ea03c" opacity=".24" transform="rotate(-22 1133 223)"/>
+  <use href="#aguja" x="1046" y="666" width="44" height="230" color="#30937b" opacity=".22" transform="rotate(26 1068 781)"/>
+  <use href="#aguja" x="286" y="662" width="46" height="240" color="#13779d" opacity=".20" transform="rotate(-28 309 782)"/>
+
+  <use href="#enso"        x="60"   y="560" width="230" height="230" color="#6ea03c" opacity=".16"/>
+  <use href="#enso"        x="1174" y="86"  width="200" height="200" color="#30937b" opacity=".13"/>
+  <use href="#movimiento"  x="1240" y="452" width="156" height="156" color="#30937b" opacity=".22"/>
+  <use href="#movimiento"  x="66"   y="366" width="132" height="132" color="#13779d" opacity=".18"/>
+  <use href="#huella-ac"   x="100"  y="828" width="116" height="116" color="#30937b" opacity=".22" transform="rotate(-12 158 886)"/>
+  <use href="#huella-ac"   x="1268" y="640" width="104" height="104" color="#6ea03c" opacity=".20" transform="rotate(20 1320 692)"/>
+  </g>
+</svg>

@@ -169,7 +169,7 @@ a:hover{color:var(--teal)}
 .menu-toggle[aria-expanded="true"] .ico-open{display:none}
 .menu-toggle[aria-expanded="true"] .ico-close{display:block}
 
-@media (max-width:900px){
+@media (max-width:1040px){
   .menu-toggle{display:flex}
   .site-nav{
     position:fixed;inset:var(--header) 0 auto 0;flex-direction:column;align-items:stretch;
@@ -334,12 +334,21 @@ a:hover{color:var(--teal)}
   background:radial-gradient(124% 98% at 50% 36%,#ffffff 0%,#f4fafc 42%,#dfeef2 100%);
 }
 .section-deco.deco-inmuno::before{background-image:url("../img/fondo-inmuno.svg")}
+
+/* Variante acupuntura: agujas, puntos de meridiano y círculo zen. */
+.section-deco.deco-acupuntura{
+  background:radial-gradient(122% 96% at 48% 38%,#ffffff 0%,#f6fbf9 42%,#e4f1ec 100%);
+}
+.section-deco.deco-acupuntura::before{background-image:url("../img/fondo-acupuntura.svg")}
 @media (prefers-reduced-motion:no-preference){
   .section-deco::before{will-change:auto}
 }
 
 /* ─── Tarjetas de servicio ────────────────────────────────── */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:22px}
+/* Con cuatro tarjetas el auto-fit deja 3 y 1 huérfana: mejor 2x2. */
+.cards.cards-par{grid-template-columns:repeat(2,1fr)}
+@media (max-width:720px){.cards.cards-par{grid-template-columns:1fr}}
 .card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
   padding:30px 28px;display:flex;flex-direction:column;
