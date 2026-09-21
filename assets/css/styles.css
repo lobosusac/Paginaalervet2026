@@ -261,10 +261,10 @@ a:hover{color:var(--teal)}
 }
 .card-icon svg{width:27px;height:27px}
 .card h3{margin-bottom:11px}
-.card p{font-size:.98rem;color:var(--body)}
-.card ul{margin:14px 0 0;padding-left:20px;font-size:.96rem}
-.card li{margin-bottom:6px}
-.card li::marker{color:var(--teal)}
+.card>p{font-size:.98rem;color:var(--body)}
+.card ul:not(.checklist){margin:14px 0 0;padding-left:20px;font-size:.96rem}
+.card ul:not(.checklist) li{margin-bottom:6px}
+.card ul:not(.checklist) li::marker{color:var(--teal)}
 .price{
   font-family:Fraunces,serif;font-size:2rem;color:var(--teal-dark);
   margin:22px 0 0;line-height:1;font-weight:600;
@@ -437,10 +437,6 @@ a:hover{color:var(--teal)}
 .btn-cal:hover{background:var(--teal-wash);color:var(--teal-darker)}
 .section-alt .btn-cal{background:var(--ground)}
 
-/* Mientras no haya enlace de calendario configurado. */
-.btn-cal[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
-.btn-cal[aria-disabled="true"]:hover{transform:none;background:var(--surface)}
-
 .opt-single{max-width:420px}
 
 /* ─── Disponibilidad por bloques de hora ──────────────────
@@ -571,3 +567,18 @@ a:hover{color:var(--teal)}
     position:fixed;bottom:0;left:0;right:0;top:auto;max-height:92vh}
   .reserva-cuerpo{max-height:56vh}
 }
+
+/* ─── Tarjetas de servicio: lista, acciones y aviso ────────── */
+.card ul.card-lista{margin-top:16px;padding-left:0}
+.card-lista li{padding-left:29px;margin-bottom:10px;font-size:.95rem}
+.card-lista li::before{width:19px;height:19px;top:2px}
+.card-lista li::after{left:6px;top:7px;width:6px;height:10px;border-width:0 2.2px 2.2px 0}
+
+.card-acciones{display:flex;flex-direction:column;gap:9px;margin-top:18px}
+.card-acciones .btn{width:100%;padding:12px 18px;font-size:.94rem}
+
+.card-domicilio{
+  margin-top:14px;padding-top:13px;border-top:1px solid var(--line);
+  font-size:.86rem;line-height:1.45;color:var(--muted);
+}
+.card-domicilio a{color:var(--teal-dark);font-weight:700}

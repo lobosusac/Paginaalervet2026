@@ -10,10 +10,6 @@ const CONFIG = {
   telefono: '3481 9108',              // Número principal
   correo: '',                         // TODO Alervet: falta el correo de contacto
 
-  // Enlace público para reservar cita (Google Calendar / página de citas).
-  // Mientras esté vacío, los botones de calendario quedan desactivados.
-  calendario: '',                     // TODO Alervet: pegar el enlace de reservas
-
   // Dirección del Apps Script que consulta el calendario y guarda las
   // reservas. Es la vía recomendada: corre dentro de la cuenta de Google
   // de la clínica, así que el calendario NO necesita ser público.
@@ -459,20 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const { abierto, texto } = estadoActual();
     el.textContent = texto;
     el.classList.add(abierto ? 'open' : 'shut');
-  });
-
-  /* ── Botones de Google Calendar ──────────────────────────── */
-  document.querySelectorAll('[data-cal]').forEach(el => {
-    if (CONFIG.calendario) {
-      el.href = CONFIG.calendario;
-      el.target = '_blank';
-      el.rel = 'noopener';
-    } else {
-      // Sin enlace configurado el botón no debe navegar a ningún lado.
-      el.setAttribute('aria-disabled', 'true');
-      el.removeAttribute('href');
-      el.title = 'Pendiente de configurar el enlace de reservas';
-    }
   });
 
   /* ── Enlaces de WhatsApp ─────────────────────────────────── */
