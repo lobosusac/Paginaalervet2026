@@ -132,7 +132,11 @@ Están marcados en el código como `TODO Alervet`:
 - [ ] **Precio de la prueba de alergias a domicilio** — hoy muestra «Consúltanos»
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
-- [ ] Fotos reales: clínica, retrato de la Dra. González, vial de inmunoterapia
+- [ ] **Foto de portada** en `assets/img/portada.jpg` — horizontal, mínimo
+      1800 px de ancho, con la mascota hacia la derecha para que la tarjeta
+      del mensaje no la tape. Al colocarla, descomentar la etiqueta `<img>`
+      de la portada y borrar el aviso `hero-sinfoto`
+- [ ] Otras fotos: clínica, retrato de la Dra. González, vial de inmunoterapia
 - [ ] Mapa de Google Business para la sección de ubicación
 - [ ] Verificar el principio activo de «Numelvi» — el sitio actual dice
       «Atinvicitiniv» y hay que confirmar la ortografía correcta
