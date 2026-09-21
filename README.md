@@ -62,11 +62,15 @@ un servicio como Formspree o Web3Forms sin cambiar el diseño.
 
 ## Reservas en línea con Google Calendar
 
-La portada tiene una sección «Horarios disponibles»: el cliente elige día,
-toca un bloque de hora libre, llena sus datos y recibe el mensaje «Un asesor
-te contactará a la brevedad». Al mismo tiempo, la solicitud aparece como
-evento en el calendario de la clínica y llega un aviso por correo y por
-WhatsApp.
+La portada tiene una sección «Horarios disponibles»: el cliente elige la
+fecha en un calendario mensual, toca un bloque de hora libre, llena sus
+datos y recibe el mensaje «Un asesor te contactará a la brevedad». Al mismo
+tiempo, la solicitud aparece como evento en el calendario de la clínica y
+llega un aviso por correo y por WhatsApp.
+
+El calendario deja reservar hasta **90 días** hacia adelante. Se cambia en
+`CONFIG.diasParaReservar`, dentro de `assets/js/main.js`. Los domingos, las
+fechas pasadas y las que exceden ese horizonte aparecen deshabilitadas.
 
 Eso necesita algo que corra del lado del servidor, porque un sitio estático
 no puede escribir en un calendario ni mandar mensajes. Ese papel lo hace

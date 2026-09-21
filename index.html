@@ -244,11 +244,25 @@
       <div class="section-head">
         <p class="eyebrow">Agenda</p>
         <h2>Horarios disponibles</h2>
-        <p>Elige el día, toca un bloque libre y llena tus datos. Un asesor te contacta para confirmar la cita.</p>
+        <p>Elige la fecha, toca un bloque libre y llena tus datos. Un asesor te contacta para confirmar la cita.</p>
       </div>
 
       <div class="agenda" data-agenda>
-        <div class="dias" data-dias role="tablist" aria-label="Elige un día"></div>
+        <div class="cal">
+          <div class="cal-barra">
+            <button type="button" class="cal-nav" data-mes-ant aria-label="Mes anterior">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <strong data-mes-titulo aria-live="polite"></strong>
+            <button type="button" class="cal-nav" data-mes-sig aria-label="Mes siguiente">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="cal-semana" aria-hidden="true">
+            <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div class="cal-dias" data-dias role="grid" aria-label="Elige un día"></div>
+        </div>
         <div class="slots" data-slots></div>
         <div class="leyenda">
           <span><i class="l-libre"></i> Disponible</span>

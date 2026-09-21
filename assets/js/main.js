@@ -46,6 +46,9 @@ const CONFIG = {
     calendarId: ''
   },
 
+  // Con cuánta anticipación se puede reservar, en días.
+  diasParaReservar: 90,
+
   // Horario de atención. 0 = domingo … 6 = sábado. null = cerrado.
   horario: {
     0: null,
@@ -148,29 +151,6 @@ function estadoActual(ahora = new Date()) {
    de una hora. Si hay un calendario configurado, marca como
    ocupados los que ya tienen una cita.
    --------------------------------------------------------- */
-
-/** Devuelve los próximos días en que la clínica abre. */
-function proximosDias(cantidad = 7, desde = new Date()) {
-  const dias = [];
-  const base = new Date(desde);
-  base.setHours(0, 0, 0, 0);
-  for (let i = 0; dias.length < cantidad && i < 30; i++) {
-    const f = new Date(base);
-    f.setDate(base.getDate() + i);
-    const bloques = bloquesDe(f);
-    if (!bloques.length) continue;
-
-    // Si hoy ya cerró, no tiene sentido ofrecerlo: el primer día
-    // que se muestra pasa a ser el siguiente con atención.
-    if (i === 0) {
-      const ultimo = new Date(f);
-      ultimo.setHours(bloques[bloques.length - 1], 0, 0, 0);
-      if (ultimo <= desde) continue;
-    }
-    dias.push(f);
-  }
-  return dias;
-}
 
 /** Bloques de una hora que cubren el horario de ese día. */
 function bloquesDe(fecha) {
@@ -302,19 +282,44 @@ function pintarBloques(rejilla, fecha, ocupadas) {
   }
 }
 
-/** Monta el selector de días y la rejilla de bloques. */
+/** Primer día con atención a partir de una fecha, o null si no hay. */
+function primerDiaAbierto(desde = new Date(), limite = 30) {
+  const f = new Date(desde);
+  f.setHours(0, 0, 0, 0);
+  for (let i = 0; i < limite; i++) {
+    const bloques = bloquesDe(f);
+    if (bloques.length) {
+      // Si es hoy y ya cerró, se pasa al siguiente.
+      const ultimo = new Date(f);
+      ultimo.setHours(bloques[bloques.length - 1], 0, 0, 0);
+      if (ultimo > new Date()) return f;
+    }
+    f.setDate(f.getDate() + 1);
+  }
+  return null;
+}
+
+/** Monta el calendario y la rejilla de bloques. */
 function iniciarAgenda(raiz) {
-  const tiraDias = raiz.querySelector('[data-dias]');
+  const grilla   = raiz.querySelector('[data-dias]');
   const rejilla  = raiz.querySelector('[data-slots]');
   const aviso    = raiz.querySelector('[data-aviso]');
-  if (!tiraDias || !rejilla) return;
+  const titulo   = raiz.querySelector('[data-mes-titulo]');
+  const anterior = raiz.querySelector('[data-mes-ant]');
+  const siguiente= raiz.querySelector('[data-mes-sig]');
+  if (!grilla || !rejilla) return;
 
-  const dias = proximosDias(7);
   const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const tope = new Date(hoy);
+  tope.setDate(tope.getDate() + CONFIG.diasParaReservar);
 
-  const mostrar = async (fecha, boton) => {
-    tiraDias.querySelectorAll('.dia').forEach(b => b.setAttribute('aria-selected', 'false'));
-    boton.setAttribute('aria-selected', 'true');
+  let seleccion = primerDiaAbierto(hoy);
+  let mes = new Date(seleccion || hoy);
+  mes.setDate(1);
+
+  const mostrar = async (fecha) => {
+    seleccion = fecha;
+    pintarMes();
 
     let ocupadas = null;
     let mensaje = 'Estos son nuestros bloques de atención. Toca uno y te confirmamos si está libre.';
@@ -335,26 +340,65 @@ function iniciarAgenda(raiz) {
     }
   };
 
-  dias.forEach((fecha, i) => {
-    const boton = document.createElement('button');
-    boton.type = 'button';
-    boton.className = 'dia';
-    boton.setAttribute('role', 'tab');
-    boton.setAttribute('aria-selected', 'false');
+  function pintarMes() {
+    const año = mes.getFullYear(), m = mes.getMonth();
+    if (titulo) {
+      const nombre = mes.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' });
+      titulo.textContent = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+    }
 
-    const dia = document.createElement('b');
-    const esHoy = fecha.getTime() === hoy.getTime();
-    dia.textContent = esHoy ? 'Hoy' : fecha.toLocaleDateString('es-GT', { weekday: 'short' }).replace('.', '');
-    const num = document.createElement('i');
-    num.textContent = String(fecha.getDate());
-    boton.append(dia, num);
+    // La semana arranca en lunes: domingo (0) pasa a ser el séptimo día.
+    const primero = new Date(año, m, 1);
+    const hueco = (primero.getDay() + 6) % 7;
+    const ultimoDia = new Date(año, m + 1, 0).getDate();
 
-    boton.setAttribute('aria-label', fechaLarga(fecha));
-    boton.addEventListener('click', () => mostrar(fecha, boton));
-    tiraDias.appendChild(boton);
+    grilla.textContent = '';
+    for (let i = 0; i < hueco; i++) {
+      grilla.appendChild(document.createElement('span'));
+    }
 
-    if (i === 0) mostrar(fecha, boton);
-  });
+    for (let d = 1; d <= ultimoDia; d++) {
+      const fecha = new Date(año, m, d);
+      const abierto = bloquesDe(fecha).length > 0;
+      const pasado  = fecha < hoy || (fecha.getTime() === hoy.getTime() && !primerDiaAbierto(hoy));
+      const lejano  = fecha > tope;
+      const usable  = abierto && !pasado && !lejano;
+
+      const celda = document.createElement('button');
+      celda.type = 'button';
+      celda.className = 'cal-dia';
+      celda.textContent = String(d);
+      celda.setAttribute('aria-label', fechaLarga(fecha));
+
+      if (fecha.getTime() === hoy.getTime()) celda.classList.add('es-hoy');
+
+      if (!usable) {
+        celda.disabled = true;
+        celda.classList.add(abierto ? 'no-disponible' : 'cerrado');
+        if (!abierto) celda.title = 'No atendemos este día';
+      } else {
+        if (seleccion && fecha.getTime() === seleccion.getTime()) {
+          celda.classList.add('elegido');
+          celda.setAttribute('aria-current', 'date');
+        }
+        celda.addEventListener('click', () => mostrar(fecha));
+      }
+      grilla.appendChild(celda);
+    }
+
+    if (anterior) anterior.disabled = (año === hoy.getFullYear() && m === hoy.getMonth());
+    if (siguiente) siguiente.disabled = new Date(año, m + 1, 1) > tope;
+  }
+
+  const cambiarMes = (paso) => {
+    mes = new Date(mes.getFullYear(), mes.getMonth() + paso, 1);
+    pintarMes();
+  };
+  anterior?.addEventListener('click', () => cambiarMes(-1));
+  siguiente?.addEventListener('click', () => cambiarMes(1));
+
+  if (seleccion) mostrar(seleccion);
+  else pintarMes();
 }
 
 
