@@ -19,7 +19,9 @@ const AJUSTES = {
   CALENDARIO: '',
 
   // Correo donde llegan los avisos de cada solicitud.
-  CORREO_AVISO: 'lobos.usac@gmail.com',
+  // Admite varios separados por comas:
+  //   'recepcionalervet@gmail.com, lobos.usac@gmail.com'
+  CORREO_AVISO: 'recepcionalervet@gmail.com',
 
   // Aviso por WhatsApp. Debe ser una URL con {texto} donde va el
   // mensaje. Si se deja vacío, solo se avisa por correo.
