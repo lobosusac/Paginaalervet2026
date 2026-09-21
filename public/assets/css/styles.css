@@ -4,29 +4,44 @@
    ============================================================ */
 
 :root{
-  /* Marca. El turquesa y el azul vienen del sitio actual. */
-  --teal:          #2B7A72;
-  --teal-dark:     #1B554F;
-  --teal-darker:   #123B37;
-  --teal-wash:     #E6F0EE;
-  --navy:          #1B3A5C;
+  /* Colores tomados de la guía de marca de Alervet.
+     El verde de marca no alcanza contraste para texto (3.48:1 sobre el
+     fondo), así que para leer se usan variantes más oscuras del MISMO
+     tono. El ojo las reconoce como el mismo color; el texto se lee. */
+  --teal:          #30937b;   /* verde de marca: rellenos y botones   */
+  --teal-dark:     #287c68;   /* texto y enlaces        4.65:1        */
+  --teal-darker:   #1b5244;   /* títulos sobre claro    8.31:1        */
+  --teal-wash:     #e6f1ee;
+  --verde-oliva:   #6ea03c;   /* solo decoración                      */
+  --verde-claro:   #93b742;   /* solo decoración                      */
 
-  /* Neutros con una pizca de verde, para que no se sientan grises de sistema. */
+  --navy:          #1a4285;   /* títulos                8.98:1        */
+  --navy-oscuro:   #122267;
+  --azul-petroleo: #13779d;   /* enlaces secundarios    4.68:1        */
+
+  /* Neutros ligeramente azulados, para que acompañen al azul de marca. */
   --ground:        #F7F6F2;
   --surface:       #FFFFFF;
-  --sunk:          #EFEEE8;
-  --ink:           #14302D;
-  --body:          #3B4E4B;
-  --muted:         #6B7B78;
-  --line:          #E2E1DA;
+  --sunk:          #EEEFEC;
+  --ink:           #22303f;
+  --body:          #44525f;
+  --muted:         #65717c;
+  --line:          #dfe2e6;
+
+  /* Semánticos, derivados del rojo y el verde oliva de la guía. */
+  --rojo:          #c2201e;   /* obligatorio, alertas   5.52:1        */
+  --rojo-oscuro:   #a01a18;
+  --rojo-wash:     #fbeceb;
+  --oliva-oscuro:  #4a6b28;   /* «abierto ahora»        5.34:1        */
+  --oliva-wash:    #eef4e6;
 
   --whatsapp:      #25D366;
   --whatsapp-dark: #1DA851;
 
   --radius:   14px;
   --radius-s: 8px;
-  --shadow:   0 1px 2px rgba(20,48,45,.05), 0 10px 30px -14px rgba(20,48,45,.22);
-  --shadow-l: 0 2px 4px rgba(20,48,45,.06), 0 20px 50px -20px rgba(20,48,45,.3);
+  --shadow:   0 1px 2px rgba(26,66,133,.05), 0 10px 30px -14px rgba(26,66,133,.22);
+  --shadow-l: 0 2px 4px rgba(26,66,133,.06), 0 20px 50px -20px rgba(26,66,133,.3);
 
   --w:      1140px;
   --gutter: 22px;
@@ -45,15 +60,16 @@ body{
   margin:0;
   background:var(--ground);
   color:var(--body);
-  font-family:"Nunito Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-family:Asap,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   font-size:17px;
   line-height:1.65;
   -webkit-font-smoothing:antialiased;
 }
 
 h1,h2,h3,h4{
-  font-family:Fraunces,Georgia,"Times New Roman",serif;
-  color:var(--ink);
+  font-family:"Encode Sans","Arial Narrow",Arial,sans-serif;
+  font-stretch:condensed;
+  color:var(--navy);
   font-weight:600;
   line-height:1.12;
   letter-spacing:-.015em;
@@ -82,7 +98,7 @@ a:hover{color:var(--teal)}
 
 /* ─── Etiquetas y textos de apoyo ─────────────────────────── */
 .eyebrow{
-  font-family:"Nunito Sans",sans-serif;font-size:.78rem;font-weight:800;
+  font-family:Asap,sans-serif;font-size:.78rem;font-weight:800;
   letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0 0 14px;
 }
 .lede{font-size:1.15rem;line-height:1.6;color:var(--body)}
@@ -92,7 +108,7 @@ a:hover{color:var(--teal)}
 /* ─── Botones ─────────────────────────────────────────────── */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:"Nunito Sans",sans-serif;font-size:1rem;font-weight:800;
+  font-family:Asap,sans-serif;font-size:1rem;font-weight:800;
   padding:14px 26px;border-radius:100px;border:2px solid transparent;
   text-decoration:none;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
   line-height:1.2;
@@ -123,7 +139,7 @@ a:hover{color:var(--teal)}
 .logo{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
 .logo img{width:50px;height:50px;object-fit:contain}
 .logo-text{display:flex;flex-direction:column;line-height:1}
-.logo-text b{font-family:Fraunces,serif;font-size:1.32rem;color:var(--teal-dark);letter-spacing:-.02em}
+.logo-text b{font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.32rem;color:var(--teal-dark);letter-spacing:-.02em}
 .logo-text span{font-size:.66rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;font-weight:700}
 
 .site-nav{margin-left:auto;display:flex;align-items:center;gap:6px}
@@ -209,7 +225,7 @@ a:hover{color:var(--teal)}
   position:absolute;right:26px;bottom:22px;z-index:2;max-width:270px;
   color:rgba(255,255,255,.82);font-size:.82rem;line-height:1.45;text-align:right;
 }
-.hero-sinfoto b{display:block;color:#fff;font-family:Fraunces,serif;
+.hero-sinfoto b{display:block;color:#fff;font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;
   font-size:1.05rem;margin-bottom:4px}
 
 @media (max-width:860px){
@@ -231,7 +247,7 @@ a:hover{color:var(--teal)}
 .trust{border-block:1px solid var(--line);background:var(--surface)}
 .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
 .trust-item{background:var(--surface);padding:26px 22px;text-align:center}
-.trust-item b{display:block;font-family:Fraunces,serif;font-size:1.7rem;color:var(--teal-dark);line-height:1;margin-bottom:7px}
+.trust-item b{display:block;font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.7rem;color:var(--teal-dark);line-height:1;margin-bottom:7px}
 .trust-item span{font-size:.9rem;color:var(--muted);font-weight:600;line-height:1.4;display:block}
 @media (max-width:760px){
   .trust-grid{grid-template-columns:repeat(2,1fr)}
@@ -266,10 +282,10 @@ a:hover{color:var(--teal)}
 .card ul:not(.checklist) li{margin-bottom:6px}
 .card ul:not(.checklist) li::marker{color:var(--teal)}
 .price{
-  font-family:Fraunces,serif;font-size:2rem;color:var(--teal-dark);
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:2rem;color:var(--teal-dark);
   margin:22px 0 0;line-height:1;font-weight:600;
 }
-.price small{display:block;font-family:"Nunito Sans",sans-serif;font-size:.8rem;
+.price small{display:block;font-family:Asap,sans-serif;font-size:.8rem;
   color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
 .card .btn{margin-top:20px;align-self:flex-start}
 .card-foot{margin-top:auto;padding-top:20px}
@@ -290,7 +306,7 @@ a:hover{color:var(--teal)}
   padding:9px 17px;border-radius:100px;margin-bottom:20px;
 }
 .status::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;flex-shrink:0}
-.status.open{background:#E3F2E7;color:#256B38}
+.status.open{background:var(--oliva-wash);color:var(--oliva-oscuro)}
 .status.shut{background:var(--sunk);color:var(--muted)}
 
 /* ─── Aviso / nota ────────────────────────────────────────── */
@@ -333,7 +349,7 @@ a:hover{color:var(--teal)}
 .story-photo.cuadrada{aspect-ratio:1/1}
 .story-photo.cuadrada>img{object-position:center}
 .quote{
-  font-family:Fraunces,serif;font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.35;
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.35;
   color:var(--ink);font-style:italic;margin:0 0 24px;
 }
 .byline{display:flex;align-items:center;gap:13px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
@@ -354,7 +370,7 @@ a:hover{color:var(--teal)}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px var(--teal-wash)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media (max-width:600px){.field-row{grid-template-columns:1fr}}
-.req{color:#B4483C}
+.req{color:var(--rojo)}
 .form-note{font-size:.88rem;color:var(--muted);margin-top:4px}
 
 /* ─── Ubicación ───────────────────────────────────────────── */
@@ -402,7 +418,7 @@ a:hover{color:var(--teal)}
 .site-footer{background:var(--teal-darker);color:rgba(255,255,255,.76);padding:60px 0 30px;margin-top:0}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:38px}
 @media (max-width:800px){.footer-grid{grid-template-columns:1fr;gap:32px}}
-.site-footer h4{color:#fff;font-family:"Nunito Sans",sans-serif;font-size:.82rem;
+.site-footer h4{color:#fff;font-family:Asap,sans-serif;font-size:.82rem;
   letter-spacing:.14em;text-transform:uppercase;margin-bottom:17px;font-weight:800}
 .site-footer a{color:rgba(255,255,255,.76);text-decoration:none}
 .site-footer a:hover{color:#fff;text-decoration:underline}
@@ -461,7 +477,7 @@ a:hover{color:var(--teal)}
   margin-bottom:14px;
 }
 .cal-barra strong{
-  font-family:Fraunces,serif;font-size:1.15rem;font-weight:600;color:var(--ink);
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.15rem;font-weight:600;color:var(--ink);
   text-align:center;flex:1;
 }
 .cal-nav{
@@ -510,7 +526,7 @@ a:hover{color:var(--teal)}
   transition:border-color .15s ease,transform .15s ease,background .15s ease;
 }
 .section-alt .slot{background:var(--ground)}
-.slot .hora{font-family:Fraunces,serif;font-size:1.12rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.slot .hora{font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.12rem;color:var(--ink);font-variant-numeric:tabular-nums}
 .slot .estado{font-size:.79rem;font-weight:700;letter-spacing:.02em}
 
 .slot.libre{border-color:var(--teal)}
@@ -536,7 +552,7 @@ a:hover{color:var(--teal)}
   margin-top:20px;padding:14px 17px;border-radius:var(--radius-s);
   background:var(--teal-wash);font-size:.89rem;line-height:1.5;color:var(--body);
 }
-.agenda-aviso.error{background:#F8EBE9;color:#8C382F}
+.agenda-aviso.error{background:var(--rojo-wash);color:var(--rojo-oscuro)}
 
 @media (max-width:520px){
   .slots{grid-template-columns:repeat(2,1fr)}
@@ -579,7 +595,7 @@ a:hover{color:var(--teal)}
 .reserva-pie .btn{flex:1;min-width:140px}
 
 .reserva-error{
-  background:#F8EBE9;color:#8C382F;border-radius:var(--radius-s);
+  background:var(--rojo-wash);color:var(--rojo-oscuro);border-radius:var(--radius-s);
   padding:13px 16px;font-size:.92rem;margin-bottom:18px;
 }
 .reserva-error[hidden]{display:none}
@@ -696,7 +712,7 @@ a:hover{color:var(--teal)}
 }
 .calc-total span{font-size:.8rem;font-weight:800;letter-spacing:.09em;
   text-transform:uppercase;color:var(--teal-dark)}
-.calc-total b{font-family:Fraunces,serif;font-size:2rem;line-height:1;color:var(--teal-darker)}
+.calc-total b{font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:2rem;line-height:1;color:var(--teal-darker)}
 .calc-cotiza{
   margin-top:13px;padding:13px 16px;background:var(--surface);
   border-radius:var(--radius-s);border-left:3px solid var(--teal);
@@ -722,7 +738,7 @@ a:hover{color:var(--teal)}
 }
 .calc-desglose .calc-suma span{font-size:.8rem;font-weight:800;letter-spacing:.09em;
   text-transform:uppercase;color:var(--teal-dark)}
-.calc-desglose .calc-suma b{font-family:Fraunces,serif;font-size:1.85rem;
+.calc-desglose .calc-suma b{font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.85rem;
   line-height:1;color:var(--teal-darker)}
 .calc select{
   font-family:inherit;font-size:1rem;color:var(--ink);width:100%;
