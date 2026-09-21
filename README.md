@@ -12,32 +12,43 @@ directamente en el navegador y se puede publicar en cualquier alojamiento
 estático gratuito.
 
 ```
-index.html                  Portada
-servicios.html              Consulta general, consulta de piel y prueba de alergias
-inmunoterapia.html          Explicación del tratamiento y solicitud de vacuna
-servicio-a-domicilio.html   Cobertura, formulario corto y condiciones
-nosotros.html               Historia y formación de la Dra. González
-assets/css/styles.css       Toda la hoja de estilos (paleta y tipografía arriba del archivo)
-assets/js/main.js           Menú, indicador de horario y enlaces de WhatsApp
-assets/img/                 Imágenes
-                            inmunoterapia-pieza-completa.webp es la pieza
-                            gráfica original, con titular y botón. No se usa
-                            en el sitio; se guarda para redes sociales
+public/                     LO ÚNICO QUE SE PUBLICA
+  index.html                Portada
+  servicios.html            Consulta dermatológica, prueba de alergias y consulta general
+  inmunoterapia.html        Explicación del tratamiento y solicitud de vacuna
+  servicio-a-domicilio.html Cobertura, calculadora de traslado y formulario
+  nosotros.html             Historia y formación de la Dra. González
+  assets/css/styles.css     Toda la hoja de estilos (paleta y tipografía arriba del archivo)
+  assets/js/main.js         Menú, horarios, calendario, reservas y WhatsApp
+  assets/img/               Imágenes del sitio
+
+integracion/                NO se publica
+  google-apps-script.gs     El puente con Google Calendar
+
+material/                   NO se publica
+                            Piezas gráficas para redes sociales
 ```
+
+Todo lo que va dentro de `public/` queda accesible desde internet. Lo de
+fuera, no: por eso el Apps Script vive aparte, ya que lleva el correo de
+avisos y documenta los topes internos.
 
 ## Verlo en tu computadora
 
-Abrir `index.html` con doble clic. Para que todo funcione igual que en
-producción conviene levantar un servidor local:
+Desde la carpeta `public/`, levantar un servidor local:
 
 ```bash
+cd public
 python3 -m http.server 8000
 # luego abrir http://localhost:8000
 ```
 
+Abrir el archivo con doble clic también funciona, pero el servidor local
+reproduce mejor el comportamiento real.
+
 ## Editar los datos de contacto
 
-Todo está en un solo lugar: al inicio de `assets/js/main.js`, en `CONFIG`.
+Todo está en un solo lugar: al inicio de `public/assets/js/main.js`, en `CONFIG`.
 
 ```js
 const CONFIG = {
@@ -69,7 +80,7 @@ tiempo, la solicitud aparece como evento en el calendario de la clínica y
 llega un aviso por correo y por WhatsApp.
 
 El calendario deja reservar hasta **90 días** hacia adelante. Se cambia en
-`CONFIG.diasParaReservar`, dentro de `assets/js/main.js`. Los domingos, las
+`CONFIG.diasParaReservar`, dentro de `public/assets/js/main.js`. Los domingos, las
 fechas pasadas y las que exceden ese horizonte aparecen deshabilitadas.
 
 Eso necesita algo que corra del lado del servidor, porque un sitio estático
@@ -89,7 +100,7 @@ Google de la clínica**. Así el calendario nunca tiene que ser público.
    - *Quién tiene acceso:* cualquier usuario
 5. Autorizar los permisos que pide (calendario y envío de correo).
 6. Copiar la URL que termina en `/exec` y ponerla en `CONFIG.reservas.endpoint`,
-   dentro de `assets/js/main.js`.
+   dentro de `public/assets/js/main.js`.
 
 Después de cada cambio en el script hay que crear una **implementación nueva**;
 guardar no basta.
@@ -132,7 +143,7 @@ datos ya escritos. No se pierde ninguna cita.
 La página de servicio a domicilio tiene una calculadora: el cliente escribe
 cuántos kilómetros hay de la clínica a su casa y ve el traslado estimado.
 Los tramos se editan en `CONFIG.traslado.tramos`, dentro de
-`assets/js/main.js`.
+`public/assets/js/main.js`.
 
 | Distancia | Traslado |
 |---|---|
