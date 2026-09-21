@@ -80,6 +80,7 @@
               <ul>
                 <li>Consulta dermatológica a domicilio — <b>Q400</b></li>
                 <li>Prueba de alergias a domicilio — <b>Q1,100</b></li>
+                <li>Las dos en la misma visita — <b>Q1,500</b></li>
               </ul>
             </div>
           </div>
@@ -99,6 +100,13 @@
                     <span>km</span>
                   </div>
                 </div>
+                <label class="calc-label" for="calc-servicio" style="margin-top:14px">¿Qué visita necesitas?</label>
+                <select id="calc-servicio" data-servicio>
+                  <option value="">Solo quiero ver el traslado</option>
+                  <option>Consulta dermatológica</option>
+                  <option>Prueba de alergias</option>
+                  <option>Ambas</option>
+                </select>
                 <div class="calc-out" data-resultado hidden></div>
               </div>
 

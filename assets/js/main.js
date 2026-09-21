@@ -24,6 +24,13 @@ const CONFIG = {
     ]
   },
 
+  // Precio del servicio cuando se presta a domicilio. «Ambas» se suma,
+  // no lleva precio combinado.
+  serviciosDomicilio: {
+    'Consulta dermatológica': 400,
+    'Prueba de alergias': 1100
+  },
+
   // Dirección del Apps Script que consulta el calendario y guarda las
   // reservas. Es la vía recomendada: corre dentro de la cuenta de Google
   // de la clínica, así que el calendario NO necesita ser público.
@@ -450,31 +457,64 @@ function quetzales(n) {
   return 'Q' + n.toLocaleString('es-GT');
 }
 
+/** Precio del servicio elegido. «Ambas» suma los dos. */
+function precioServicio(nombre) {
+  const precios = CONFIG.serviciosDomicilio;
+  if (!nombre) return null;
+  if (nombre === 'Ambas') {
+    return Object.values(precios).reduce((a, b) => a + b, 0);
+  }
+  return precios[nombre] ?? null;
+}
+
 function iniciarCalculadora(raiz) {
   const campo  = raiz.querySelector('[data-km]');
   const salida = raiz.querySelector('[data-resultado]');
   if (!campo || !salida) return;
 
+  // El selector de servicio puede estar dentro de la calculadora o, en el
+  // formulario, ser el campo «¿Qué visita necesitas?».
+  const form = raiz.closest('form');
+  const selector = raiz.querySelector('[data-servicio]')
+    || (form && form.querySelector('[name="visita"]'));
+
+  const fila = (etiqueta, monto, clase = '') =>
+    `<div class="${clase}"><span>${etiqueta}</span><b>${quetzales(monto)}</b></div>`;
+
   const pintar = () => {
     const km = parseFloat(campo.value.replace(',', '.'));
     const r = calcularTraslado(km);
+    const servicio = selector ? precioServicio(selector.value) : null;
 
     if (!r) {
       salida.hidden = true;
       return;
     }
 
-    salida.innerHTML = r.cobro
-      ? `<p class="calc-total"><span>Traslado estimado</span><b>${quetzales(r.cobro)}</b></p>
-         <p class="calc-nota">A esto se suma el precio del servicio. Es un estimado: te confirmamos el total exacto por WhatsApp antes de agendar.</p>`
-      : `<p class="calc-cotiza"><b>Nos comunicaremos contigo para darte un precio exacto.</b></p>
+    if (!r.cobro) {
+      salida.innerHTML =
+        `<p class="calc-cotiza"><b>Nos comunicaremos contigo para darte un precio exacto.</b></p>
          <p class="calc-nota">Tu domicilio está fuera de los tramos publicados, así que lo cotizamos caso por caso.</p>`;
+    } else if (servicio) {
+      salida.innerHTML =
+        `<div class="calc-desglose">
+           ${fila('Servicio', servicio)}
+           ${fila('Traslado estimado', r.cobro)}
+           ${fila('Total estimado', servicio + r.cobro, 'calc-suma')}
+         </div>
+         <p class="calc-nota">Es un estimado. Te confirmamos el total exacto por WhatsApp antes de agendar.</p>`;
+    } else {
+      salida.innerHTML =
+        `<div class="calc-desglose">${fila('Traslado estimado', r.cobro)}</div>
+         <p class="calc-nota">Elige el servicio para ver el total. Es un estimado: te confirmamos el monto exacto por WhatsApp antes de agendar.</p>`;
+    }
 
     salida.hidden = false;
     sincronizar(campo.value);
   };
 
   campo.addEventListener('input', pintar);
+  if (selector) selector.addEventListener('change', pintar);
   raiz._pintar = pintar;
 }
 

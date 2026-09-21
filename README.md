@@ -134,6 +134,11 @@ Los tramos se editan en `CONFIG.traslado.tramos`, dentro de
 | Hasta 25 km | Q200 |
 | Más de 25 km | Se cotiza con el cliente |
 
+Al elegir el servicio, la calculadora suma su precio y muestra el total:
+Q400 la consulta dermatológica, Q1,100 la prueba de alergias y Q1,500 las
+dos en la misma visita. Se editan en `CONFIG.serviciosDomicilio`; «Ambas»
+se calcula sumando, no lleva precio combinado propio.
+
 Estos topes salen de la regla interna de la clínica. Los ejemplos originales
 dejaban tres huecos sin cubrir —entre otros, un domicilio a 10 km no caía en
 ningún tramo—, así que se cerraron redondeando hacia arriba al siguiente
