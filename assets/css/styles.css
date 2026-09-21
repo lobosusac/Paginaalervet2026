@@ -358,7 +358,7 @@ a:hover{color:var(--teal)}
 .form-note{font-size:.88rem;color:var(--muted);margin-top:4px}
 
 /* ─── Ubicación ───────────────────────────────────────────── */
-.place{display:grid;grid-template-columns:1fr 1.25fr;gap:26px;align-items:stretch}
+.place{display:grid;grid-template-columns:1fr 1.25fr;gap:26px;align-items:start}
 @media (max-width:820px){.place{grid-template-columns:1fr}}
 .map-frame{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);min-height:330px;background:var(--sunk)}
 .map-frame iframe{width:100%;height:100%;min-height:330px;border:0;display:block}
@@ -706,3 +706,13 @@ a:hover{color:var(--teal)}
   background:var(--teal-wash);border-left:3px solid var(--whatsapp);
 }
 .wa-manual p{font-size:.93rem;color:var(--body);margin-bottom:13px}
+
+/* ─── Fachada de la clínica ───────────────────────────────── */
+.fachada{margin:0;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--line);background:var(--sunk);box-shadow:var(--shadow)}
+.fachada img{width:100%;height:auto;display:block;aspect-ratio:1592/988;object-fit:cover}
+.fachada figcaption{
+  padding:14px 18px;font-size:.89rem;line-height:1.5;color:var(--muted);
+  background:var(--surface);border-top:1px solid var(--line);
+}
+.section .fachada figcaption{background:var(--surface)}

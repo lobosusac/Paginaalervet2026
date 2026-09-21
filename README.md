@@ -179,8 +179,10 @@ Están marcados en el código como `TODO Alervet`:
       el sitio lo muestra a 441 × 551, así que se amplía y pierde nitidez en
       pantallas modernas. Con el original se ve mucho mejor
 - [x] ~~Vial de inmunoterapia~~ — `assets/img/inmunoterapia.webp`
-- [ ] Foto de la clínica, para la sección de ubicación (enviada al chat, pero el archivo no llegó)
-- [ ] Mapa de Google Business para la sección de ubicación
+- [x] ~~Foto de la clínica~~ — `assets/img/clinica.webp`
+- [ ] **Mapa de Google Business.** La sección de ubicación muestra por ahora
+      la foto de la fachada; el mapa puede ir debajo cuando esté el enlace
+      incrustado
 - [ ] Verificar el principio activo de «Numelvi» — el sitio actual dice
       «Atinvicitiniv» y hay que confirmar la ortografía correcta
 - [ ] Confirmar si se sigue ofreciendo cirugía de tejidos blandos
