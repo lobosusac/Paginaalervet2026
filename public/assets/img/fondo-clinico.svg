@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!-- Fondo decorativo de Alervet. Motivos de la clínica (huellas, alérgenos,
+       folículo piloso, células y estetoscopio) en el verde de la marca.
+       Las opacidades se mantienen bajas a propósito: el texto que va encima
+       debe conservar su contraste. -->
+  <defs>
+    <radialGradient id="mancha-verde">
+      <stop offset="0" stop-color="#30937b" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#30937b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mancha-oliva">
+      <stop offset="0" stop-color="#6ea03c" stop-opacity=".30"/>
+      <stop offset="1" stop-color="#6ea03c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mancha-azul">
+      <stop offset="0" stop-color="#13779d" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#13779d" stop-opacity="0"/>
+    </radialGradient>
+
+    <symbol id="huella" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <ellipse cx="22" cy="40" rx="10" ry="14" transform="rotate(-22 22 40)"/>
+        <ellipse cx="42" cy="26" rx="10" ry="15" transform="rotate(-8 42 26)"/>
+        <ellipse cx="63" cy="27" rx="10" ry="15" transform="rotate(10 63 27)"/>
+        <ellipse cx="82" cy="43" rx="10" ry="14" transform="rotate(25 82 43)"/>
+        <path d="M52 48c17 0 30 12 30 25 0 12-10 19-21 19-4 0-6-1.5-9-1.5s-5 1.5-9 1.5c-11 0-21-7-21-19 0-13 13-25 30-25z"/>
+      </g>
+    </symbol>
+
+    <!-- Partícula de alérgeno / polen -->
+    <symbol id="polen" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+        <circle cx="50" cy="50" r="24"/>
+        <path d="M74 50h9M70.8 62l7.8 4.5M62 70.8l4.5 7.8M50 74v9M38 70.8l-4.5 7.8M29.2 62l-7.8 4.5M26 50h-9M29.2 38l-7.8-4.5M38 29.2l-4.5-7.8M50 26v-9M62 29.2l4.5-7.8M70.8 38l7.8-4.5"/>
+      </g>
+      <g fill="currentColor">
+        <circle cx="88" cy="50" r="3.4"/><circle cx="82.9" cy="69" r="3.4"/><circle cx="69" cy="82.9" r="3.4"/>
+        <circle cx="50" cy="88" r="3.4"/><circle cx="31" cy="82.9" r="3.4"/><circle cx="17.1" cy="69" r="3.4"/>
+        <circle cx="12" cy="50" r="3.4"/><circle cx="17.1" cy="31" r="3.4"/><circle cx="31" cy="17.1" r="3.4"/>
+        <circle cx="50" cy="12" r="3.4"/><circle cx="69" cy="17.1" r="3.4"/><circle cx="82.9" cy="31" r="3.4"/>
+      </g>
+    </symbol>
+
+    <symbol id="celulas" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="3">
+        <circle cx="34" cy="40" r="20"/><circle cx="68" cy="33" r="15"/><circle cx="53" cy="70" r="17"/>
+      </g>
+      <g fill="currentColor">
+        <circle cx="34" cy="40" r="6.5"/><circle cx="68" cy="33" r="5"/><circle cx="53" cy="70" r="5.5"/>
+      </g>
+    </symbol>
+
+    <!-- Folículo piloso en corte: el motivo dermatológico -->
+    <symbol id="foliculo" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M50 6V58" stroke-width="5"/>
+        <path d="M32 22c0-8 8-14 18-14s18 6 18 14v34c0 14-8 26-18 26s-18-12-18-26z" stroke-width="3.5"/>
+        <circle cx="50" cy="67" r="11" stroke-width="3.5"/>
+      </g>
+    </symbol>
+
+    <symbol id="estetoscopio" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+        <path d="M22 12v26c0 14 10 22 22 22s22-8 22-22V12"/>
+        <path d="M44 60v10c0 10 8 18 18 18s18-8 18-18v-8"/>
+        <circle cx="80" cy="54" r="9"/>
+      </g>
+      <g fill="currentColor"><circle cx="22" cy="10" r="4.5"/><circle cx="66" cy="10" r="4.5"/></g>
+    </symbol>
+  </defs>
+
+  <!-- Manchas suaves de color -->
+  <circle cx="1230" cy="110" r="430" fill="url(#mancha-verde)"/>
+  <circle cx="90"   cy="760" r="400" fill="url(#mancha-oliva)"/>
+  <circle cx="1340" cy="820" r="360" fill="url(#mancha-azul)"/>
+  <circle cx="330"  cy="-60" r="300" fill="url(#mancha-verde)"/>
+
+  <!-- Banda superior -->
+  <use href="#huella"       x="40"   y="26"  width="118" height="118" color="#30937b" opacity=".17" transform="rotate(-14 99 85)"/>
+  <use href="#polen"        x="250"  y="46"  width="86"  height="86"  color="#287c68" opacity=".16"/>
+  <use href="#polen"        x="600"  y="20"  width="62"  height="62"  color="#6ea03c" opacity=".15"/>
+  <use href="#foliculo"     x="1000" y="70"  width="110" height="110" color="#13779d" opacity=".15"/>
+  <use href="#celulas"      x="1120" y="24"  width="140" height="140" color="#30937b" opacity=".18"/>
+  <use href="#polen"        x="1244" y="180" width="96"  height="96"  color="#287c68" opacity=".17"/>
+  <use href="#estetoscopio" x="1160" y="320" width="156" height="156" color="#30937b" opacity=".14" transform="rotate(12 1238 398)"/>
+
+  <!-- Márgenes laterales, a la altura de las tarjetas -->
+  <use href="#huella"   x="28"   y="404" width="102" height="102" color="#6ea03c" opacity=".16" transform="rotate(18 79 455)"/>
+  <use href="#polen"    x="62"   y="556" width="110" height="110" color="#30937b" opacity=".18"/>
+  <use href="#foliculo" x="186"  y="626" width="80"  height="80"  color="#13779d" opacity=".13"/>
+  <use href="#celulas"  x="1252" y="504" width="132" height="132" color="#287c68" opacity=".17"/>
+  <use href="#foliculo" x="1276" y="688" width="104" height="104" color="#30937b" opacity=".15"/>
+
+  <!-- Banda inferior -->
+  <use href="#huella"  x="116"  y="772" width="130" height="130" color="#30937b" opacity=".17" transform="rotate(-8 181 837)"/>
+  <use href="#polen"   x="392"  y="834" width="82"  height="82"  color="#6ea03c" opacity=".15"/>
+  <use href="#celulas" x="688"  y="808" width="118" height="118" color="#287c68" opacity=".14"/>
+  <use href="#polen"   x="968"  y="842" width="92"  height="92"  color="#13779d" opacity=".16"/>
+  <use href="#huella"  x="1192" y="788" width="112" height="112" color="#30937b" opacity=".17" transform="rotate(22 1248 844)"/>
+</svg>

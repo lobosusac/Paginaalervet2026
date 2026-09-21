@@ -267,6 +267,30 @@ a:hover{color:var(--teal)}
 .section-head p{margin-top:15px;color:var(--muted);font-size:1.08rem}
 .section-head.center{text-align:center}
 
+/* ─── Secciones con fondo decorado ────────────────────────── */
+/* Lavado de color + motivos de la clínica. El SVG va en una capa
+   aparte para que el contenido siempre quede encima de él. */
+.section-deco{
+  position:relative; overflow:hidden;
+  background:linear-gradient(152deg,#dcefe8 0%,#f2faf6 40%,#e4f2ea 100%);
+  border-block:1px solid var(--line);
+}
+.section-deco::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:url("../img/fondo-clinico.svg") center/cover no-repeat;
+}
+.section-deco>.wrap{position:relative}
+/* Sobre el lavado de color el texto pierde contraste, así que en estas
+   secciones se usan los tonos oscuros de la misma paleta:
+   antetítulo 6.3:1 y párrafo 5.6:1 incluso encima de un motivo. */
+.section-deco .section-head p:not(.eyebrow){color:var(--body)}
+.section-deco .section-head .eyebrow{color:var(--teal-darker)}
+/* Las tarjetas se despegan del fondo con un poco más de sombra. */
+.section-deco .card{box-shadow:0 10px 30px -14px rgba(27,82,68,.30)}
+@media (prefers-reduced-motion:no-preference){
+  .section-deco::before{will-change:auto}
+}
+
 /* ─── Tarjetas de servicio ────────────────────────────────── */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:22px}
 .card{
