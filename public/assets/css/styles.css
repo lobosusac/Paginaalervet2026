@@ -311,6 +311,12 @@ a:hover{color:var(--teal)}
   background:radial-gradient(130% 110% at 50% 38%,#ffffff 0%,#f4fbf9 44%,#dfeff0 100%);
 }
 .section-deco.deco-ruta::before{background-image:url("../img/fondo-ruta.svg")}
+
+/* Variante agenda: reloj, libreta, calendario, campana y lápiz. */
+.section-deco.deco-agenda{
+  background:radial-gradient(120% 90% at 50% 34%,#ffffff 0%,#f5fbf9 44%,#e2f0ec 100%);
+}
+.section-deco.deco-agenda::before{background-image:url("../img/fondo-agenda.svg")}
 @media (prefers-reduced-motion:no-preference){
   .section-deco::before{will-change:auto}
 }
