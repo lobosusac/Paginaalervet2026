@@ -457,14 +457,18 @@ function quetzales(n) {
   return 'Q' + n.toLocaleString('es-GT');
 }
 
-/** Precio del servicio elegido. «Ambas» suma los dos. */
-function precioServicio(nombre) {
+/**
+ * Líneas de cobro del servicio elegido. «Ambas» devuelve una por cada
+ * consulta, para que el cliente vea de dónde sale cada monto en lugar
+ * de un total agregado.
+ */
+function lineasServicio(nombre) {
   const precios = CONFIG.serviciosDomicilio;
-  if (!nombre) return null;
+  if (!nombre) return [];
   if (nombre === 'Ambas') {
-    return Object.values(precios).reduce((a, b) => a + b, 0);
+    return Object.entries(precios).map(([etiqueta, monto]) => ({ etiqueta, monto }));
   }
-  return precios[nombre] ?? null;
+  return precios[nombre] ? [{ etiqueta: nombre, monto: precios[nombre] }] : [];
 }
 
 function iniciarCalculadora(raiz) {
@@ -484,7 +488,7 @@ function iniciarCalculadora(raiz) {
   const pintar = () => {
     const km = parseFloat(campo.value.replace(',', '.'));
     const r = calcularTraslado(km);
-    const servicio = selector ? precioServicio(selector.value) : null;
+    const servicios = selector ? lineasServicio(selector.value) : [];
 
     if (!r) {
       salida.hidden = true;
@@ -495,12 +499,13 @@ function iniciarCalculadora(raiz) {
       salida.innerHTML =
         `<p class="calc-cotiza"><b>Nos comunicaremos contigo para darte un precio exacto.</b></p>
          <p class="calc-nota">Tu domicilio está fuera de los tramos publicados, así que lo cotizamos caso por caso.</p>`;
-    } else if (servicio) {
+    } else if (servicios.length) {
+      const total = servicios.reduce((suma, l) => suma + l.monto, r.cobro);
       salida.innerHTML =
         `<div class="calc-desglose">
-           ${fila('Servicio', servicio)}
+           ${servicios.map(l => fila(l.etiqueta, l.monto)).join('')}
            ${fila('Traslado estimado', r.cobro)}
-           ${fila('Total estimado', servicio + r.cobro, 'calc-suma')}
+           ${fila('Total estimado', total, 'calc-suma')}
          </div>
          <p class="calc-nota">Es un estimado. Te confirmamos el total exacto por WhatsApp antes de agendar.</p>`;
     } else {
