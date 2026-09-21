@@ -625,3 +625,50 @@ a:hover{color:var(--teal)}
 }
 .promesa svg{width:21px;height:21px;color:var(--teal);flex-shrink:0;margin-top:2px}
 .promesa b{color:var(--ink)}
+
+/* ─── Calculadora de traslado ─────────────────────────────── */
+.calc{
+  background:var(--teal-wash);border-radius:var(--radius-s);
+  padding:20px 22px;margin-top:16px;
+}
+.calc-label{display:block;font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:6px}
+.calc-ayuda{font-size:.88rem;color:var(--muted);line-height:1.5;margin-bottom:13px}
+.calc-ayuda a{color:var(--teal-dark);font-weight:700}
+.calc-fila{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.calc-campo{position:relative;flex:1;min-width:150px}
+.calc-campo input{
+  font-family:inherit;font-size:1.05rem;font-weight:700;color:var(--ink);
+  padding:13px 52px 13px 15px;border:1.5px solid var(--line);border-radius:var(--radius-s);
+  background:var(--surface);width:100%;
+}
+.calc-campo input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(43,122,114,.18)}
+.calc-campo span{
+  position:absolute;right:15px;top:50%;transform:translateY(-50%);
+  font-size:.9rem;font-weight:700;color:var(--muted);pointer-events:none;
+}
+
+.calc-out{margin-top:16px;font-size:.95rem;line-height:1.55}
+.calc-out[hidden]{display:none}
+.calc-op{color:var(--muted);font-size:.9rem}
+.calc-op b{color:var(--ink);font-variant-numeric:tabular-nums}
+.calc-total{
+  display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  margin-top:11px;padding-top:13px;border-top:1px solid rgba(43,122,114,.28);
+}
+.calc-total span{font-size:.8rem;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--teal-dark)}
+.calc-total b{font-family:Fraunces,serif;font-size:2rem;line-height:1;color:var(--teal-darker)}
+.calc-cotiza{
+  margin-top:13px;padding:13px 16px;background:var(--surface);
+  border-radius:var(--radius-s);border-left:3px solid var(--teal);
+  font-size:.94rem;color:var(--body);
+}
+.calc-nota{margin-top:12px;font-size:.87rem;color:var(--muted);line-height:1.5}
+
+.escalones{width:100%;border-collapse:collapse;margin-top:16px;font-size:.92rem}
+.escalones th,.escalones td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+.escalones th{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:800}
+.escalones td:last-child,.escalones th:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+.escalones tr:last-child td{border-bottom:0}
+.escalones tr.activo td{background:var(--teal-wash);color:var(--teal-darker)}

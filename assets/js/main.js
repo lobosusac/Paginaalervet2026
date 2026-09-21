@@ -10,6 +10,20 @@ const CONFIG = {
   telefono: '3481 9108',              // Número principal
   correo: '',                         // TODO Alervet: falta el correo de contacto
 
+  // Cobro del traslado a domicilio, por tramos de distancia. Se aplica el
+  // primer tramo cuyo tope no se supera; más allá del último se cotiza.
+  //
+  // Aquí NO va la fórmula interna con que se fijaron estos montos: todo lo
+  // que se escriba en este archivo queda a la vista de cualquiera que abra
+  // el código de la página.
+  traslado: {
+    tramos: [
+      { hastaKm: 12.5,  cobro: 100 },
+      { hastaKm: 18.75, cobro: 150 },
+      { hastaKm: 25,    cobro: 200 }
+    ]
+  },
+
   // Dirección del Apps Script que consulta el calendario y guarda las
   // reservas. Es la vía recomendada: corre dentro de la cuenta de Google
   // de la clínica, así que el calendario NO necesita ser público.
@@ -414,6 +428,67 @@ function iniciarReserva() {
   });
 }
 
+
+/* ── Calculadora del traslado a domicilio ───────────────────
+   El cliente escribe cuántos kilómetros hay de la clínica a su
+   casa y ve al instante cuánto costaría el traslado.
+   --------------------------------------------------------- */
+
+/**
+ * Cobro del traslado para una distancia dada.
+ * `cobro` es null cuando la distancia supera el último tramo: ahí
+ * no se publica precio, se cotiza con el cliente.
+ */
+function calcularTraslado(km) {
+  if (!(km > 0)) return null;
+  const tramo = CONFIG.traslado.tramos.find(t => km <= t.hastaKm);
+  return { km, cobro: tramo ? tramo.cobro : null };
+}
+
+/** Q1,100 en lugar de Q1100. */
+function quetzales(n) {
+  return 'Q' + n.toLocaleString('es-GT');
+}
+
+function iniciarCalculadora(raiz) {
+  const campo  = raiz.querySelector('[data-km]');
+  const salida = raiz.querySelector('[data-resultado]');
+  if (!campo || !salida) return;
+
+  const pintar = () => {
+    const km = parseFloat(campo.value.replace(',', '.'));
+    const r = calcularTraslado(km);
+
+    if (!r) {
+      salida.hidden = true;
+      return;
+    }
+
+    salida.innerHTML = r.cobro
+      ? `<p class="calc-total"><span>Traslado estimado</span><b>${quetzales(r.cobro)}</b></p>
+         <p class="calc-nota">A esto se suma el precio del servicio. Es un estimado: te confirmamos el total exacto por WhatsApp antes de agendar.</p>`
+      : `<p class="calc-cotiza"><b>Nos comunicaremos contigo para darte un precio exacto.</b></p>
+         <p class="calc-nota">Tu domicilio está fuera de los tramos publicados, así que lo cotizamos caso por caso.</p>`;
+
+    salida.hidden = false;
+    sincronizar(campo.value);
+  };
+
+  campo.addEventListener('input', pintar);
+  raiz._pintar = pintar;
+}
+
+/** Mantiene iguales las dos calculadoras de la página. */
+function sincronizar(valor) {
+  document.querySelectorAll('[data-km]').forEach(otro => {
+    if (otro.value !== valor) {
+      otro.value = valor;
+      const raiz = otro.closest('[data-calc]');
+      if (raiz && raiz._pintar) raiz._pintar();
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Menú en celular ─────────────────────────────────────── */
@@ -487,6 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
       window.open(waLink(lineas.join('\n')), '_blank', 'noopener');
     });
   });
+
+  /* ── Calculadora del traslado ────────────────────────────── */
+  document.querySelectorAll('[data-calc]').forEach(iniciarCalculadora);
 
   /* ── Disponibilidad y reservas ───────────────────────────── */
   iniciarReserva();

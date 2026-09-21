@@ -88,24 +88,25 @@
             <b>2</b>
             <div>
               <h4>El traslado</h4>
-              <p>Depende de cuántos kilómetros hay entre la clínica, en Plaza Helios sobre el bulevar San Cristóbal, y tu domicilio.</p>
-              <!-- TODO Alervet: faltan los montos de cada tramo. -->
-              <table class="tarifas">
-                <thead>
-                  <tr><th>Distancia desde la clínica</th><th>Traslado</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>Hasta 5 km</td><td class="pendiente">por definir</td></tr>
-                  <tr><td>De 5 a 10 km</td><td class="pendiente">por definir</td></tr>
-                  <tr><td>De 10 a 15 km</td><td class="pendiente">por definir</td></tr>
-                  <tr><td>Más de 15 km</td><td class="pendiente">lo cotizamos contigo</td></tr>
-                </tbody>
-              </table>
+              <p>Depende de la distancia entre la clínica, en Plaza Helios sobre el bulevar San Cristóbal, y tu domicilio. Calcúlalo aquí mismo:</p>
+
+              <div class="calc" data-calc>
+                <label class="calc-label" for="calc-precio">Kilómetros desde la clínica hasta tu domicilio</label>
+                <p class="calc-ayuda">¿No sabes cuántos son? <a href="https://www.google.com/maps/dir/?api=1&amp;origin=Plaza+Helios+Boulevard+San+Crist%C3%B3bal+Guatemala" target="_blank" rel="noopener">Mídelos en Google Maps</a> — ya va puesta la clínica como punto de partida.</p>
+                <div class="calc-fila">
+                  <div class="calc-campo">
+                    <input id="calc-precio" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Ej. 7.5" data-km>
+                    <span>km</span>
+                  </div>
+                </div>
+                <div class="calc-out" data-resultado hidden></div>
+              </div>
+
             </div>
           </div>
         </div>
 
-        <p class="ejemplo"><b>Un ejemplo.</b> Una consulta dermatológica en un domicilio a 7 km de la clínica cuesta Q400 del servicio más el traslado del tramo de 5 a 10 km.</p>
+        <p class="ejemplo"><b>Un ejemplo.</b> Una consulta dermatológica en un domicilio a 7 km de la clínica: Q400 del servicio más Q100 de traslado, <b>Q500 en total</b>.</p>
 
         <p class="promesa">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
@@ -120,7 +121,7 @@
       <div class="section-head">
         <p class="eyebrow">Solicitar visita</p>
         <h2>Cuéntanos lo básico</h2>
-        <p>Con estos datos te escribimos, confirmamos que llegamos a tu zona y te decimos el costo. La dirección exacta y el pago los coordinamos por WhatsApp.</p>
+        <p>Con estos datos te escribimos y confirmamos que llegamos a tu zona. Al indicarnos la distancia, tu solicitud nos llega con el traslado ya calculado. La dirección exacta y el pago los coordinamos por WhatsApp.</p>
       </div>
 
       <div class="panel">
@@ -150,6 +151,30 @@
               <option>Condominio con perímetro cerrado</option>
               <option>Ninguna de las anteriores</option>
             </select>
+          </div>
+
+          <div class="field">
+            <label for="d-visita">¿Qué visita necesitas? <span class="req">*</span></label>
+            <select id="d-visita" name="visita" required>
+              <option value="">Selecciona una opción</option>
+              <option>Consulta dermatológica</option>
+              <option>Prueba de alergias</option>
+              <option>Ambas</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="calc-label" for="d-km">Distancia hasta tu domicilio <span class="req">*</span></label>
+            <p class="calc-ayuda" style="margin-bottom:0">¿No sabes cuántos kilómetros son? <a href="https://www.google.com/maps/dir/?api=1&amp;origin=Plaza+Helios+Boulevard+San+Crist%C3%B3bal+Guatemala" target="_blank" rel="noopener">Mídelos en Google Maps</a> — ya va puesta la clínica como punto de partida.</p>
+            <div class="calc" data-calc style="margin-top:11px">
+              <div class="calc-fila">
+                <div class="calc-campo">
+                  <input id="d-km" name="km" type="number" min="0" step="0.1" inputmode="decimal" placeholder="Ej. 7.5" required data-km>
+                  <span>km</span>
+                </div>
+              </div>
+              <div class="calc-out" data-resultado hidden></div>
+            </div>
           </div>
 
           <div class="field-row">

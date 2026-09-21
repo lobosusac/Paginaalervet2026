@@ -120,6 +120,38 @@ El sitio funciona igual: los bloques de hora dicen «Consultar» en lugar de
 «Disponible», y al reservar la solicitud se envía por WhatsApp con todos los
 datos ya escritos. No se pierde ninguna cita.
 
+## Cobro del traslado a domicilio
+
+La página de servicio a domicilio tiene una calculadora: el cliente escribe
+cuántos kilómetros hay de la clínica a su casa y ve el traslado estimado.
+Los tramos se editan en `CONFIG.traslado.tramos`, dentro de
+`assets/js/main.js`.
+
+| Distancia | Traslado |
+|---|---|
+| Hasta 12.5 km | Q100 |
+| Hasta 18.75 km | Q150 |
+| Hasta 25 km | Q200 |
+| Más de 25 km | Se cotiza con el cliente |
+
+Estos topes salen de la regla interna de la clínica. Los ejemplos originales
+dejaban tres huecos sin cubrir —entre otros, un domicilio a 10 km no caía en
+ningún tramo—, así que se cerraron redondeando hacia arriba al siguiente
+escalón.
+
+### La fórmula interna no va en el código
+
+Todo lo que se escriba en `main.js` queda a la vista de cualquiera que abra
+el código de la página. Por eso el archivo guarda **solo el resultado**
+—kilómetros y monto—, nunca el multiplicador por kilómetro ni el criterio
+con que se fijaron.
+
+Aun así, quien se tome el trabajo puede deducir una proporción a partir de
+los tres topes. Si eso importa, la calculadora puede moverse al Apps Script:
+el navegador manda los kilómetros y recibe el monto, sin que nada del
+criterio salga del servidor. Son unas pocas líneas más en
+`integracion/google-apps-script.gs`.
+
 ## Pendientes antes de publicar
 
 Están marcados en el código como `TODO Alervet`:
@@ -129,9 +161,8 @@ Están marcados en el código como `TODO Alervet`:
       `CONFIG.reservas.endpoint`. Mientras tanto los bloques dicen «Consultar»
       y las reservas salen por WhatsApp
 - [ ] **Decidir el canal de aviso de WhatsApp** (correo, CallMeBot o Cloud API)
-- [ ] **Montos de traslado por tramo de distancia.** La tabla de
-      `servicio-a-domicilio.html#precio` está publicada con «por definir» en
-      los tres primeros tramos (hasta 5 km, 5–10 km, 10–15 km)
+- [ ] **Confirmar los tramos de traslado.** Se cerraron los huecos que traían
+      los ejemplos originales; ver «Cobro del traslado» más abajo
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
 - [x] ~~Foto de portada~~ — `assets/img/portada.webp`
