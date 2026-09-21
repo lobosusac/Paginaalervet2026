@@ -171,7 +171,11 @@ Están marcados en el código como `TODO Alervet`:
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
 - [x] ~~Foto de portada~~ — `assets/img/portada.webp`
-- [ ] Otras fotos: clínica, retrato de la Dra. González, vial de inmunoterapia
+- [x] ~~Retrato de la Dra. González~~ — `assets/img/dra-gonzalez.png`
+- [ ] **Retrato en mayor resolución.** El archivo actual mide 338 × 372 px y
+      el sitio lo muestra a 441 × 551, así que se amplía y pierde nitidez en
+      pantallas modernas. Con el original se ve mucho mejor
+- [ ] Otras fotos: clínica y vial de inmunoterapia
 - [ ] Mapa de Google Business para la sección de ubicación
 - [ ] Verificar el principio activo de «Numelvi» — el sitio actual dice
       «Atinvicitiniv» y hay que confirmar la ortografía correcta
