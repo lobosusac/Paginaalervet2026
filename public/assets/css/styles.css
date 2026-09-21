@@ -11,6 +11,7 @@
   --teal:          #30937b;   /* verde de marca: rellenos y botones   */
   --teal-dark:     #287c68;   /* texto y enlaces        4.65:1        */
   --teal-darker:   #1b5244;   /* títulos sobre claro    8.31:1        */
+  --teal-press:    #24705c;   /* botón en hover                       */
   --teal-wash:     #e6f1ee;
   --verde-oliva:   #6ea03c;   /* solo decoración                      */
   --verde-claro:   #93b742;   /* solo decoración                      */
@@ -119,8 +120,11 @@ a:hover{color:var(--teal)}
 .btn-wa{background:var(--whatsapp);color:#0A2E18;box-shadow:0 6px 18px -6px rgba(37,211,102,.65)}
 .btn-wa:hover{background:var(--whatsapp-dark);color:#fff}
 
-.btn-solid{background:var(--teal);color:#fff}
-.btn-solid:hover{background:var(--teal-dark);color:#fff}
+/* El verde de marca (#30937b) sirve de relleno, pero con una etiqueta
+   blanca encima se queda en 3.76:1 y a 16px en negrita hacen falta 4.5:1.
+   El botón usa el verde oscuro de la misma familia: 5.03:1. */
+.btn-solid{background:var(--teal-dark);color:#fff}
+.btn-solid:hover{background:var(--teal-press);color:#fff}
 
 .btn-ghost{background:transparent;color:var(--teal-dark);border-color:var(--line)}
 .btn-ghost:hover{border-color:var(--teal);background:var(--surface);color:var(--teal-dark)}
@@ -152,7 +156,7 @@ a:hover{color:var(--teal)}
 .site-nav a.btn{margin-left:8px;padding:11px 20px;font-size:.94rem}
 .site-nav a.btn-solid,
 .site-nav a.btn-solid:hover{color:#fff}
-.site-nav a.btn-solid:hover{background:var(--teal-dark)}
+.site-nav a.btn-solid:hover{background:var(--teal-press)}
 
 .menu-toggle{
   display:none;margin-left:auto;background:var(--surface);border:1px solid var(--line);
@@ -284,9 +288,16 @@ a:hover{color:var(--teal)}
    secciones se usan los tonos oscuros de la misma paleta:
    antetítulo 6.3:1 y párrafo 5.6:1 incluso encima de un motivo. */
 .section-deco .section-head p:not(.eyebrow){color:var(--body)}
-.section-deco .section-head .eyebrow{color:var(--teal-darker)}
+.section-deco .eyebrow{color:var(--teal-darker)}
 /* Las tarjetas se despegan del fondo con un poco más de sombra. */
 .section-deco .card{box-shadow:0 10px 30px -14px rgba(27,82,68,.30)}
+
+/* Variante celular: centro claro y color hacia los bordes, para que el
+   texto y la foto caigan sobre la parte más limpia del fondo. */
+.section-deco.deco-celular{
+  background:radial-gradient(125% 95% at 46% 42%,#ffffff 0%,#f3fbf8 40%,#ddeeea 100%);
+}
+.section-deco.deco-celular::before{background-image:url("../img/fondo-celular.svg")}
 @media (prefers-reduced-motion:no-preference){
   .section-deco::before{will-change:auto}
 }
