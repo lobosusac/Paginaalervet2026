@@ -582,3 +582,46 @@ a:hover{color:var(--teal)}
   font-size:.86rem;line-height:1.45;color:var(--muted);
 }
 .card-domicilio a{color:var(--teal-dark);font-weight:700}
+
+/* ─── Desglose del precio a domicilio ─────────────────────── */
+.formula{display:grid;gap:14px;margin-top:22px}
+.formula-parte{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-s);padding:18px 20px;
+}
+.section-alt .formula-parte{background:var(--ground)}
+.formula-parte>b{
+  flex-shrink:0;width:30px;height:30px;border-radius:50%;
+  background:var(--teal-wash);color:var(--teal-dark);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.92rem;font-weight:800;
+}
+.formula-parte h4{margin-bottom:5px}
+.formula-parte p{font-size:.94rem;color:var(--muted);line-height:1.5}
+.formula-parte ul{margin:10px 0 0;padding-left:19px;font-size:.94rem}
+.formula-parte li{margin-bottom:5px}
+.formula-parte li::marker{color:var(--teal)}
+
+.tarifas{width:100%;border-collapse:collapse;margin-top:14px;font-size:.95rem}
+.tarifas th,.tarifas td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+.tarifas th{
+  font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;
+}
+.tarifas td:last-child,.tarifas th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.tarifas tr:last-child td{border-bottom:0}
+.tarifas .pendiente{color:var(--muted);font-style:italic}
+
+.ejemplo{
+  margin-top:18px;padding:16px 19px;border-radius:var(--radius-s);
+  background:var(--teal-wash);font-size:.95rem;line-height:1.55;
+}
+.ejemplo b{color:var(--teal-darker)}
+
+.promesa{
+  margin-top:18px;display:flex;gap:12px;align-items:flex-start;
+  font-size:.96rem;line-height:1.5;
+}
+.promesa svg{width:21px;height:21px;color:var(--teal);flex-shrink:0;margin-top:2px}
+.promesa b{color:var(--ink)}

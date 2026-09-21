@@ -129,10 +129,9 @@ Están marcados en el código como `TODO Alervet`:
       `CONFIG.reservas.endpoint`. Mientras tanto los bloques dicen «Consultar»
       y las reservas salen por WhatsApp
 - [ ] **Decidir el canal de aviso de WhatsApp** (correo, CallMeBot o Cloud API)
-- [ ] **Aclarar el recargo por zona a domicilio.** La página de servicio a
-      domicilio dice que hay «un costo adicional según la zona», pero la de
-      servicios publica Q400 y Q1,100 sin matizar. Hay que decidir si esos
-      precios ya lo incluyen
+- [ ] **Montos de traslado por tramo de distancia.** La tabla de
+      `servicio-a-domicilio.html#precio` está publicada con «por definir» en
+      los tres primeros tramos (hasta 5 km, 5–10 km, 10–15 km)
 - [ ] Correo electrónico de contacto
 - [ ] Logo en alta resolución, de preferencia vectorial (.svg, .ai o .pdf)
 - [x] ~~Foto de portada~~ — `assets/img/portada.webp`
@@ -154,6 +153,10 @@ Están marcados en el código como `TODO Alervet`:
   botón «Ver horarios disponibles» no queda ambiguo, porque la agenda solo
   tiene horarios de clínica. El domicilio se enlaza a su propia página, que
   es donde están la cobertura y las condiciones.
+- **El cobro a domicilio se explica como fórmula, no como advertencia.**
+  «Costo adicional según la zona» le sonaba al cliente a cobro discrecional.
+  Ahora se desglosa en servicio más traslado por tramos de kilómetros, con
+  un ejemplo y la promesa de confirmar el total antes de agendar.
 - **Las tarjetas van en orden de especialidad:** dermatológica, alergias y
   después general. Es lo que distingue a la clínica de una veterinaria
   general.
