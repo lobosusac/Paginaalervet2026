@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 600" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!-- Cuarto fondo decorativo de Alervet, para horario y visita a domicilio.
+       Cuenta el recorrido: de la clínica, a la izquierda, a la casa del
+       paciente, a la derecha, con la ruta punteada entre las dos. Todo en
+       formas planas y suaves; no pretende ser una ilustración realista. -->
+  <defs>
+    <radialGradient id="r-menta">
+      <stop offset="0" stop-color="#30937b" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#30937b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="r-agua">
+      <stop offset="0" stop-color="#13779d" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#13779d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="r-hoja">
+      <stop offset="0" stop-color="#6ea03c" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#6ea03c" stop-opacity="0"/>
+    </radialGradient>
+
+    <symbol id="pin" viewBox="0 0 40 56">
+      <path d="M20 2C10 2 2 10 2 20c0 13 18 34 18 34s18-21 18-34c0-10-8-18-18-18z" fill="currentColor"/>
+      <circle cx="20" cy="20" r="7.5" fill="#ffffff" opacity=".9"/>
+    </symbol>
+
+    <symbol id="clinica" viewBox="0 0 200 250">
+      <g fill="currentColor">
+        <rect x="86" y="6" width="28" height="44" rx="5" opacity=".9"/>
+        <rect x="0" y="54" width="200" height="18" rx="9" opacity=".75"/>
+        <rect x="12" y="72" width="176" height="178" rx="6" opacity=".45"/>
+      </g>
+      <g fill="#ffffff" opacity=".65">
+        <rect x="96" y="16" width="8" height="24" rx="2"/><rect x="88" y="24" width="24" height="8" rx="2"/>
+        <rect x="28" y="96" width="46" height="44" rx="5"/><rect x="126" y="96" width="46" height="44" rx="5"/>
+        <rect x="74" y="160" width="52" height="90" rx="5"/>
+      </g>
+      <g fill="none" stroke="currentColor" stroke-width="2.4" opacity=".6">
+        <path d="M100 160v90M28 96h46v44H28zM126 96h46v44h-46z"/>
+      </g>
+    </symbol>
+
+    <symbol id="casa" viewBox="0 0 220 210">
+      <path d="M6 96L110 12l104 84" fill="none" stroke="currentColor" stroke-width="7"
+            stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+      <rect x="28" y="96" width="164" height="114" rx="5" fill="currentColor" opacity=".45"/>
+      <g fill="#ffffff" opacity=".7">
+        <rect x="94" y="148" width="42" height="62" rx="4"/>
+        <rect x="46" y="118" width="36" height="32" rx="4"/>
+        <rect x="148" y="118" width="36" height="32" rx="4"/>
+      </g>
+    </symbol>
+
+    <symbol id="furgoneta" viewBox="0 0 210 120">
+      <g fill="currentColor">
+        <rect x="6" y="26" width="112" height="54" rx="7" opacity=".5"/>
+        <path d="M118 42h30l26 26v12h-56z" opacity=".5"/>
+      </g>
+      <g fill="#ffffff" opacity=".7"><rect x="122" y="48" width="26" height="18" rx="3"/></g>
+      <g fill="currentColor" opacity=".8"><circle cx="46" cy="88" r="15"/><circle cx="148" cy="88" r="15"/></g>
+      <g fill="#ffffff" opacity=".85"><circle cx="46" cy="88" r="6"/><circle cx="148" cy="88" r="6"/></g>
+    </symbol>
+
+    <symbol id="reloj" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round">
+        <circle cx="60" cy="60" r="50" stroke-width="4"/>
+        <path d="M60 60V30M60 60l22 14" stroke-width="4.5"/>
+        <path d="M60 16v8M60 96v8M16 60h8M96 60h8" stroke-width="3"/>
+      </g>
+    </symbol>
+
+    <symbol id="arbusto" viewBox="0 0 160 110">
+      <g fill="currentColor">
+        <circle cx="42" cy="66" r="40"/><circle cx="92" cy="54" r="46"/><circle cx="130" cy="74" r="32"/>
+        <rect x="0" y="82" width="160" height="28"/>
+      </g>
+    </symbol>
+  </defs>
+
+  <circle cx="70"   cy="120" r="360" fill="url(#r-menta)"/>
+  <circle cx="1340" cy="150" r="380" fill="url(#r-agua)"/>
+  <circle cx="700"  cy="640" r="480" fill="url(#r-hoja)"/>
+
+  <!-- Arcos de fondo -->
+  <g fill="none" stroke="#30937b" stroke-opacity=".13" stroke-width="2.5">
+    <circle cx="700" cy="1180" r="900"/>
+    <circle cx="700" cy="1240" r="980"/>
+  </g>
+
+  <!-- La clínica, a la izquierda -->
+  <use href="#clinica" x="-34" y="188" width="210" height="262" color="#13779d" opacity=".34"/>
+  <!-- La casa del paciente y la unidad móvil, a la derecha -->
+  <use href="#casa"       x="1198" y="212" width="228" height="218" color="#30937b" opacity=".32"/>
+  <use href="#furgoneta"  x="1212" y="352" width="196" height="112" color="#13779d" opacity=".34"/>
+  <use href="#reloj"      x="46"   y="34"  width="118" height="118" color="#30937b" opacity=".22"/>
+
+  <!-- La ruta: de la clínica a la casa -->
+  <path d="M132 492C330 566 520 578 700 560s372-58 566-70" fill="none"
+        stroke="#30937b" stroke-opacity=".42" stroke-width="3.4"
+        stroke-linecap="round" stroke-dasharray="3 16"/>
+  <use href="#pin" x="108" y="432" width="46" height="64" color="#30937b" opacity=".55"/>
+  <use href="#pin" x="1248" y="458" width="46" height="64" color="#13779d" opacity=".55"/>
+
+  <!-- Vegetación al pie -->
+  <use href="#arbusto" x="-20"  y="520" width="200" height="140" color="#6ea03c" opacity=".20"/>
+  <use href="#arbusto" x="236"  y="546" width="150" height="104" color="#30937b" opacity=".15"/>
+  <use href="#arbusto" x="560"  y="556" width="176" height="122" color="#6ea03c" opacity=".14"/>
+  <use href="#arbusto" x="924"  y="548" width="158" height="110" color="#30937b" opacity=".15"/>
+  <use href="#arbusto" x="1236" y="518" width="196" height="136" color="#6ea03c" opacity=".20"/>
+</svg>
