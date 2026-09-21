@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!-- Fondo de dermatología: corte de piel con sus capas y folículos,
+       pelos sueltos, lupa y células. Para la consulta dermatológica. -->
+  <defs>
+    <radialGradient id="d-menta"><stop offset="0" stop-color="#30937b" stop-opacity=".26"/><stop offset="1" stop-color="#30937b" stop-opacity="0"/></radialGradient>
+    <radialGradient id="d-hoja"><stop offset="0" stop-color="#6ea03c" stop-opacity=".22"/><stop offset="1" stop-color="#6ea03c" stop-opacity="0"/></radialGradient>
+    <radialGradient id="d-agua"><stop offset="0" stop-color="#13779d" stop-opacity=".22"/><stop offset="1" stop-color="#13779d" stop-opacity="0"/></radialGradient>
+
+    <!-- Corte de piel: epidermis, dermis e hipodermis, con dos folículos -->
+    <symbol id="piel" viewBox="0 0 340 260">
+      <path d="M0 34c28-16 56 12 84 0s56-16 86 0 56 12 86 0 84-6 84-6v54H0z" fill="currentColor" opacity=".42"/>
+      <rect x="0" y="82" width="340" height="86" fill="currentColor" opacity=".26"/>
+      <rect x="0" y="168" width="340" height="92" fill="currentColor" opacity=".16"/>
+      <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" opacity=".85">
+        <path d="M96 2c-6 34-8 68-6 104"/>
+        <path d="M74 44c0-9 8-16 18-16s18 7 18 16v78c0 18-8 30-18 30s-18-12-18-30z"/>
+        <circle cx="92" cy="140" r="13"/>
+        <path d="M244 6c5 32 7 64 5 98"/>
+        <path d="M226 46c0-9 8-16 18-16s18 7 18 16v72c0 17-8 28-18 28s-18-11-18-28z"/>
+        <circle cx="244" cy="134" r="12"/>
+      </g>
+      <g fill="currentColor" opacity=".55">
+        <circle cx="42" cy="118" r="7"/><circle cx="160" cy="106" r="6"/><circle cx="186" cy="140" r="8"/>
+        <circle cx="300" cy="124" r="7"/><circle cx="130" cy="196" r="6"/><circle cx="280" cy="204" r="7"/>
+      </g>
+    </symbol>
+
+    <symbol id="lupa" viewBox="0 0 160 160">
+      <circle cx="66" cy="66" r="52" fill="#ffffff" fill-opacity=".45" stroke="currentColor" stroke-width="8"/>
+      <path d="M104 104l46 46" stroke="currentColor" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M46 62a20 20 0 0120-20" stroke="#ffffff" stroke-opacity=".7" stroke-width="7"
+            stroke-linecap="round" fill="none"/>
+    </symbol>
+
+    <symbol id="pelo" viewBox="0 0 90 200">
+      <path d="M45 4C18 46 72 82 45 124S18 176 45 196" fill="none" stroke="currentColor"
+            stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="celula-d" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="44" fill="#ffffff" fill-opacity=".4" stroke="currentColor" stroke-width="4"/>
+      <circle cx="60" cy="60" r="16" fill="currentColor" opacity=".6"/>
+      <g fill="currentColor" opacity=".45">
+        <circle cx="34" cy="38" r="6"/><circle cx="88" cy="44" r="5"/><circle cx="80" cy="86" r="6"/><circle cx="38" cy="82" r="5"/>
+      </g>
+    </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
+  </defs>
+
+  <g mask="url(#desvanecer)">
+
+  <circle cx="90"   cy="160" r="400" fill="url(#d-menta)"/>
+  <circle cx="1320" cy="120" r="420" fill="url(#d-hoja)"/>
+  <circle cx="1300" cy="880" r="400" fill="url(#d-agua)"/>
+  <circle cx="110"  cy="900" r="360" fill="url(#d-menta)"/>
+
+  <g fill="none" stroke="#30937b" stroke-opacity=".12" stroke-width="2.5">
+    <circle cx="700" cy="1660" r="1240"/><circle cx="700" cy="1760" r="1360"/>
+  </g>
+
+  <!-- El corte de piel cruza por arriba y por abajo -->
+  <use href="#piel" x="-30"  y="34"  width="360" height="276" color="#30937b" opacity=".22" transform="rotate(-6 150 172)"/>
+  <use href="#piel" x="1086" y="680" width="344" height="264" color="#13779d" opacity=".20" transform="rotate(5 1258 812)"/>
+
+  <use href="#lupa"      x="1160" y="96"  width="172" height="172" color="#13779d" opacity=".22"/>
+  <use href="#celula-d"  x="1290" y="290" width="118" height="118" color="#30937b" opacity=".20"/>
+  <use href="#celula-d"  x="1176" y="396" width="86"  height="86"  color="#6ea03c" opacity=".17"/>
+  <use href="#pelo"      x="1300" y="470" width="92"  height="204" color="#30937b" opacity=".18"/>
+  <use href="#pelo"      x="1206" y="530" width="72"  height="160" color="#6ea03c" opacity=".14" transform="rotate(14 1242 610)"/>
+
+  <use href="#celula-d"  x="46"   y="404" width="126" height="126" color="#30937b" opacity=".20"/>
+  <use href="#celula-d"  x="176"  y="530" width="90"  height="90"  color="#13779d" opacity=".16"/>
+  <use href="#pelo"      x="70"   y="604" width="86"  height="192" color="#6ea03c" opacity=".17" transform="rotate(-12 113 700)"/>
+  <use href="#lupa"      x="128"  y="796" width="130" height="130" color="#30937b" opacity=".17"/>
+  </g>
+</svg>

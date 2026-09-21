@@ -73,7 +73,17 @@
         <rect x="0" y="82" width="160" height="28"/>
       </g>
     </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
   </defs>
+
+  <g mask="url(#desvanecer)">
 
   <circle cx="70"   cy="120" r="360" fill="url(#r-menta)"/>
   <circle cx="1340" cy="150" r="380" fill="url(#r-agua)"/>
@@ -105,4 +115,5 @@
   <use href="#arbusto" x="560"  y="556" width="176" height="122" color="#6ea03c" opacity=".14"/>
   <use href="#arbusto" x="924"  y="548" width="158" height="110" color="#30937b" opacity=".15"/>
   <use href="#arbusto" x="1236" y="518" width="196" height="136" color="#6ea03c" opacity=".20"/>
+  </g>
 </svg>

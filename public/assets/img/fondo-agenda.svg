@@ -98,7 +98,17 @@
       <path d="M20 2C10 2 2 10 2 20c0 13 18 34 18 34s18-21 18-34c0-10-8-18-18-18z" fill="currentColor"/>
       <circle cx="20" cy="20" r="7.5" fill="#ffffff" opacity=".9"/>
     </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
   </defs>
+
+  <g mask="url(#desvanecer)">
 
   <circle cx="110"  cy="240"  r="420" fill="url(#a-menta)"/>
   <circle cx="1300" cy="180"  r="440" fill="url(#a-agua)"/>
@@ -130,4 +140,5 @@
         stroke-opacity=".34" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="3 16"/>
   <use href="#pin-a" x="82"   y="1312" width="42" height="58" color="#30937b" opacity=".42"/>
   <use href="#pin-a" x="1272" y="1300" width="42" height="58" color="#13779d" opacity=".42"/>
+  </g>
 </svg>

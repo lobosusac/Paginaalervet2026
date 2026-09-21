@@ -45,7 +45,17 @@
       <circle cx="50" cy="50" r="46" fill="none" stroke="#13779d" stroke-width="1.8" opacity=".35"/>
       <circle cx="35" cy="33" r="11" fill="#ffffff" opacity=".5"/>
     </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
   </defs>
+
+  <g mask="url(#desvanecer)">
 
   <!-- Halos de color -->
   <circle cx="1300" cy="60"  r="420" fill="url(#halo-oliva)"/>
@@ -91,5 +101,6 @@
     <circle cx="1000" cy="250" r="5"/>
     <circle cx="1120" cy="330" r="7"/>
     <circle cx="1390" cy="360" r="6"/>
+  </g>
   </g>
 </svg>

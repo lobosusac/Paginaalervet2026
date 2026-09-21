@@ -67,7 +67,17 @@
       </g>
       <g fill="currentColor"><circle cx="22" cy="10" r="4.5"/><circle cx="66" cy="10" r="4.5"/></g>
     </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
   </defs>
+
+  <g mask="url(#desvanecer)">
 
   <!-- Manchas suaves de color -->
   <circle cx="1230" cy="110" r="430" fill="url(#mancha-verde)"/>
@@ -97,4 +107,5 @@
   <use href="#celulas" x="688"  y="808" width="118" height="118" color="#287c68" opacity=".14"/>
   <use href="#polen"   x="968"  y="842" width="92"  height="92"  color="#13779d" opacity=".16"/>
   <use href="#huella"  x="1192" y="788" width="112" height="112" color="#30937b" opacity=".17" transform="rotate(22 1248 844)"/>
+  </g>
 </svg>

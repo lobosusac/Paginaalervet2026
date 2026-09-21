@@ -282,7 +282,12 @@ a:hover{color:var(--teal)}
 }
 .section-deco::before{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background:url("../img/fondo-clinico.svg") center/cover no-repeat;
+  /* Nada de "cover": en las secciones altas recortaba los lados, que es
+     justo donde van los motivos. Con el ancho fijo al 100% el dibujo se ve
+     entero siempre; si la sección es más alta que el dibujo, arriba y abajo
+     queda solo el lavado de color, sin costuras de repetición. */
+  background-image:url("../img/fondo-clinico.svg");
+  background-size:100% auto; background-position:center; background-repeat:no-repeat;
 }
 .section-deco>.wrap{position:relative}
 /* Sobre el lavado de color el texto pierde contraste, así que en estas
@@ -317,6 +322,18 @@ a:hover{color:var(--teal)}
   background:radial-gradient(120% 90% at 50% 34%,#ffffff 0%,#f5fbf9 44%,#e2f0ec 100%);
 }
 .section-deco.deco-agenda::before{background-image:url("../img/fondo-agenda.svg")}
+
+/* Variante dermatología: corte de piel, folículos, pelos y lupa. */
+.section-deco.deco-derma{
+  background:radial-gradient(122% 96% at 48% 38%,#ffffff 0%,#f5fbf8 42%,#e3f1ea 100%);
+}
+.section-deco.deco-derma::before{background-image:url("../img/fondo-derma.svg")}
+
+/* Variante inmunoterapia: viales, jeringa, anticuerpos y dosis. */
+.section-deco.deco-inmuno{
+  background:radial-gradient(124% 98% at 50% 36%,#ffffff 0%,#f4fafc 42%,#dfeef2 100%);
+}
+.section-deco.deco-inmuno::before{background-image:url("../img/fondo-inmuno.svg")}
 @media (prefers-reduced-motion:no-preference){
   .section-deco::before{will-change:auto}
 }

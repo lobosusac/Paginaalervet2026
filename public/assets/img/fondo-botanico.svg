@@ -73,7 +73,17 @@
         <circle cx="24" cy="12" r="5"/><circle cx="74" cy="12" r="5"/>
       </g>
     </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
   </defs>
+
+  <g mask="url(#desvanecer)">
 
   <!-- Halos -->
   <circle cx="60"   cy="180" r="380" fill="url(#halo-menta)"/>
@@ -107,4 +117,5 @@
   <!-- Línea: huella y estetoscopio, abajo a la izquierda -->
   <use href="#huella-linea" x="46"  y="666" width="112" height="112" color="#30937b" opacity=".26" transform="rotate(-10 102 722)"/>
   <use href="#esteto-linea" x="164" y="640" width="132" height="132" color="#13779d" opacity=".20"/>
+  </g>
 </svg>

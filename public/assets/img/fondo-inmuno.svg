@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <!-- Fondo de inmunoterapia: viales, jeringa, anticuerpos en Y, células de
+       defensa y la escalera de dosis que sube poco a poco. -->
+  <defs>
+    <radialGradient id="i-menta"><stop offset="0" stop-color="#30937b" stop-opacity=".26"/><stop offset="1" stop-color="#30937b" stop-opacity="0"/></radialGradient>
+    <radialGradient id="i-agua"><stop offset="0" stop-color="#13779d" stop-opacity=".24"/><stop offset="1" stop-color="#13779d" stop-opacity="0"/></radialGradient>
+    <radialGradient id="i-hoja"><stop offset="0" stop-color="#6ea03c" stop-opacity=".20"/><stop offset="1" stop-color="#6ea03c" stop-opacity="0"/></radialGradient>
+
+    <symbol id="vial" viewBox="0 0 90 210">
+      <rect x="22" y="4" width="46" height="26" rx="6" fill="currentColor" opacity=".6"/>
+      <rect x="28" y="28" width="34" height="14" rx="3" fill="currentColor" opacity=".4"/>
+      <path d="M18 42h54v140a18 18 0 01-18 18H36a18 18 0 01-18-18z" fill="#ffffff" fill-opacity=".45"
+            stroke="currentColor" stroke-width="5"/>
+      <path d="M18 116h54v66a18 18 0 01-18 18H36a18 18 0 01-18-18z" fill="currentColor" opacity=".3"/>
+      <path d="M28 132v44M40 148v28" stroke="#ffffff" stroke-opacity=".5" stroke-width="4"
+            stroke-linecap="round" fill="none"/>
+    </symbol>
+
+    <symbol id="jeringa" viewBox="0 0 260 90">
+      <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round">
+        <path d="M6 45h34"/>
+        <rect x="40" y="26" width="18" height="38" rx="4"/>
+        <rect x="58" y="18" width="126" height="54" rx="7" fill="#ffffff" fill-opacity=".45"/>
+        <path d="M184 45h30M214 30v30"/>
+        <path d="M92 26v38M112 26v38M132 26v38"/>
+      </g>
+      <rect x="58" y="18" width="46" height="54" rx="7" fill="currentColor" opacity=".32"/>
+    </symbol>
+
+    <!-- Anticuerpo: la Y que reconoce al alérgeno -->
+    <symbol id="anticuerpo" viewBox="0 0 120 130">
+      <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 124V66"/><path d="M60 66L22 18"/><path d="M60 66l38-48"/>
+      </g>
+      <g fill="currentColor"><circle cx="22" cy="14" r="10"/><circle cx="98" cy="14" r="10"/></g>
+    </symbol>
+
+    <symbol id="defensa" viewBox="0 0 130 130">
+      <circle cx="65" cy="65" r="42" fill="#ffffff" fill-opacity=".42" stroke="currentColor" stroke-width="5"/>
+      <path d="M65 40c-8 8-14 12-20 14 0 20 8 30 20 36 12-6 20-16 20-36-6-2-12-6-20-14z"
+            fill="currentColor" opacity=".5"/>
+      <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".7">
+        <path d="M65 23v-12M65 107v12M107 65h12M23 65H11M95 35l9-9M35 95l-9 9M95 95l9 9M35 35l-9-9"/>
+      </g>
+    </symbol>
+
+    <!-- Dosis pequeñas y repetidas, que van subiendo -->
+    <symbol id="dosis" viewBox="0 0 220 140">
+      <g fill="currentColor">
+        <rect x="6"   y="104" width="30" height="34" rx="6" opacity=".35"/>
+        <rect x="52"  y="82"  width="30" height="56" rx="6" opacity=".45"/>
+        <rect x="98"  y="58"  width="30" height="80" rx="6" opacity=".55"/>
+        <rect x="144" y="32"  width="30" height="106" rx="6" opacity=".65"/>
+        <rect x="190" y="8"   width="26" height="130" rx="6" opacity=".75"/>
+      </g>
+    </symbol>
+  
+    <!-- Desvanece el dibujo arriba y abajo para que no quede un borde duro
+         donde termina, cuando la sección es más alta que el lienzo. -->
+    <linearGradient id="fundido" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/><stop offset=".09" stop-color="#ffffff"/>
+      <stop offset=".91" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="desvanecer"><rect x="-200" y="0" width="2000" height="100%" fill="url(#fundido)"/></mask>
+  </defs>
+
+  <g mask="url(#desvanecer)">
+
+  <circle cx="1320" cy="130" r="430" fill="url(#i-agua)"/>
+  <circle cx="90"   cy="200" r="400" fill="url(#i-menta)"/>
+  <circle cx="120"  cy="880" r="380" fill="url(#i-hoja)"/>
+  <circle cx="1300" cy="900" r="400" fill="url(#i-menta)"/>
+
+  <g fill="none" stroke="#13779d" stroke-opacity=".11" stroke-width="2.5">
+    <circle cx="700" cy="1680" r="1260"/><circle cx="700" cy="1790" r="1390"/>
+  </g>
+
+  <!-- Izquierda: viales y anticuerpos -->
+  <use href="#vial"       x="56"  y="86"  width="100" height="234" color="#30937b" opacity=".24"/>
+  <use href="#vial"       x="168" y="152" width="74"  height="172" color="#13779d" opacity=".18" transform="rotate(8 205 238)"/>
+  <use href="#anticuerpo" x="196" y="400" width="106" height="116" color="#6ea03c" opacity=".22" transform="rotate(-18 249 458)"/>
+  <use href="#anticuerpo" x="72"  y="470" width="84"  height="92"  color="#30937b" opacity=".19" transform="rotate(12 114 516)"/>
+  <use href="#defensa"    x="86"  y="640" width="128" height="128" color="#13779d" opacity=".20"/>
+  <use href="#dosis"      x="52"  y="824" width="224" height="142" color="#30937b" opacity=".22"/>
+
+  <!-- Derecha: jeringa, anticuerpos y defensas -->
+  <use href="#jeringa"    x="1140" y="104" width="268" height="94"  color="#13779d" opacity=".24" transform="rotate(-16 1274 151)"/>
+  <use href="#anticuerpo" x="1288" y="266" width="112" height="122" color="#30937b" opacity=".22"/>
+  <use href="#defensa"    x="1166" y="350" width="112" height="112" color="#6ea03c" opacity=".19"/>
+  <use href="#anticuerpo" x="1216" y="502" width="88"  height="96"  color="#13779d" opacity=".18" transform="rotate(22 1260 550)"/>
+  <use href="#vial"       x="1306" y="560" width="88"  height="206" color="#30937b" opacity=".20"/>
+  <use href="#defensa"    x="1192" y="708" width="96"  height="96"  color="#30937b" opacity=".17"/>
+  </g>
+</svg>
