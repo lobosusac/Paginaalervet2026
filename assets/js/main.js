@@ -36,7 +36,7 @@ const CONFIG = {
   // de la clínica, así que el calendario NO necesita ser público.
   // Ver integracion/google-apps-script.gs y el README.
   reservas: {
-    endpoint: ''                      // TODO Alervet: URL de la app web de Apps Script
+    endpoint: 'https://script.google.com/macros/s/AKfycbzj9OhlESf9KHK1z-JoudWXhbpxcYs0bTZ798lFnfoga5pCATHB1pRmmqeIn-dE5a-o0w/exec'
   },
 
   // Alternativa sin Apps Script: leer un calendario público con una clave

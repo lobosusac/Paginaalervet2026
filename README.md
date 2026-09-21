@@ -169,9 +169,9 @@ criterio salga del servidor. Son unas pocas líneas más en
 Están marcados en el código como `TODO Alervet`:
 
 - [ ] Confirmar la dirección exacta de la clínica
-- [ ] **Instalar el Apps Script** (ver la sección anterior) y pegar su URL en
-      `CONFIG.reservas.endpoint`. Mientras tanto los bloques dicen «Consultar»
-      y las reservas salen por WhatsApp
+- [x] ~~Instalar el Apps Script~~ — conectado en `CONFIG.reservas.endpoint`
+- [ ] **Probar la reserva de extremo a extremo** desde el navegador: que el
+      evento entre al calendario y llegue el correo de aviso
 - [ ] **Decidir el canal de aviso de WhatsApp** (correo, CallMeBot o Cloud API)
 - [ ] **Confirmar los tramos de traslado.** Se cerraron los huecos que traían
       los ejemplos originales; ver «Cobro del traslado» más abajo
