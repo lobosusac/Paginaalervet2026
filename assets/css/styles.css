@@ -691,3 +691,10 @@ a:hover{color:var(--teal)}
   background:var(--surface);
 }
 .calc select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(43,122,114,.18)}
+
+/* Respaldo cuando el navegador bloquea la ventana de WhatsApp */
+.wa-manual{
+  margin-top:18px;padding:18px 20px;border-radius:var(--radius-s);
+  background:var(--teal-wash);border-left:3px solid var(--whatsapp);
+}
+.wa-manual p{font-size:.93rem;color:var(--body);margin-bottom:13px}

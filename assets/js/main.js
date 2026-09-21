@@ -56,6 +56,50 @@ const CONFIG = {
 
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
+
+/**
+ * Abre WhatsApp con el mensaje ya escrito.
+ *
+ * Algunos navegadores —y cualquier página incrustada en un iframe, como
+ * una vista previa— bloquean window.open y devuelven null. En ese caso no
+ * se pierde la solicitud: se muestra un enlace para que la persona lo
+ * pulse ella misma, que es un clic directo y nunca se bloquea.
+ */
+function abrirWhatsApp(url, referencia) {
+  let ventana = null;
+  try {
+    ventana = window.open(url, '_blank', 'noopener');
+  } catch (e) {
+    ventana = null;
+  }
+  if (ventana) return true;
+
+  mostrarEnlaceManual(url, referencia);
+  return false;
+}
+
+/** Deja a la vista un enlace pulsable cuando la ventana fue bloqueada. */
+function mostrarEnlaceManual(url, referencia) {
+  const ancla = referencia || document.body;
+  let caja = ancla.querySelector?.('.wa-manual')
+    || (ancla.nextElementSibling?.classList?.contains('wa-manual') ? ancla.nextElementSibling : null);
+
+  if (!caja) {
+    caja = document.createElement('div');
+    caja.className = 'wa-manual';
+    ancla.insertAdjacentElement('afterend', caja);
+  }
+
+  caja.innerHTML =
+    `<p>Tu navegador bloqueó la ventana de WhatsApp. Pulsa aquí para abrirla:</p>
+     <a class="btn btn-wa" target="_blank" rel="noopener">
+       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2z"/></svg>
+       Abrir WhatsApp con tu solicitud
+     </a>`;
+  caja.querySelector('a').href = url;
+  caja.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
 /** Arma un enlace de WhatsApp con un mensaje ya escrito. */
 function waLink(mensaje) {
   return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
@@ -410,7 +454,7 @@ function iniciarReserva() {
         }
       } else {
         // Sin servidor configurado: la solicitud viaja por WhatsApp.
-        window.open(waLink(resumenReserva(datos, fecha, hora)), '_blank', 'noopener');
+        abrirWhatsApp(waLink(resumenReserva(datos, fecha, hora)), form);
       }
 
       // Confirmación
@@ -604,7 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lineas.push(`${label}: ${texto}`);
       }
 
-      window.open(waLink(lineas.join('\n')), '_blank', 'noopener');
+      abrirWhatsApp(waLink(lineas.join('\n')), form);
     });
   });
 
