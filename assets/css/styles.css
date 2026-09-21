@@ -329,6 +329,9 @@ a:hover{color:var(--teal)}
   position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;object-position:center 28%;
 }
+/* Para imágenes cuadradas, como la del vial. */
+.story-photo.cuadrada{aspect-ratio:1/1}
+.story-photo.cuadrada>img{object-position:center}
 .quote{
   font-family:Fraunces,serif;font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.35;
   color:var(--ink);font-style:italic;margin:0 0 24px;

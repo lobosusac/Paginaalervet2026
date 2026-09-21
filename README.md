@@ -20,6 +20,9 @@ nosotros.html               Historia y formación de la Dra. González
 assets/css/styles.css       Toda la hoja de estilos (paleta y tipografía arriba del archivo)
 assets/js/main.js           Menú, indicador de horario y enlaces de WhatsApp
 assets/img/                 Imágenes
+                            inmunoterapia-pieza-completa.webp es la pieza
+                            gráfica original, con titular y botón. No se usa
+                            en el sitio; se guarda para redes sociales
 ```
 
 ## Verlo en tu computadora
@@ -175,7 +178,8 @@ Están marcados en el código como `TODO Alervet`:
 - [ ] **Retrato en mayor resolución.** El archivo actual mide 338 × 372 px y
       el sitio lo muestra a 441 × 551, así que se amplía y pierde nitidez en
       pantallas modernas. Con el original se ve mucho mejor
-- [ ] Otras fotos: clínica y vial de inmunoterapia
+- [x] ~~Vial de inmunoterapia~~ — `assets/img/inmunoterapia.webp`
+- [ ] Foto de la clínica, para la sección de ubicación
 - [ ] Mapa de Google Business para la sección de ubicación
 - [ ] Verificar el principio activo de «Numelvi» — el sitio actual dice
       «Atinvicitiniv» y hay que confirmar la ortografía correcta
