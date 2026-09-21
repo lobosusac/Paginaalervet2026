@@ -168,16 +168,28 @@ a:hover{color:var(--teal)}
 .hero-foto{
   position:relative;min-height:clamp(430px,56vw,620px);
   display:flex;align-items:center;
-  background:#15452F;
   overflow:hidden;
+  /* Color de respaldo, tomado del borde izquierdo de la foto. */
+  background:linear-gradient(180deg,#083433 0%,#042c28 58%,#001a16 100%);
+}
+/* Rellena lo que sobra a la izquierda estirando la franja izquierda de la
+   propia foto, que es fondo liso. Un degradado plano dejaba una línea
+   visible, porque el fondo de la imagen tiene viñeta; y una copia con
+   «cover» tomaba los tonos más claros del centro. Estirando el borde, el
+   color continúa exactamente donde empieza la imagen. */
+.hero-foto::before{
+  content:"";position:absolute;inset:0;z-index:0;
+  background:url("../img/portada.webp") left center / 700% 100% no-repeat;
+  filter:blur(6px);
 }
 .hero-foto>img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  object-position:72% 22%;
+  position:absolute;inset:0;width:100%;height:100%;z-index:1;
+  /* «contain» en vez de «cover»: la mascota se ve entera, sin recortes. */
+  object-fit:contain;object-position:right center;
 }
 /* Velo para que la tarjeta no compita con la foto. */
 .hero-foto::after{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(90deg,rgba(10,32,30,.22) 0%,rgba(10,32,30,.06) 50%,transparent 78%);
 }
 .hero-foto>.wrap{position:relative;z-index:2;width:100%}
@@ -205,8 +217,10 @@ a:hover{color:var(--teal)}
     min-height:0;flex-direction:column;align-items:stretch;
     padding-top:clamp(190px,44vw,290px);
   }
-  .hero-foto::after{background:linear-gradient(180deg,rgba(10,32,30,.22) 0%,transparent 45%)}
-  .hero-foto>img{height:clamp(200px,48vw,310px);bottom:auto}
+  .hero-foto::after{background:linear-gradient(180deg,rgba(10,32,30,.18) 0%,transparent 40%)}
+  /* En celular la foto es una banda propia, a su tamaño real. */
+  .hero-foto{padding-top:0}
+  .hero-foto>img{position:relative;inset:auto;height:auto;width:100%}
   .hero-card{max-width:none;border-radius:var(--radius) var(--radius) 0 0}
   .hero-foto>.wrap{padding-left:0;padding-right:0}
   .hero-card{margin:0 12px;border-radius:var(--radius)}
