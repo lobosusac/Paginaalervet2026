@@ -42,10 +42,10 @@ function doGet(e) {
     const accion = (e.parameter.accion || '').trim();
     if (accion !== 'disponibilidad') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
-    const fecha = parsearFecha(e.parameter.fecha);
-    if (!fecha) return responder({ ok: false, mensaje: 'Fecha no válida.' });
+    const fecha = (e.parameter.fecha || '').trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return responder({ ok: false, mensaje: 'Fecha no válida.' });
 
-    return responder({ ok: true, fecha: e.parameter.fecha, ocupadas: horasOcupadas(fecha) });
+    return responder({ ok: true, fecha: fecha, ocupadas: horasOcupadas(fecha) });
   } catch (err) {
     return responder({ ok: false, mensaje: String(err) });
   }
@@ -121,25 +121,35 @@ function calendario() {
     : CalendarApp.getDefaultCalendar();
 }
 
-/** "2026-09-22" → Date a medianoche local. Devuelve null si no calza. */
-function parsearFecha(texto) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(texto || '')) return null;
-  const [a, m, d] = texto.split('-').map(Number);
-  const f = new Date(a, m - 1, d);
-  return isNaN(f) ? null : f;
+/**
+ * Zona horaria de la clínica. Se toma del calendario, NO de la
+ * configuración del proyecto de Apps Script.
+ *
+ * Si esas dos no coinciden, las horas salen corridas: un evento de las
+ * 12:00 en Guatemala se reporta como las 18:00 si el proyecto quedó en
+ * UTC, y como el sitio solo muestra de 8 a 16, ese bloque aparece libre.
+ */
+function zona() {
+  return calendario().getTimeZone();
 }
 
-/** Horas (0–23) que toca algún evento ese día. */
-function horasOcupadas(fecha) {
-  const desde = new Date(fecha); desde.setHours(0, 0, 0, 0);
-  const hasta = new Date(fecha); hasta.setHours(23, 59, 59, 999);
+/** Instante exacto en que empieza ese día en la clínica. */
+function inicioDelDia(fecha) {
+  return Utilities.parseDate(fecha + ' 00:00:00', zona(), 'yyyy-MM-dd HH:mm:ss');
+}
 
+/** Horas (0–23) que toca algún evento ese día, en hora de la clínica. */
+function horasOcupadas(fecha) {
+  const HORA = 3600 * 1000;
+  const arranque = inicioDelDia(fecha);
+  const cierre = new Date(arranque.getTime() + 24 * HORA);
+
+  const eventos = calendario().getEvents(arranque, cierre);
   const ocupadas = [];
-  const eventos = calendario().getEvents(desde, hasta);
 
   for (let h = 0; h < 24; h++) {
-    const a = new Date(fecha); a.setHours(h, 0, 0, 0);
-    const b = new Date(fecha); b.setHours(h + 1, 0, 0, 0);
+    const a = new Date(arranque.getTime() + h * HORA);
+    const b = new Date(a.getTime() + HORA);
 
     const chocan = eventos.some(function (ev) {
       if (ev.isAllDayEvent()) return true;
@@ -148,6 +158,37 @@ function horasOcupadas(fecha) {
     if (chocan) ocupadas.push(h);
   }
   return ocupadas;
+}
+
+/**
+ * Revisión. Se ejecuta desde el editor, con el botón Ejecutar, y el
+ * resultado sale en el registro (Ver → Registro de ejecución).
+ * Dice qué calendario está leyendo, en qué zona, y qué eventos ve hoy.
+ */
+function diagnostico() {
+  const hoy = Utilities.formatDate(new Date(), zona(), 'yyyy-MM-dd');
+
+  Logger.log('Calendario que lee:  ' + calendario().getName());
+  Logger.log('Zona del calendario: ' + zona());
+  Logger.log('Zona del proyecto:   ' + Session.getScriptTimeZone());
+  Logger.log('');
+  Logger.log('Eventos de hoy (' + hoy + '):');
+
+  const arranque = inicioDelDia(hoy);
+  const eventos = calendario().getEvents(arranque, new Date(arranque.getTime() + 86400000));
+
+  if (!eventos.length) {
+    Logger.log('  (ninguno — si sí tenés citas hoy, el script está leyendo OTRO calendario)');
+  } else {
+    eventos.forEach(function (ev) {
+      Logger.log('  · ' + Utilities.formatDate(ev.getStartTime(), zona(), 'HH:mm')
+        + '–' + Utilities.formatDate(ev.getEndTime(), zona(), 'HH:mm')
+        + '   ' + ev.getTitle());
+    });
+  }
+
+  Logger.log('');
+  Logger.log('Horas que el sitio marcará ocupadas: ' + JSON.stringify(horasOcupadas(hoy)));
 }
 
 /** Avisa a la clínica por correo y, si está configurado, por WhatsApp. */
