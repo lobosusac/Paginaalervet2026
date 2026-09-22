@@ -8,7 +8,7 @@
 const CONFIG = {
   whatsapp: '50234819108',            // Con código de país (502) y sin espacios
   telefono: '3481 9108',              // Número principal
-  correo: '',                         // TODO Alervet: falta el correo de contacto
+  correo: 'info@alervet.com',
 
   // Cobro del traslado a domicilio, por tramos de distancia. Se aplica el
   // primer tramo cuyo tope no se supera; más allá del último se cotiza.
