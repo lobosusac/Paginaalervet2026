@@ -745,6 +745,23 @@ document.addEventListener('DOMContentLoaded', () => {
   iniciarReserva();
   document.querySelectorAll('[data-agenda]').forEach(iniciarAgenda);
 
+  /* ── Video de la doctora ─────────────────────────────────── */
+  /* La miniatura es un botón. El archivo pesa 14 MB, así que no se
+     descarga nada hasta que la persona decide verlo. */
+  document.querySelectorAll('.video-play').forEach(boton => {
+    boton.addEventListener('click', () => {
+      const video = document.createElement('video');
+      video.src = boton.dataset.video;
+      video.controls = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.setAttribute('width', '1080');
+      video.setAttribute('height', '1780');
+      boton.replaceWith(video);
+      video.focus();
+    });
+  });
+
   /* ── Año en el pie ───────────────────────────────────────── */
   document.querySelectorAll('[data-year]').forEach(el => {
     el.textContent = new Date().getFullYear();
