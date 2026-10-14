@@ -650,9 +650,29 @@ a:hover{color:var(--teal)}
 .slot .hora{font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:1.12rem;color:var(--ink);font-variant-numeric:tabular-nums}
 .slot .estado{font-size:.79rem;font-weight:700;letter-spacing:.02em}
 
-.slot.libre{border-color:var(--teal)}
+.slot.libre{border-color:var(--teal);animation:latido 2.6s ease-in-out infinite}
 .slot.libre .estado{color:var(--teal-dark)}
-.slot.libre:hover{background:var(--teal-wash);transform:translateY(-2px)}
+.slot.libre:hover{background:var(--teal-wash);transform:translateY(-2px);animation:none}
+
+/* Los bloques libres respiran para que la vista vaya a ellos. No es un
+   parpadeo: el texto nunca cambia de opacidad, solo el halo alrededor.
+   Un destello rápido molesta, cansa y puede afectar a quien tiene
+   fotosensibilidad; WCAG pide no pasar de tres destellos por segundo. */
+@keyframes latido{
+  0%,100%{box-shadow:0 0 0 0 rgba(48,147,123,.55);border-color:var(--teal);
+          background:var(--surface)}
+  50%    {box-shadow:0 0 0 9px rgba(48,147,123,0); border-color:var(--teal-dark);
+          background:#f2faf7}
+}
+/* Entran escalonados, así no laten todos al mismo tiempo. */
+.slot.libre:nth-of-type(3n+2){animation-delay:.45s}
+.slot.libre:nth-of-type(3n+3){animation-delay:.9s}
+
+/* Quien pidió menos movimiento en su sistema no ve la animación: el
+   borde queda fijo y el bloque se distingue igual. */
+@media (prefers-reduced-motion:reduce){
+  .slot.libre{animation:none;box-shadow:0 0 0 3px rgba(48,147,123,.22)}
+}
 
 .slot.consultar .estado{color:var(--muted)}
 .slot.consultar:hover{border-color:var(--teal);transform:translateY(-2px)}
