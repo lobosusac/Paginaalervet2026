@@ -392,11 +392,29 @@
       <div class="section-head center">
         <p class="eyebrow">Agendar</p>
         <h2>Agendar te toma un minuto</h2>
-        <p>Escríbenos con el nombre de tu mascota y qué le está pasando. Te confirmamos día y hora el mismo día.</p>
+        <p>Este formulario es para <b>atención en la clínica</b>. Escríbenos con el nombre de tu mascota y qué le está pasando. Te confirmamos día y hora el mismo día.</p>
+      </div>
+
+      <!-- Bifurcación: va ANTES del formulario a propósito. Quien quiere visita
+           a domicilio tiene que verla antes de empezar a llenar campos. -->
+      <div class="bifurca">
+        <div class="bifurca-op activa">
+          <span class="bifurca-tag">Estás aquí</span>
+          <b>En la clínica</b>
+          <p>Llevas a tu mascota a Plaza Helios. Agendas con el formulario de abajo.</p>
+        </div>
+        <a class="bifurca-op" href="servicio-a-domicilio.html">
+          <span class="bifurca-tag">¿La quieres en tu casa?</span>
+          <b>A domicilio</b>
+          <p>Vamos nosotros. Primero revisa cobertura y costo del viaje según tu zona.</p>
+          <span class="bifurca-mas">Ver visitas a domicilio
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.2 5.6 20 12l-6.8 6.4-1.4-1.5 4.1-3.9H4v-2h11.9l-4.1-3.9z"/></svg>
+          </span>
+        </a>
       </div>
 
       <div class="panel">
-        <form class="form" data-wa-form="Hola, quiero agendar una cita:">
+        <form class="form" data-wa-form="Hola, quiero agendar una cita en la clínica:">
           <div class="field-row">
             <div class="field">
               <label for="c-nombre">Tu nombre <span class="req">*</span></label>

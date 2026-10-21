@@ -494,6 +494,39 @@ a:hover{color:var(--teal)}
 .req{color:var(--rojo)}
 .form-note{font-size:.88rem;color:var(--muted);margin-top:4px}
 
+/* ─── Bifurcación clínica / domicilio ─────────────────────── */
+.bifurca{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+@media (max-width:700px){.bifurca{grid-template-columns:1fr}}
+.bifurca-op{
+  display:flex;flex-direction:column;gap:5px;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:19px 21px;text-decoration:none;
+}
+.bifurca-op b{
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;
+  font-size:1.14rem;color:var(--ink);
+}
+.bifurca-op p{font-size:.93rem;color:var(--body);margin:0}
+.bifurca-tag{
+  font-size:.74rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);
+}
+.bifurca-op.activa{
+  background:var(--teal-wash);border-color:var(--teal);
+}
+.bifurca-op.activa .bifurca-tag{color:var(--teal-darker)}
+a.bifurca-op{transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+a.bifurca-op:hover{
+  border-color:var(--teal);transform:translateY(-2px);
+  box-shadow:0 10px 26px -16px rgba(27,82,68,.45);
+}
+.bifurca-mas{
+  display:inline-flex;align-items:center;gap:7px;margin-top:8px;
+  font-weight:800;font-size:.94rem;color:var(--teal-dark);
+}
+.bifurca-mas svg{width:17px;height:17px}
+a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
+
 /* ─── Ubicación ───────────────────────────────────────────── */
 .place{display:grid;grid-template-columns:1fr 1.25fr;gap:26px;align-items:start}
 @media (max-width:820px){.place{grid-template-columns:1fr}}
