@@ -734,17 +734,39 @@ function bloquearPaginaDomicilio() {
   main.querySelectorAll('.calc').forEach(c => c.classList.add('inerte'));
 }
 
+function chipSuspendido() {
+  const chip = document.createElement('span');
+  chip.className = 'chip-suspendido';
+  chip.textContent = 'Suspendido';
+  return chip;
+}
+
 function iniciarSuspensionDomicilio() {
   if (!CONFIG.domicilio || !CONFIG.domicilio.suspendido) return;
 
-  document.querySelectorAll('a[href*="servicio-a-domicilio"]').forEach(enlace => {
+  // Dos clases de enlace piden una visita, y hay que buscarlas por
+  // separado: los que llevan a la página del servicio, y los que abren
+  // WhatsApp con el pedido ya escrito. Los segundos no apuntan a la
+  // página, así que solo se reconocen por el texto del mensaje.
+  const enlaces = document.querySelectorAll(
+    'a[href*="servicio-a-domicilio"], a[data-wa*="domicilio"]'
+  );
+
+  enlaces.forEach(enlace => {
     enlace.classList.add('suspendido');
-    if (enlace.matches('.bifurca-op')) {
-      const chip = document.createElement('span');
-      chip.className = 'chip-suspendido';
-      chip.textContent = 'Suspendido';
-      enlace.append(chip);
+
+    // La tarjeta de precio se marca entera: quien la lee tiene que
+    // saber que ese precio no está disponible antes de pulsar nada.
+    const tarjeta = enlace.closest('.opt');
+    if (tarjeta) {
+      if (!tarjeta.classList.contains('suspendida')) {
+        tarjeta.classList.add('suspendida');
+        tarjeta.querySelector('.opt-label')?.after(chipSuspendido());
+      }
+    } else if (enlace.matches('.bifurca-op')) {
+      enlace.append(chipSuspendido());
     }
+
     enlace.addEventListener('click', e => {
       e.preventDefault();
       avisoDomicilio().showModal();

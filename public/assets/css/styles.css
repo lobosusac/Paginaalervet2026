@@ -755,6 +755,11 @@ a.bifurca-op.suspendido .bifurca-mas{display:none}
   color:var(--rojo-oscuro);background:var(--rojo-wash);padding:5px 12px;border-radius:100px;
 }
 
+/* La tarjeta de precio del servicio, marcada entera. */
+.opt.suspendida{background:var(--sunk);border-color:var(--line)}
+.opt.suspendida .price{color:var(--muted)}
+.opt.suspendida .chip-suspendido{margin:0 0 16px}
+
 /* La banda que encabeza la página del servicio. */
 .banda-suspendido{background:var(--rojo-wash);border-bottom:1px solid #eec9c7;padding:17px 0}
 .banda-suspendido p{color:var(--rojo-oscuro);font-weight:700;text-align:center;line-height:1.5}
