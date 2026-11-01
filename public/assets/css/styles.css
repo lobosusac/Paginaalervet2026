@@ -733,6 +733,54 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
   .agenda{padding:22px 18px}
 }
 
+/* ─── Servicio a domicilio suspendido ─────────────────────
+   Todo esto deja de aplicarse solo con poner
+   CONFIG.domicilio.suspendido en false; no hace falta borrarlo.
+   --------------------------------------------------------- */
+a.suspendido{color:var(--muted)}
+
+a.btn.suspendido{
+  background:var(--sunk);color:var(--muted);border-color:var(--line);box-shadow:none;
+}
+a.btn.suspendido:hover{transform:none;background:var(--sunk);color:var(--muted)}
+
+a.bifurca-op.suspendido{background:var(--sunk);border-color:var(--line)}
+a.bifurca-op.suspendido:hover{transform:none;border-color:var(--line);box-shadow:none}
+a.bifurca-op.suspendido b{color:var(--muted)}
+a.bifurca-op.suspendido .bifurca-mas{display:none}
+
+.chip-suspendido{
+  align-self:flex-start;margin-top:10px;
+  font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--rojo-oscuro);background:var(--rojo-wash);padding:5px 12px;border-radius:100px;
+}
+
+/* La banda que encabeza la página del servicio. */
+.banda-suspendido{background:var(--rojo-wash);border-bottom:1px solid #eec9c7;padding:17px 0}
+.banda-suspendido p{color:var(--rojo-oscuro);font-weight:700;text-align:center;line-height:1.5}
+
+/* Lo que queda a la vista pero apagado. */
+.inerte{opacity:.55}
+.inerte *{cursor:not-allowed}
+
+/* El aviso que abre cualquier enlace del servicio. */
+.aviso{
+  border:0;padding:0;border-radius:var(--radius);background:var(--surface);
+  color:var(--body);max-width:450px;width:calc(100% - 32px);
+  box-shadow:0 24px 70px -20px rgba(20,48,45,.45);
+}
+.aviso::backdrop{background:rgba(18,48,45,.55);backdrop-filter:blur(3px)}
+.aviso-cuerpo{padding:32px 28px 26px;text-align:center}
+.aviso-icono{
+  display:flex;align-items:center;justify-content:center;
+  width:56px;height:56px;margin:0 auto 20px;border-radius:50%;
+  background:var(--rojo-wash);color:var(--rojo-oscuro);
+}
+.aviso-icono svg{width:29px;height:29px}
+.aviso-cuerpo p{font-size:1.05rem;color:var(--ink);line-height:1.55}
+.aviso-pie{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.aviso-pie .btn{flex:1;min-width:150px;justify-content:center}
+
 /* ─── Ventana de reserva ──────────────────────────────────
    Se abre al tocar un bloque de hora libre.
    --------------------------------------------------------- */

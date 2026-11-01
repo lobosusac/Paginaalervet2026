@@ -10,6 +10,17 @@ const CONFIG = {
   telefono: '3481 9108',              // Número principal
   correo: 'info@alervet.com',
 
+  // ── Servicio a domicilio ─────────────────────────────────
+  // Suspendido de forma indefinida. Mientras «suspendido» sea true,
+  // cualquier enlace al servicio abre el aviso en lugar de navegar, y
+  // la página del servicio queda bloqueada. Para reanudarlo basta
+  // poner false aquí: no hay que volver a tocar las siete páginas.
+  domicilio: {
+    suspendido: true,
+    mensaje: 'Las Visitas a Domicilio, Generales, Dermatológicas y de Alergias ' +
+             'están suspendidas hasta nuevo aviso. Lamentamos los Inconvenientes'
+  },
+
   // Cobro del traslado a domicilio, por tramos de distancia. Se aplica el
   // primer tramo cuyo tope no se supera; más allá del último se cotiza.
   //
@@ -664,6 +675,85 @@ function sincronizar(valor) {
   });
 }
 
+/* ──────────────────────────────────────────────────────────
+   Suspensión del servicio a domicilio
+   ----------------------------------------------------------
+   Ningún enlace al servicio navega: todos abren el mismo aviso.
+   La página del servicio se bloquea aparte, porque a ella se
+   llega también por un enlace guardado o desde un buscador, sin
+   pasar por ningún clic nuestro.
+   ────────────────────────────────────────────────────────── */
+
+/** El aviso se construye una sola vez y se reusa. */
+function avisoDomicilio() {
+  const existente = document.getElementById('aviso-domicilio');
+  if (existente) return existente;
+
+  const dlg = document.createElement('dialog');
+  dlg.className = 'aviso';
+  dlg.id = 'aviso-domicilio';
+  dlg.setAttribute('aria-labelledby', 'aviso-domicilio-texto');
+  dlg.innerHTML = `
+    <div class="aviso-cuerpo">
+      <span class="aviso-icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>
+      </span>
+      <p id="aviso-domicilio-texto"></p>
+      <div class="aviso-pie">
+        <button class="btn btn-solid" type="button" data-cerrar>Entendido</button>
+        <a class="btn btn-ghost" href="index.html#disponibilidad">Agendar en la clínica</a>
+      </div>
+    </div>`;
+  dlg.querySelector('#aviso-domicilio-texto').textContent = CONFIG.domicilio.mensaje;
+  dlg.querySelector('[data-cerrar]').addEventListener('click', () => dlg.close());
+
+  // Clic fuera de la tarjeta: el backdrop es el propio dialog.
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+  document.body.append(dlg);
+  return dlg;
+}
+
+/** La página del servicio: queda a la vista, pero inerte. */
+function bloquearPaginaDomicilio() {
+  const main = document.getElementById('main');
+  if (!main) return;
+
+  const banda = document.createElement('div');
+  banda.className = 'banda-suspendido';
+  banda.innerHTML = '<div class="wrap"><p></p></div>';
+  banda.querySelector('p').textContent = CONFIG.domicilio.mensaje;
+  main.prepend(banda);
+
+  // Se dejan a la vista y apagados, no escondidos: así se entiende
+  // que el servicio existe y está en pausa, en vez de parecer que
+  // la página se rompió.
+  main.querySelectorAll('form').forEach(f => f.classList.add('inerte'));
+  main.querySelectorAll('form input, form select, form textarea, form button, [data-km], [data-servicio]')
+      .forEach(campo => { campo.disabled = true; });
+  main.querySelectorAll('.calc').forEach(c => c.classList.add('inerte'));
+}
+
+function iniciarSuspensionDomicilio() {
+  if (!CONFIG.domicilio || !CONFIG.domicilio.suspendido) return;
+
+  document.querySelectorAll('a[href*="servicio-a-domicilio"]').forEach(enlace => {
+    enlace.classList.add('suspendido');
+    if (enlace.matches('.bifurca-op')) {
+      const chip = document.createElement('span');
+      chip.className = 'chip-suspendido';
+      chip.textContent = 'Suspendido';
+      enlace.append(chip);
+    }
+    enlace.addEventListener('click', e => {
+      e.preventDefault();
+      avisoDomicilio().showModal();
+    });
+  });
+
+  if (location.pathname.includes('servicio-a-domicilio')) bloquearPaginaDomicilio();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Menú en celular ─────────────────────────────────────── */
@@ -761,6 +851,8 @@ document.addEventListener('DOMContentLoaded', () => {
       video.focus();
     });
   });
+
+  iniciarSuspensionDomicilio();
 
   /* ── Año en el pie ───────────────────────────────────────── */
   document.querySelectorAll('[data-year]').forEach(el => {
