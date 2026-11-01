@@ -676,13 +676,30 @@ function sincronizar(valor) {
 }
 
 /* ──────────────────────────────────────────────────────────
-   Suspensión del servicio a domicilio
+   Servicio a domicilio anulado
    ----------------------------------------------------------
-   Ningún enlace al servicio navega: todos abren el mismo aviso.
-   La página del servicio se bloquea aparte, porque a ella se
-   llega también por un enlace guardado o desde un buscador, sin
-   pasar por ningún clic nuestro.
+   Mientras CONFIG.domicilio.suspendido sea true, el servicio
+   desaparece de la vista: el menú, las tarjetas de precio, el
+   panel del inicio, los enlaces del pie y las notas de traslado.
+   La página del servicio no se borra —hay gente con el enlace
+   guardado o recibido por WhatsApp— sino que queda mostrando
+   solo el aviso.
+
+   Todo se apaga desde ese único interruptor, así que reanudar el
+   servicio es ponerlo en false; no hay que recomponer las siete
+   páginas a mano, que es donde se escapa algo.
    ────────────────────────────────────────────────────────── */
+
+/* Cualquiera de estas dos cosas pide una visita: un enlace a la
+   página del servicio, o un botón que abre WhatsApp con el pedido
+   ya escrito. El segundo no apunta a la página, así que solo se
+   reconoce por el texto del mensaje. */
+const ENLACES_DOMICILIO =
+  'a[href*="servicio-a-domicilio"], a[data-wa*="domicilio"]';
+
+const ICONO_AVISO =
+  '<svg viewBox="0 0 24 24" fill="currentColor">' +
+  '<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>';
 
 /** El aviso se construye una sola vez y se reusa. */
 function avisoDomicilio() {
@@ -695,9 +712,7 @@ function avisoDomicilio() {
   dlg.setAttribute('aria-labelledby', 'aviso-domicilio-texto');
   dlg.innerHTML = `
     <div class="aviso-cuerpo">
-      <span class="aviso-icono" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>
-      </span>
+      <span class="aviso-icono" aria-hidden="true">${ICONO_AVISO}</span>
       <p id="aviso-domicilio-texto"></p>
       <div class="aviso-pie">
         <button class="btn btn-solid" type="button" data-cerrar>Entendido</button>
@@ -714,67 +729,70 @@ function avisoDomicilio() {
   return dlg;
 }
 
-/** La página del servicio: queda a la vista, pero inerte. */
-function bloquearPaginaDomicilio() {
+/**
+ * Qué se esconde por cada enlace encontrado. No basta con el
+ * enlace: lo que sobra es el bloque que lo rodea —la tarjeta de
+ * precio entera, el renglón del pie, el panel del inicio—, porque
+ * si se va solo el enlace queda un precio sin forma de contratarlo.
+ */
+function bloqueDeDomicilio(enlace) {
+  return enlace.closest('[data-domicilio], .opt, .card-domicilio, .bifurca, li')
+      || enlace;
+}
+
+/** La página del servicio: se queda, pero solo con el aviso. */
+function anularPaginaDomicilio() {
   const main = document.getElementById('main');
   if (!main) return;
 
-  const banda = document.createElement('div');
-  banda.className = 'banda-suspendido';
-  banda.innerHTML = '<div class="wrap"><p></p></div>';
-  banda.querySelector('p').textContent = CONFIG.domicilio.mensaje;
-  main.prepend(banda);
-
-  // Se dejan a la vista y apagados, no escondidos: así se entiende
-  // que el servicio existe y está en pausa, en vez de parecer que
-  // la página se rompió.
-  main.querySelectorAll('form').forEach(f => f.classList.add('inerte'));
-  main.querySelectorAll('form input, form select, form textarea, form button, [data-km], [data-servicio]')
-      .forEach(campo => { campo.disabled = true; });
-  main.querySelectorAll('.calc').forEach(c => c.classList.add('inerte'));
-}
-
-function chipSuspendido() {
-  const chip = document.createElement('span');
-  chip.className = 'chip-suspendido';
-  chip.textContent = 'Suspendido';
-  return chip;
+  main.innerHTML = `
+    <section class="section">
+      <div class="wrap narrow">
+        <div class="aviso-pagina">
+          <span class="aviso-icono" aria-hidden="true">${ICONO_AVISO}</span>
+          <h1>Servicio a domicilio</h1>
+          <p data-mensaje></p>
+          <div class="btn-row">
+            <a class="btn btn-solid" href="index.html#disponibilidad">Ver horarios disponibles</a>
+            <a class="btn btn-ghost" href="servicios.html">Ver servicios y precios</a>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  main.querySelector('[data-mensaje]').textContent = CONFIG.domicilio.mensaje;
 }
 
 function iniciarSuspensionDomicilio() {
   if (!CONFIG.domicilio || !CONFIG.domicilio.suspendido) return;
 
-  // Dos clases de enlace piden una visita, y hay que buscarlas por
-  // separado: los que llevan a la página del servicio, y los que abren
-  // WhatsApp con el pedido ya escrito. Los segundos no apuntan a la
-  // página, así que solo se reconocen por el texto del mensaje.
-  const enlaces = document.querySelectorAll(
-    'a[href*="servicio-a-domicilio"], a[data-wa*="domicilio"]'
-  );
+  if (location.pathname.includes('servicio-a-domicilio')) anularPaginaDomicilio();
 
-  enlaces.forEach(enlace => {
-    enlace.classList.add('suspendido');
+  document.querySelectorAll(ENLACES_DOMICILIO).forEach(enlace => {
+    const bloque = bloqueDeDomicilio(enlace);
 
-    // La tarjeta de precio se marca entera: quien la lee tiene que
-    // saber que ese precio no está disponible antes de pulsar nada.
-    const tarjeta = enlace.closest('.opt');
-    if (tarjeta) {
-      if (!tarjeta.classList.contains('suspendida')) {
-        tarjeta.classList.add('suspendida');
-        tarjeta.querySelector('.opt-label')?.after(chipSuspendido());
-      }
-    } else if (enlace.matches('.bifurca-op')) {
-      enlace.append(chipSuspendido());
+    // Una rejilla de dos columnas con una sola tarjeta deja un
+    // hueco raro; estas dos se reacomodan a una columna.
+    const rejilla = bloque.closest('.hours-grid');
+    if (rejilla) rejilla.classList.add('sola');
+    const pareja = bloque.parentElement;
+    if (bloque.matches('.opt') && pareja) {
+      pareja.querySelectorAll('.opt').forEach(o => {
+        if (o !== bloque) o.classList.add('opt-single');
+      });
     }
 
+    bloque.classList.add('oculto-domicilio');
+
+    // Red de seguridad: si algo quedara a la vista —un enlace que
+    // no caiga en ninguno de los bloques de arriba—, al menos no
+    // lleva a pedir una visita.
     enlace.addEventListener('click', e => {
       e.preventDefault();
       avisoDomicilio().showModal();
     });
   });
-
-  if (location.pathname.includes('servicio-a-domicilio')) bloquearPaginaDomicilio();
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
 

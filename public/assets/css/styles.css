@@ -733,42 +733,22 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
   .agenda{padding:22px 18px}
 }
 
-/* ─── Servicio a domicilio suspendido ─────────────────────
+/* ─── Servicio a domicilio anulado ────────────────────────
    Todo esto deja de aplicarse solo con poner
    CONFIG.domicilio.suspendido en false; no hace falta borrarlo.
    --------------------------------------------------------- */
-a.suspendido{color:var(--muted)}
+.oculto-domicilio{display:none !important}
 
-a.btn.suspendido{
-  background:var(--sunk);color:var(--muted);border-color:var(--line);box-shadow:none;
-}
-a.btn.suspendido:hover{transform:none;background:var(--sunk);color:var(--muted)}
+/* La rejilla del horario se queda sin su segunda mitad. */
+.hours-grid.sola{grid-template-columns:1fr;max-width:640px}
 
-a.bifurca-op.suspendido{background:var(--sunk);border-color:var(--line)}
-a.bifurca-op.suspendido:hover{transform:none;border-color:var(--line);box-shadow:none}
-a.bifurca-op.suspendido b{color:var(--muted)}
-a.bifurca-op.suspendido .bifurca-mas{display:none}
+/* La página del servicio, ya solo con el aviso. */
+.aviso-pagina{text-align:center;max-width:540px;margin-inline:auto;padding:30px 0 10px}
+.aviso-pagina h1{margin-bottom:18px}
+.aviso-pagina p{font-size:1.08rem;color:var(--body);line-height:1.6}
+.aviso-pagina .btn-row{justify-content:center;margin-top:30px}
 
-.chip-suspendido{
-  align-self:flex-start;margin-top:10px;
-  font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
-  color:var(--rojo-oscuro);background:var(--rojo-wash);padding:5px 12px;border-radius:100px;
-}
-
-/* La tarjeta de precio del servicio, marcada entera. */
-.opt.suspendida{background:var(--sunk);border-color:var(--line)}
-.opt.suspendida .price{color:var(--muted)}
-.opt.suspendida .chip-suspendido{margin:0 0 16px}
-
-/* La banda que encabeza la página del servicio. */
-.banda-suspendido{background:var(--rojo-wash);border-bottom:1px solid #eec9c7;padding:17px 0}
-.banda-suspendido p{color:var(--rojo-oscuro);font-weight:700;text-align:center;line-height:1.5}
-
-/* Lo que queda a la vista pero apagado. */
-.inerte{opacity:.55}
-.inerte *{cursor:not-allowed}
-
-/* El aviso que abre cualquier enlace del servicio. */
+/* El aviso que abre cualquier enlace que hubiera quedado suelto. */
 .aviso{
   border:0;padding:0;border-radius:var(--radius);background:var(--surface);
   color:var(--body);max-width:450px;width:calc(100% - 32px);
