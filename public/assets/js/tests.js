@@ -136,6 +136,9 @@ const PASOS_PANEL = [
   { id:'infeccion', texto:'¿Tiene en este momento heridas, piel inflamada o infección?',
     pista:'Si la piel está lastimada, la prueba puede salir alterada.',
     opciones:SI_NO },
+  { id:'antibiotico', texto:'¿Está tomando algún antibiótico para la piel?',
+    pista:'Por ejemplo amoxicilina con ácido clavulánico (amoxiclav), cefalexina o clindamicina.',
+    opciones:SI_NO },
   { id:'medicamento', texto:'¿Está tomando alguno de estos medicamentos?',
     pista:'Son los que hay que suspender 10 días antes.',
     farmacos:FARMACOS_SUSPENDER, opciones:SI_NO },
@@ -193,6 +196,14 @@ function evaluarPanel(r) {
   if (r.infeccion === 'si') {
     frenos.push('infeccion');
     pasos.push('Primero hay que tratar las heridas o la infección, y eso se resuelve en una consulta dermatológica. Con la piel lastimada el panel puede salir alterado.');
+  }
+
+  // El antibiótico no suprime la reacción de la piel, así que no falsea el
+  // panel. Lo que delata es la infección por la que se está dando, y esa sí.
+  // Si ya dijeron que hay infección, el freno anterior lo cubre.
+  if (r.antibiotico === 'si' && r.infeccion !== 'si') {
+    frenos.push('antibiotico');
+    pasos.push('El antibiótico no altera el panel, pero casi siempre se da por una infección de piel, y esa sí hay que tenerla resuelta. Escríbenos y confirmamos si ya se puede.');
   }
 
   if (r.medicamento === 'si') {
@@ -253,6 +264,7 @@ function evaluarPanel(r) {
     ? 'Consulta dermatológica · el paso previo al panel'
     : 'Panel intradérmico · resultado al finalizar la consulta';
   res.apoquel = r.apoquel === 'si';
+  res.antibiotico = r.antibiotico === 'si';
   res.siguiente = primeroConsulta ? 'piel' : null;
   res.waEtiqueta = frenos.length ? 'Consultar por WhatsApp' : 'Agendar por WhatsApp';
   return res;
@@ -264,6 +276,7 @@ function mensajePanel(res, r) {
   l.push('Diagnóstico de dermatitis atópica: ' +
     (r.atopia === 'si' ? 'sí' : r.atopia === 'no' ? 'no' : 'no estoy seguro'));
   l.push('Heridas o infección en la piel: ' + (r.infeccion === 'si' ? 'sí' : 'no'));
+  l.push('Antibiótico para la piel: ' + (r.antibiotico === 'si' ? 'sí' : 'no'));
 
   if (r.medicamento === 'si') {
     l.push(r.suspendido === 'si' && r.fecha
@@ -408,6 +421,8 @@ function iniciarTest(raiz) {
     if (recaida) recaida.hidden = !res.recaida;
     const apoquel = q('[data-nota-apoquel]');
     if (apoquel) apoquel.hidden = !res.apoquel;
+    const antib = q('[data-nota-antibiotico]');
+    if (antib) antib.hidden = !res.antibiotico;
 
     q('[data-r-precio]').textContent = res.precio;
     q('[data-r-precio-nota]').textContent = res.precioNota;
