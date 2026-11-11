@@ -60,6 +60,12 @@ html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header) + 16px)}
   *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+/* Cualquier elemento con el atributo hidden se oculta, sin importar el
+   display que le ponga su clase. Sin esto, un .ev-fecha{display:flex}
+   o un .ev-opciones{display:grid} se siguen viendo aunque el JavaScript
+   los marque como ocultos. */
+[hidden]{display:none !important}
+
 body{
   margin:0;
   background:var(--ground);
