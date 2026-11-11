@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es-GT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test: ¿tu mascota ya puede hacerse el panel de alergias? — Alervet</title>
+<meta name="description" content="Revisa en un minuto si tu mascota cumple las condiciones del panel intradérmico, y desde qué fecha conviene agendarlo.">
+<!-- PILOTO: quitar estas dos líneas el día que el sitio salga en firme.
+     Mientras estén, Google no indexa la prueba ni compite con alervet.com. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.alervet.com/panel-alergias.html">
+<meta property="og:title" content="Test: ¿tu mascota ya puede hacerse el panel de alergias? — Alervet">
+<meta property="og:description" content="Revisa en un minuto si tu mascota cumple las condiciones del panel intradérmico, y desde qué fecha conviene agendarlo.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_GT">
+<link rel="icon" href="assets/img/logo-alervet.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Encode+Sans:wdth,wght@75,400;75,600;75,700&display=swap">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="site-header">
+  <div class="header-in">
+    <a class="logo" href="index.html">
+      <img src="assets/img/logo-alervet.webp" width="1254" height="1254" alt="">
+      <span class="logo-text">
+        <b>Alervet</b>
+        <span>Tu mundo sin alergias</span>
+      </span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Abrir menú">
+      <svg class="ico-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <svg class="ico-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Menú principal">
+      <a href="index.html">Inicio</a>
+      <a href="servicios.html">Servicios</a>
+      <a href="interactivo.html">Interactivo</a>
+      <a href="inmunoterapia.html">Inmunoterapia</a>
+      <a href="acupuntura.html">Acupuntura</a>
+      <a href="servicio-a-domicilio.html">A domicilio</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a class="btn btn-solid" href="index.html#contacto">Agendar cita</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="section section-deco deco-inmuno">
+    <div class="wrap narrow">
+      <div class="section-head">
+        <p class="eyebrow">Autoevaluación</p>
+        <h1>¿Tu mascota ya puede hacerse el panel de alergias?</h1>
+        <p>Hay tres cosas que alteran el resultado. Contesta y te decimos si puede agendarse ya, o desde qué día.</p>
+      </div>
+
+      <div class="panel" data-test="alergias">
+
+      <div data-paso-test>
+        <div class="ev-avance">
+          <div class="ev-avance-texto">
+            <span>Paso <b data-actual>1</b> de <span data-total>8</span></span>
+            <span data-pct>0%</span>
+          </div>
+          <div class="ev-barra"><i data-barra></i></div>
+        </div>
+
+        <div class="ev-pregunta">
+          <h2 data-texto>&mdash;</h2>
+          <p class="ev-pista" data-pista></p>
+          <div class="ev-farmacos" data-farmacos hidden></div>
+        </div>
+
+        <div class="ev-opciones dos" data-opciones></div>
+
+        <div class="ev-fecha" data-campo-fecha hidden>
+          <label for="ev-fecha">Fecha del último día que lo tomó</label>
+          <input type="date" id="ev-fecha">
+          <button class="btn btn-ghost" type="button" data-btn-fecha>Continuar</button>
+        </div>
+
+        <div class="ev-pie">
+          <button class="ev-atras" type="button" data-atras disabled>&larr; Anterior</button>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="ev-resultado" data-paso-resultado hidden>
+        <span class="ev-sello" data-sello>&mdash;</span>
+        <h2 data-r-titulo>&mdash;</h2>
+        <p class="lede" data-r-lede></p>
+
+        <div class="ev-fecha-caja" data-caja-fecha hidden>
+          <span class="rotulo">Agenda a partir del</span>
+          <b class="dia" data-r-fecha>&mdash;</b>
+          <p class="desde" data-r-fecha-nota></p>
+        </div>
+
+        <div class="ev-bloque">
+          <h3 data-pasos-titulo>Qué conviene hacer</h3>
+          <ul class="checklist" data-r-pasos></ul>
+        </div>
+
+        <div class="note" data-nota-apoquel hidden>
+          <h4>Apoquel y Numelvi sí se pueden seguir tomando</h4>
+          <p>No alteran el resultado del panel, así que no hay que suspenderlos. Si tienes duda con cualquier otro medicamento, escríbenos antes de suspenderlo.</p>
+        </div>
+
+        <div class="ev-precio">
+          <b data-r-precio>Q275</b>
+          <span data-r-precio-nota>Consulta dermatológica en clínica</span>
+        </div>
+
+        <div class="note" data-siguiente="piel" hidden>
+          <h4>Antes del panel va la consulta dermatológica</h4>
+          <p>Si no estás seguro de lo que tiene tu mascota, el test de piel te orienta en un minuto:
+            <a href="test-piel.html">hacer el test de piel</a>.</p>
+        </div>
+
+        <div class="ev-acciones">
+          <a class="btn btn-wa" data-wa-resultado target="_blank" rel="noopener" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2z"/></svg> <span data-wa-etiqueta>Agendar por WhatsApp</span>
+          </a>
+          <a class="btn btn-cal" href="index.html#disponibilidad">Ver horarios disponibles</a>
+          <button class="btn btn-ghost" type="button" data-reiniciar>Hacerlo de nuevo</button>
+        </div>
+
+        <div class="ev-copia">
+          <div class="ev-copia-cabeza">
+            <span>Por si prefieres copiarlo</span>
+            <button class="ev-copiar" type="button" data-copiar>Copiar</button>
+          </div>
+          <div data-mensaje></div>
+        </div>
+      </div>
+
+      </div>
+
+      <p class="ev-aviso">
+        <b>No suspendas ningún medicamento por tu cuenta sin avisarnos.</b>
+        Esta guía repite las condiciones que hacen confiable el panel, pero cada
+        caso es distinto y quien decide qué suspender y cuándo es la médica veterinaria.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <img src="assets/img/logo-alervet.webp" width="1254" height="1254" alt="Alervet">
+        </div>
+        <p style="font-size:.95rem">Identificación, diagnóstico, tratamiento de alergias y enfermedades dermatológicas en perros y gatos.</p>
+      </div>
+      <div>
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="servicios.html#dermatologica">Consulta dermatológica</a></li>
+          <li><a href="servicios.html#prueba-alergias">Prueba de alergias</a></li>
+          <li><a href="servicios.html#general">Consulta general</a></li>
+          <li><a href="inmunoterapia.html">Inmunoterapia</a></li>
+          <li><a href="acupuntura.html">Acupuntura</a></li>
+          <li><a href="servicio-a-domicilio.html">Servicio a domicilio</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li>Bulevar San Cristóbal, Plaza Helios<br>Ciudad de Guatemala</li>
+          <li><a href="tel:+50234819108">3481 9108</a></li>
+          <li><a href="mailto:info@alervet.com">info@alervet.com</a></li>
+          <li>Lun a vie 8:00–16:00 · Sáb 8:00–15:00</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Alervet. Todos los derechos reservados.</span>
+      <span>Ciudad de Guatemala</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" data-wa="Hola, quiero agendar una cita para mi mascota." target="_blank" rel="noopener" href="#" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2z"/><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.4-.2-.6.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.6-1.5-.9-2.1-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 .9-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>
+  <span>Escríbenos</span>
+</a>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/tests.js"></script>
+</body>
+</html>

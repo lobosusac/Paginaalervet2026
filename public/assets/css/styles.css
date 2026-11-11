@@ -35,7 +35,9 @@
   --rojo-oscuro:   #a01a18;
   --rojo-wash:     #fbeceb;
   --oliva-oscuro:  #4a6b28;   /* «abierto ahora»        5.34:1        */
+  --ambar:         #8a5a12;   /* «hay que esperar»      6.04:1        */
   --oliva-wash:    #eef4e6;
+  --ambar-wash:    #fbf1dd;
 
   --whatsapp:      #25D366;
   --whatsapp-dark: #1DA851;
@@ -970,3 +972,141 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
   background:var(--surface);border-top:1px solid var(--line);
 }
 .section .fachada figcaption{background:var(--surface)}
+
+/* ─── Tests interactivos ──────────────────────────────────
+   Autoevaluaciones de piel y de panel de alergias. Reusan
+   .panel, .btn y .checklist; aquí va solo lo propio.
+   --------------------------------------------------------- */
+.ev-avance{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+.ev-avance-texto{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:.8rem;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);
+}
+.ev-avance-texto b{color:var(--teal-darker);font-variant-numeric:tabular-nums}
+.ev-barra{height:6px;background:var(--sunk);border-radius:100px;overflow:hidden}
+.ev-barra i{
+  display:block;height:100%;width:0;background:var(--teal);
+  border-radius:100px;transition:width .35s cubic-bezier(.4,0,.2,1);
+}
+
+.ev-pregunta{min-height:120px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.ev-pregunta h2{
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;
+  font-size:clamp(1.3rem,3.6vw,1.6rem);line-height:1.25;color:var(--ink);margin:0;
+}
+.ev-pista{font-size:.95rem;color:var(--muted)}
+.ev-farmacos{
+  margin-top:4px;font-size:.92rem;color:var(--body);line-height:1.55;
+  background:var(--sunk);border-radius:var(--radius-s);padding:13px 15px;
+}
+
+.ev-opciones{display:grid;gap:12px;margin-top:22px}
+.ev-opciones.dos{grid-template-columns:1fr 1fr}
+.ev-opciones.una{grid-template-columns:1fr}
+@media (max-width:460px){.ev-opciones.dos{grid-template-columns:1fr}}
+.ev-opcion{
+  font-family:inherit;font-size:1.02rem;font-weight:700;color:var(--ink);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:15px 14px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:9px;
+  transition:border-color .15s,background .15s,transform .12s;
+}
+.ev-opcion:hover{border-color:var(--teal);background:var(--teal-wash)}
+.ev-opcion:active{transform:scale(.98)}
+.ev-opcion svg{width:19px;height:19px;flex-shrink:0;color:var(--teal-dark)}
+.ev-opcion.no svg{color:var(--muted)}
+
+.ev-fecha{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.ev-fecha input{
+  font-family:inherit;font-size:1rem;color:var(--ink);
+  padding:14px 15px;border:1.5px solid var(--line);border-radius:var(--radius-s);
+  background:var(--surface);width:100%;
+}
+.ev-fecha input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-wash)}
+
+.ev-pie{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  margin-top:22px;padding-top:18px;border-top:1px solid var(--line);
+}
+.ev-atras{
+  font:inherit;font-size:.93rem;font-weight:800;color:var(--muted);
+  background:none;border:0;padding:4px 0;cursor:pointer;
+}
+.ev-atras:hover{color:var(--teal-darker)}
+.ev-atras:disabled{opacity:.35;cursor:default}
+.ev-marcadas{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ── Resultado ── */
+.ev-sello{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.76rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 13px;border-radius:100px;margin-bottom:14px;
+}
+.ev-sello.bien{color:var(--teal-darker);background:var(--teal-wash)}
+.ev-sello.espera{color:var(--ambar);background:var(--ambar-wash)}
+.ev-sello.alto{color:var(--rojo-oscuro);background:var(--rojo-wash)}
+
+.ev-resultado h2{margin-bottom:12px}
+.ev-resultado .lede{margin-top:0}
+.ev-bloque{margin-top:26px}
+.ev-bloque h3{color:var(--teal-darker);margin-bottom:10px}
+
+/* La fecha es el dato que la persona vino a buscar. */
+.ev-fecha-caja{
+  margin-top:26px;padding:22px 20px;border-radius:var(--radius);
+  background:var(--ambar-wash);border:1px solid #e4c179;text-align:center;
+}
+.ev-fecha-caja .rotulo{
+  font-size:.76rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ambar);
+}
+.ev-fecha-caja .dia{
+  display:block;margin-top:7px;
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;
+  font-size:clamp(1.3rem,5vw,1.75rem);line-height:1.2;color:var(--ink);
+}
+.ev-fecha-caja .desde{margin-top:8px;font-size:.9rem;color:var(--body)}
+
+.ev-precio{
+  display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;
+  margin-top:24px;padding:17px 19px;background:var(--sunk);border-radius:var(--radius-s);
+}
+.ev-precio b{
+  font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;
+  font-size:1.75rem;color:var(--teal-dark);
+}
+.ev-precio span{font-size:.93rem;color:var(--muted)}
+
+.ev-acciones{display:flex;flex-direction:column;gap:11px;margin-top:26px}
+.ev-acciones .btn{width:100%;justify-content:center}
+
+.ev-copia{
+  margin-top:18px;background:var(--sunk);border-radius:var(--radius-s);
+  padding:15px 17px;font-size:.9rem;color:var(--body);
+  white-space:pre-wrap;word-break:break-word;
+}
+.ev-copia-cabeza{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px}
+.ev-copia-cabeza span{font-size:.76rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.ev-copiar{
+  font:inherit;font-size:.84rem;font-weight:800;color:var(--teal-darker);
+  background:var(--surface);border:1px solid var(--line);border-radius:100px;
+  padding:5px 13px;cursor:pointer;
+}
+.ev-copiar:hover{border-color:var(--teal)}
+
+.ev-aviso{
+  margin-top:26px;font-size:.87rem;color:var(--muted);line-height:1.55;
+  padding-top:18px;border-top:1px solid var(--line);
+}
+.ev-aviso b{color:var(--body)}
+
+.ev-reiniciar{
+  display:block;margin:22px auto 0;font:inherit;font-size:.93rem;font-weight:800;
+  color:var(--muted);background:none;border:0;cursor:pointer;padding:6px;
+}
+.ev-reiniciar:hover{color:var(--teal-darker)}
+
+@media (prefers-reduced-motion:reduce){
+  .ev-barra i{transition:none}
+}
