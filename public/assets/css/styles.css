@@ -578,8 +578,19 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
 
 /* ─── Pie ─────────────────────────────────────────────────── */
 .site-footer{background:var(--teal-darker);color:rgba(255,255,255,.76);padding:60px 0 30px;margin-top:0}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:38px}
-@media (max-width:800px){.footer-grid{grid-template-columns:1fr;gap:32px}}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr .8fr 1.1fr;gap:34px;padding-bottom:38px}
+@media (max-width:980px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media (max-width:620px){.footer-grid{grid-template-columns:1fr;gap:30px}}
+
+/* Enlaces a redes, en el pie. */
+.redes{display:flex;flex-direction:column;gap:12px}
+.redes a{
+  display:inline-flex;align-items:center;gap:10px;
+  color:rgba(255,255,255,.88);text-decoration:none;font-size:.95rem;
+}
+.redes a:hover{color:#fff}
+.redes svg{width:21px;height:21px;flex-shrink:0;opacity:.9}
+.redes a:hover svg{opacity:1}
 .site-footer h4{color:#fff;font-family:Asap,sans-serif;font-size:.82rem;
   letter-spacing:.14em;text-transform:uppercase;margin-bottom:17px;font-weight:800}
 .site-footer a{color:rgba(255,255,255,.76);text-decoration:none}
