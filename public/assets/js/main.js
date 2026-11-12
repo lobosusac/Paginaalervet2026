@@ -1021,6 +1021,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     ponerCintaNavidad();
+
+    // El ícono de la pestaña, en versión de temporada. Se cambia desde
+    // aquí y no en el HTML porque depende de la fecha.
+    const icono = document.querySelector('link[rel="icon"]');
+    if (icono) icono.href = 'assets/img/favicon-navidad.svg';
   }
 
   /* ── Reseñas ─────────────────────────────────────────────

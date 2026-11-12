@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 48" width="360" height="48" role="img" aria-hidden="true">
+  <!-- Unidad que se repite. Arbolitos sobre una línea fina: a 32px de
+       alto es lo único que se reconoce de un vistazo. Las ramitas de
+       pino, a este tamaño, se leían como flechas. -->
+  <defs>
+    <g id="arbol">
+      <path d="M0-15 9-3H-9z" fill="#1b5244"/>
+      <path d="M0-7 12 8H-12z" fill="#1b5244"/>
+      <rect x="-2.4" y="8" width="4.8" height="5" rx="1" fill="#8c6239"/>
+      <circle cx="0" cy="-17.5" r="2.6" fill="#b98a2e"/>
+    </g>
+  </defs>
+
+  <path d="M0 13h360" stroke="#1b5244" stroke-width="1.6" opacity=".45"/>
+
+  <g opacity=".9">
+    <use href="#arbol" transform="translate(48 0)"/>
+    <use href="#arbol" transform="translate(228 0)"/>
+  </g>
+
+  <g opacity=".95">
+    <circle cx="108" cy="7"  r="4.6" fill="#b8434f"/>
+    <circle cx="138" cy="7"  r="3.6" fill="#b98a2e"/>
+    <circle cx="168" cy="7"  r="4.6" fill="#b8434f"/>
+    <circle cx="288" cy="7"  r="4.6" fill="#b8434f"/>
+    <circle cx="318" cy="7"  r="3.6" fill="#b98a2e"/>
+    <circle cx="348" cy="7"  r="4.6" fill="#b8434f"/>
+  </g>
+</svg>

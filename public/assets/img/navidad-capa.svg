@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" width="520" height="520" role="img" aria-hidden="true">
+  <!-- Mosaico que se repite sobre el fondo que ya tiene cada sección.
+       Los motivos quedan lejos de los bordes para que al repetirse no
+       se corten ni formen líneas visibles. -->
+  <defs>
+    <g id="c" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none">
+      <path d="M0-14V14M-12.1-7 12.1 7M-12.1 7 12.1-7"/>
+      <path d="M0-14l-3.6 3.6M0-14l3.6 3.6M0 14l-3.6-3.6M0 14l3.6-3.6"/>
+      <path d="M-12.1-7l.5 5.1M-12.1-7l5.1-.5M12.1 7l-.5-5.1M12.1 7l-5.1.5"/>
+      <path d="M-12.1 7l5.1.5M-12.1 7l.5-5.1M12.1-7l-5.1-.5M12.1-7l-.5 5.1"/>
+    </g>
+    <path id="e" d="M0-11 3 -3 11 0 3 3 0 11-3 3-11 0-3-3z" fill="currentColor"/>
+    <g id="r" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none">
+      <path d="M0 16V-16"/>
+      <path d="M0-9l-9-6M0-9l9-6M0-1l-10-6M0-1l10-6M0 7l-9-6M0 7l9-6"/>
+    </g>
+  </defs>
+
+  <g color="#1a4285" opacity=".5">
+    <use href="#c" transform="translate(86 92)"/>
+    <use href="#c" transform="translate(372 196) scale(.72)"/>
+    <use href="#c" transform="translate(190 388) scale(.86)"/>
+    <use href="#c" transform="translate(448 420) scale(.62)"/>
+  </g>
+  <g color="#b98a2e" opacity=".62">
+    <use href="#e" transform="translate(256 74) scale(.8)"/>
+    <use href="#e" transform="translate(68 268) scale(.6)"/>
+    <use href="#e" transform="translate(410 312) scale(.9)"/>
+    <use href="#e" transform="translate(300 460) scale(.65)"/>
+    <use href="#e" transform="translate(146 180) scale(.5)"/>
+  </g>
+  <g color="#30937b" opacity=".52">
+    <use href="#r" transform="translate(430 96) rotate(24)"/>
+    <use href="#r" transform="translate(112 452) rotate(-16)"/>
+    <use href="#r" transform="translate(262 268) rotate(8) scale(.8)"/>
+  </g>
+</svg>

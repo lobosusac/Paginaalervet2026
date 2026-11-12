@@ -1281,3 +1281,74 @@ body.navidad .section-head.center .eyebrow::before,
 body.navidad .section-head.center .eyebrow::after{
   content:"\2726";color:var(--oro-claro);margin:0 9px;font-size:.9em;
 }
+
+/* ─── Navidad: la capa que recorre todas las secciones ────
+   Un solo mosaico encima del fondo que ya tiene cada sección.
+   La alternativa —un motivo distinto por sección— enturbia lo que
+   cada fondo significa y vuelve ruidosa la página.
+   --------------------------------------------------------- */
+body.navidad .section,
+body.navidad .trust{position:relative}
+body.navidad .section>.wrap,
+body.navidad .trust>.wrap{position:relative;z-index:1}
+
+body.navidad .section::after,
+body.navidad .trust::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:url("../img/navidad-capa.svg");
+  background-size:380px 380px;background-repeat:repeat;
+  opacity:.07;
+}
+/* Sobre el lavado de color de las secciones decoradas se nota más,
+   así que ahí va todavía más tenue. */
+body.navidad .section-deco::after{opacity:.055}
+/* La franja de números es blanca y pequeña: el mosaico se come los
+   dígitos si no se baja. */
+body.navidad .trust::after{opacity:.045;background-size:300px 300px}
+/* La sección navideña ya tiene su propio fondo; no lleva encima otro. */
+body.navidad .deco-navidad::after{display:none}
+
+/* ── Guirnalda en la tarjeta de portada ── */
+body.navidad .hero-card{position:relative;padding-top:calc(clamp(28px,3.6vw,44px) + 20px)}
+body.navidad .hero-card::before{
+  content:"";position:absolute;left:0;right:0;top:10px;height:32px;
+  background-image:url("../img/navidad-guirnalda.svg");
+  background-size:auto 32px;background-repeat:repeat-x;background-position:center;
+  opacity:.9;pointer-events:none;
+}
+
+/* En la portada el rótulo ocupa dos renglones; el destello de la
+   izquierda rompe la sangría del texto. Ahí va solo el de la derecha. */
+body.navidad .hero-card .eyebrow::before{content:none}
+
+/* ── Los destellos, ahora en todos los rótulos ── */
+body.navidad .eyebrow::before,
+body.navidad .eyebrow::after{
+  content:"\2726";color:var(--oro-claro);font-size:.9em;
+}
+body.navidad .eyebrow::before{margin-right:9px}
+body.navidad .eyebrow::after{margin-left:9px}
+/* En los rótulos alineados a la izquierda, el destello de la izquierda
+   rompe la columna del texto; ahí va solo el de la derecha. */
+body.navidad .section-head:not(.center) .eyebrow::before{content:none}
+
+/* ── El pie ── */
+body.navidad .site-footer{
+  border-top:3px solid var(--oro-claro);
+  background-image:url("../img/navidad-capa.svg");
+  background-size:340px 340px;background-repeat:repeat;
+  background-blend-mode:soft-light;
+}
+
+/* ── El gorrito del botón flotante ── */
+body.navidad .wa-float::before{
+  content:"";position:absolute;top:-15px;left:-3px;width:36px;height:36px;
+  background-image:url("../img/navidad-gorro.svg");
+  background-size:contain;background-repeat:no-repeat;
+  transform:rotate(-18deg);pointer-events:none;
+}
+body.navidad .wa-float{position:fixed}
+
+@media (prefers-reduced-motion:reduce){
+  body.navidad .hero-card::before{opacity:.7}
+}
