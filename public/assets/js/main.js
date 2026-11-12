@@ -894,6 +894,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   iniciarSuspensionDomicilio();
 
+  /* ── Conteo de atenciones ────────────────────────────────
+     Los números de la franja vienen escritos en el HTML con el
+     último conteo verificado. Si el script del calendario responde,
+     se reemplazan por los de ayer al cierre. Si no responde, se
+     quedan los escritos: la franja nunca aparece vacía ni en cero.
+     --------------------------------------------------------- */
+  const casillas = document.querySelectorAll('[data-conteo]');
+  if (casillas.length && CONFIG.reservas.endpoint) {
+    fetch(CONFIG.reservas.endpoint + '?accion=conteo')
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(d => {
+        if (!d || !d.ok) return;
+        casillas.forEach(el => {
+          const n = d[el.dataset.conteo];
+          if (typeof n === 'number' && n > 0) el.textContent = n.toLocaleString('es-GT');
+        });
+        const sello = document.querySelector('[data-conteo-fecha]');
+        // fechaLarga() no lleva año, y aquí el año importa.
+        if (sello && d.hasta) {
+          sello.textContent = new Date(d.hasta + 'T12:00:00')
+            .toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+      })
+      .catch(err => console.warn('[Alervet] No se pudo actualizar el conteo:', err));
+  }
+
   /* ── El flotante cede el paso ────────────────────────────
      Va fijo abajo a la derecha, así que a ciertas alturas queda
      justo encima de un botón de la página. Mientras eso pase se

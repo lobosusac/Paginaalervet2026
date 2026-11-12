@@ -77,14 +77,18 @@
   <!-- ── Franja de confianza ────────────────────────────── -->
   <section class="trust">
     <div class="wrap">
+      <!-- Los cuatro números se actualizan solos: el script del calendario
+           los recuenta y el JavaScript los reemplaza. Los que van escritos
+           aquí son el último conteo verificado, y se ven si el script no
+           responde. Al tocarlos, actualizar también BASE en el Apps Script. -->
       <div class="trust-grid">
-        <div class="trust-item"><b>+900</b><span>consultas dermatológicas</span></div>
-        <div class="trust-item"><b>+600</b><span>reconsultas de seguimiento</span></div>
-        <div class="trust-item"><b>+350</b><span>pruebas de alergia</span></div>
-        <div class="trust-item"><b>+160</b><span>consultas generales</span></div>
+        <div class="trust-item"><b data-conteo="cd">928</b><span>consultas dermatológicas</span></div>
+        <div class="trust-item"><b data-conteo="rcd">551</b><span>reconsultas de seguimiento</span></div>
+        <div class="trust-item"><b data-conteo="pa">429</b><span>pruebas de alergia</span></div>
+        <div class="trust-item"><b data-conteo="cg">173</b><span>consultas generales</span></div>
         <div class="trust-item"><b>9 años</b><span>de experiencia clínica</span></div>
       </div>
-      <p class="trust-fuente">Citas registradas en nuestra agenda desde octubre de 2023.</p>
+      <p class="trust-fuente">Citas registradas en nuestra agenda desde octubre de 2023, actualizado al <span data-conteo-fecha>11 de noviembre de 2026</span>.</p>
     </div>
   </section>
 

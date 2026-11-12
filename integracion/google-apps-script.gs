@@ -40,6 +40,9 @@ const AJUSTES = {
 function doGet(e) {
   try {
     const accion = (e.parameter.accion || '').trim();
+
+    if (accion === 'conteo') return responder(conteoAtenciones());
+
     if (accion !== 'disponibilidad') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
     const fecha = (e.parameter.fecha || '').trim();
@@ -240,4 +243,90 @@ function responder(objeto) {
   return ContentService
     .createTextOutput(JSON.stringify(objeto))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   Conteo de atenciones
+   ----------------------------------------------------------
+   El sitio muestra cuántas consultas lleva la clínica. En vez de
+   un número escrito a mano que envejece, se cuenta del calendario.
+
+   No se recorren los tres años en cada visita: BASE trae el conteo
+   ya hecho hasta su fecha, y aquí solo se suman los días nuevos.
+   Así la consulta mira días y no años.
+
+   Se cuenta hasta el cierre de AYER. Las citas de hoy todavía
+   pueden cancelarse o cambiar de tipo, y un contador que baja
+   deja peor impresión que uno que sube un día después.
+
+   Las citas se han escrito de dos formas con los años: antes con
+   el nombre completo («Consulta Dermatologica») y ahora con
+   códigos («CD»). Se reconocen las dos.
+
+   Si el servicio se volvió a prestar, cuenta como ese servicio: una
+   cita escrita «Reconsulta prueba de Alergia» es una prueba que se
+   hizo por segunda vez, no un control. El control dermatológico es
+   la reconsulta que no fue ni prueba ni consulta general.
+   ══════════════════════════════════════════════════════════ */
+
+const BASE = {
+  hasta: '2026-11-11',   // conteo ya verificado hasta el cierre de este día
+  cd:  928,              // consultas dermatológicas
+  rcd: 551,              // reconsultas de seguimiento
+  pa:  429,              // pruebas de alergia
+  cg:  173               // consultas generales
+};
+
+/** Horas que se guarda el resultado antes de volver a contar. */
+const CACHE_CONTEO_MIN = 180;
+
+function conteoAtenciones() {
+  const cache = CacheService.getScriptCache();
+  const guardado = cache.get('conteo');
+  if (guardado) return JSON.parse(guardado);
+
+  const zona = calendario().getTimeZone();
+  const hoy = new Date();
+  const ayer = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+  ayer.setDate(ayer.getDate() - 1);           // último día cerrado
+
+  const desde = new Date(BASE.hasta + 'T00:00:00');
+  desde.setDate(desde.getDate() + 1);          // el día siguiente a la base
+
+  const suma = { cd: BASE.cd, rcd: BASE.rcd, pa: BASE.pa, cg: BASE.cg };
+
+  if (desde <= ayer) {
+    const fin = new Date(ayer.getTime() + 24 * 3600 * 1000);
+    calendario().getEvents(desde, fin).forEach(function (ev) {
+      const t = normalizar(ev.getTitle());
+      const esRe = /(^|[^A-Z])RCD([^A-Z]|$)|RE\s*-?\s*CONSULTA/.test(t);
+      const esPA = /(^|[^A-Z])PA([^A-Z]|$)|PRUEBA\s+DE\s+ALERGIA|PANEL\s+DE\s+ALERGIA/.test(t);
+      const esCG = /(^|[^A-Z])CG([^A-Z]|$)|CONSULTA\s+GENERAL/.test(t);
+      const esCD = /(^|[^A-Z])CD([^A-Z]|$)|CONSULTA\s+DERMATOLOG/.test(t);
+
+      if (esPA) suma.pa++;
+      if (esCG) suma.cg++;
+      // Si el servicio se volvió a prestar, cuenta como ese servicio: una
+      // prueba de alergia repetida es una prueba, no un control. El control
+      // dermatológico es la reconsulta que no fue ninguna de las dos.
+      if (esRe && !esPA && !esCG) suma.rcd++;
+      if (esCD && !esRe) suma.cd++;
+    });
+  }
+
+  const salida = {
+    ok: true,
+    cd: suma.cd, rcd: suma.rcd, pa: suma.pa, cg: suma.cg,
+    hasta: Utilities.formatDate(ayer, zona, 'yyyy-MM-dd')
+  };
+  cache.put('conteo', JSON.stringify(salida), CACHE_CONTEO_MIN * 60);
+  return salida;
+}
+
+/** Mayúsculas y sin tildes, para comparar títulos escritos de cualquier forma. */
+function normalizar(texto) {
+  return String(texto || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase();
 }
