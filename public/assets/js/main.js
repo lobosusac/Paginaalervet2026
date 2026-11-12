@@ -562,6 +562,11 @@ function iniciarReserva() {
         `<b>${datos.mascota}</b> · ${datos.consulta}<br>` +
         `${fechaLarga(fecha)}<br>` +
         `${formatHora(hora)} a ${formatHora(hora + 1)}`;
+
+      // El aviso del calendario solo tiene sentido si dejó correo.
+      const avisoCorreo = ok.querySelector('[data-aviso-correo]');
+      if (avisoCorreo) avisoCorreo.hidden = !datos.correo;
+
       ok.hidden = false;
 
     } catch (err) {

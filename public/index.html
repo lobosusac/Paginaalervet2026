@@ -555,6 +555,13 @@
           </div>
 
           <div class="field">
+            <label for="r-correo">Correo electrónico</label>
+            <input id="r-correo" name="correo" type="email" autocomplete="email"
+                   placeholder="tucorreo@ejemplo.com" inputmode="email">
+            <p class="form-note">Opcional. Si lo dejas, te enviamos la cita a tu calendario.</p>
+          </div>
+
+          <div class="field">
             <label for="r-consulta">Tipo de consulta <span class="req">*</span></label>
             <select id="r-consulta" name="consulta" required>
               <option value="">Selecciona una opción</option>
@@ -595,6 +602,7 @@
         </div>
         <h3>¡Solicitud recibida!</h3>
         <p>Un asesor te contactará a la brevedad para confirmar tu solicitud.</p>
+        <p class="form-note" data-aviso-correo hidden>Te enviamos la cita a tu correo para que la agregues a tu calendario. Aparecerá como «Por confirmar» hasta que la clínica la confirme.</p>
         <div class="resumen" data-resumen></div>
         <div class="btn-row" style="justify-content:center">
           <button class="btn btn-ghost" type="button" data-cerrar>Cerrar</button>

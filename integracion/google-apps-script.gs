@@ -89,6 +89,7 @@ function doPost(e) {
     const resumen = [
       'Tutor: ' + datos.tutor,
       'Teléfono: ' + datos.telefono,
+      datos.correo ? 'Correo: ' + datos.correo : '',
       'Mascota: ' + datos.mascota,
       'Raza: ' + datos.raza,
       'Edad: ' + datos.edad,
@@ -98,11 +99,35 @@ function doPost(e) {
       'Solicitud enviada desde el sitio web. Pendiente de confirmar.'
     ].filter(String).join('\n');
 
+    // El correo es opcional. Si viene y tiene forma de correo, se invita a
+    // la persona para que la cita le caiga en su propio calendario.
+    //
+    // OJO: el invitado ve la descripción del evento, y la sigue viendo si
+    // cambia después. En este evento no se escribe nada que el cliente no
+    // deba leer; las notas internas van en la ficha, no en el calendario.
+    const correo = String(datos.correo || '').trim();
+    const invitar = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo);
+
+    const opciones = { description: resumen };
+    if (invitar) {
+      opciones.guests = correo;
+      opciones.sendInvites = true;
+    }
+
     const evento = cal.createEvent(
       'Por confirmar · ' + datos.mascota + ' (' + datos.tutor + ')',
       inicio, fin,
-      { description: resumen }
+      opciones
     );
+
+    // El invitado no reenvía la cita ni la modifica: es su copia, no la agenda.
+    if (invitar) {
+      try {
+        evento.setGuestsCanInviteOthers(false);
+        evento.setGuestsCanModify(false);
+        evento.setGuestsCanSeeGuests(false);
+      } catch (err) {}
+    }
 
     // Amarillo, para distinguir lo no confirmado de un vistazo.
     try { evento.setColor(CalendarApp.EventColor.YELLOW); } catch (err) {}
