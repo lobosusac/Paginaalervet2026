@@ -894,6 +894,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   iniciarSuspensionDomicilio();
 
+  /* ── El flotante cede el paso ────────────────────────────
+     Va fijo abajo a la derecha, así que a ciertas alturas queda
+     justo encima de un botón de la página. Mientras eso pase se
+     desvanece: un botón de WhatsApp que tapa uno de agendar
+     cuesta citas.
+     --------------------------------------------------------- */
+  const flotante = document.querySelector('.wa-float');
+  if (flotante) {
+    const PULSABLES = '.btn, .slot, .ev-opcion, .bifurca-op, .video-play';
+    const MARGEN = 10;
+    let pedido = false;
+
+    function revisarFlotante() {
+      pedido = false;
+      const f = flotante.getBoundingClientRect();
+      let choca = false;
+      for (const el of document.querySelectorAll(PULSABLES)) {
+        const c = el.getBoundingClientRect();
+        if (c.width < 2 || c.bottom < 0 || c.top > window.innerHeight) continue;
+        if (c.right > f.left - MARGEN && c.left < f.right + MARGEN &&
+            c.bottom > f.top - MARGEN && c.top < f.bottom + MARGEN) { choca = true; break; }
+      }
+      flotante.classList.toggle('cede', choca);
+    }
+
+    const pedirRevision = () => {
+      if (pedido) return;
+      pedido = true;
+      requestAnimationFrame(revisarFlotante);
+    };
+    window.addEventListener('scroll', pedirRevision, { passive: true });
+    window.addEventListener('resize', pedirRevision);
+    revisarFlotante();
+  }
+
   /* ── Año en el pie ───────────────────────────────────────── */
   document.querySelectorAll('[data-year]').forEach(el => {
     el.textContent = new Date().getFullYear();

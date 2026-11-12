@@ -561,6 +561,16 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
 .cta-band .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff;color:#fff}
 
 /* ─── Botón flotante de WhatsApp ──────────────────────────── */
+.trust-fuente{
+  margin-top:20px;text-align:center;font-size:.84rem;color:var(--muted);
+}
+
+/* El flotante cede el paso: mientras quede encima de algo que se
+   pueda pulsar, se desvanece. Un botón de WhatsApp que tapa un
+   botón de agendar cuesta citas. */
+.wa-float{transition:opacity .2s ease,transform .2s ease}
+.wa-float.cede{opacity:0;pointer-events:none;transform:translateY(10px) scale(.95)}
+
 .wa-float{
   position:fixed;right:20px;bottom:20px;z-index:90;
   display:flex;align-items:center;gap:11px;
