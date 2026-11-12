@@ -1199,3 +1199,85 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 [data-resena-ok] .tick{margin-inline:auto}
+
+/* ─── Navidad ─────────────────────────────────────────────
+   Se enciende con la clase .navidad en el <body>, que pone
+   el JavaScript solo entre las fechas de CONFIG.navidad.
+
+   Dos colores nuevos, y ninguno pisa los que ya significan algo:
+   el dorado para el adorno y un vino decorativo. El --rojo del
+   sitio se queda reservado para errores y avisos, que es lo que
+   la gente ya aprendió a leer.
+   --------------------------------------------------------- */
+:root{
+  --oro:        #8a6410;   /* texto dorado      5.95:1 sobre blanco */
+  --oro-claro:  #b98a2e;   /* solo adorno, nunca texto             */
+  --oro-wash:   #fbf3e2;
+  --vino:       #8c2f39;   /* decorativo        6.47:1 sobre blanco */
+  --vino-wash:  #f8edee;
+  --pino:       #1b5244;
+}
+
+/* Fuera de temporada, nada de esto existe. */
+.solo-navidad{display:none}
+body.navidad .solo-navidad{display:block}
+body.navidad section.solo-navidad[hidden]{display:block}
+
+.deco-navidad::before{background-image:url("../img/fondo-navidad.svg")}
+
+/* ── Cinta superior ── */
+.cinta-navidad{
+  background:linear-gradient(90deg,var(--pino),var(--teal-dark) 55%,var(--pino));
+  color:#fff;font-size:.93rem;font-weight:600;
+}
+.cinta-navidad .wrap{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;padding-block:11px;text-align:center;
+}
+.cinta-navidad b{color:#ffe4a3;font-weight:800}
+.cinta-navidad svg{width:19px;height:19px;flex-shrink:0;color:#ffe4a3}
+.cinta-navidad a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+
+/* ── Las tres tarjetas ── */
+.nav-cards{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.nav-card{border-top:3px solid var(--oro-claro)}
+.nav-icono{
+  display:flex;align-items:center;justify-content:center;
+  width:90px;height:90px;border-radius:50%;
+  background:var(--oro-wash);margin-bottom:18px;
+}
+.nav-fig{width:62px;height:62px;color:var(--pino)}
+.nav-nariz{fill:var(--vino)}
+.nav-gorro{fill:var(--vino);stroke:var(--vino);stroke-width:3;stroke-linejoin:round}
+
+.nav-ojo{
+  margin-top:16px;padding:14px 16px;border-radius:var(--radius-s);
+  background:var(--vino-wash);border-left:3px solid var(--vino);
+  font-size:.94rem;color:var(--body);line-height:1.55;
+}
+.nav-ojo b{color:var(--vino)}
+
+/* ── Horario de fiestas ── */
+.nav-horario{
+  margin-top:34px;max-width:680px;margin-inline:auto;text-align:center;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:30px 28px;
+}
+.nav-horario h3{color:var(--navy);margin-bottom:8px}
+.nav-horario p{color:var(--muted);font-size:.97rem}
+.nav-dias{
+  list-style:none;margin:20px 0 18px;padding:0;
+  display:flex;flex-wrap:wrap;gap:9px;justify-content:center;
+}
+.nav-dias li{
+  background:var(--vino-wash);color:var(--vino);
+  font-weight:700;font-size:.93rem;
+  padding:9px 16px;border-radius:100px;
+}
+.nav-urgencia{font-size:.92rem}
+
+/* ── Un guiño dorado en los títulos de sección ── */
+body.navidad .section-head.center .eyebrow::before,
+body.navidad .section-head.center .eyebrow::after{
+  content:"\2726";color:var(--oro-claro);margin:0 9px;font-size:.9em;
+}

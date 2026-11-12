@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900" role="img" aria-hidden="true">
+  <defs>
+    <!-- El mismo desvanecido de los otros fondos, para que el motivo no
+         choque con el borde de la sección. -->
+    <linearGradient id="desvanecer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".18"  stop-color="#fff" stop-opacity="1"/>
+      <stop offset=".82"  stop-color="#fff" stop-opacity="1"/>
+      <stop offset="1"    stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="m"><rect width="1400" height="900" fill="url(#desvanecer)"/></mask>
+
+    <g id="pino">
+      <path d="M0-46 14-18H5l12 24H6l10 22H-16l10-22h-11l12-24h-9z"
+            fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linejoin="round"/>
+      <path d="M0 28v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+    <g id="estrella">
+      <path d="M0-13 3.6-3.6 13 0 3.6 3.6 0 13-3.6 3.6-13 0-3.6-3.6z"
+            fill="currentColor"/>
+    </g>
+    <g id="copo">
+      <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M0-15V15M-13-7.5 13 7.5M-13 7.5 13-7.5"/>
+        <path d="M0-15l-4 4M0-15l4 4M0 15l-4-4M0 15l4-4"/>
+      </g>
+    </g>
+    <g id="bastón">
+      <path d="M-7 22V2a9 9 0 0118 0" fill="none" stroke="currentColor"
+            stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <g mask="url(#m)">
+    <!-- Pinos, en el verde de marca -->
+    <g color="#30937b" opacity=".16">
+      <use href="#pino" transform="translate(120 190) scale(1.5)"/>
+      <use href="#pino" transform="translate(1270 250) scale(1.2)"/>
+      <use href="#pino" transform="translate(240 700) scale(1.1)"/>
+      <use href="#pino" transform="translate(1150 690) scale(1.55)"/>
+      <use href="#pino" transform="translate(640 120) scale(.85)"/>
+      <use href="#pino" transform="translate(820 790) scale(.95)"/>
+    </g>
+
+    <!-- Estrellas doradas -->
+    <g color="#b98a2e" opacity=".22">
+      <use href="#estrella" transform="translate(330 120) scale(.8)"/>
+      <use href="#estrella" transform="translate(1080 150)"/>
+      <use href="#estrella" transform="translate(520 640) scale(.65)"/>
+      <use href="#estrella" transform="translate(960 500) scale(.9)"/>
+      <use href="#estrella" transform="translate(180 460) scale(.7)"/>
+      <use href="#estrella" transform="translate(1320 560) scale(.75)"/>
+      <use href="#estrella" transform="translate(720 330) scale(.55)"/>
+    </g>
+
+    <!-- Copos, en el azul de marca -->
+    <g color="#1a4285" opacity=".13">
+      <use href="#copo" transform="translate(430 330)"/>
+      <use href="#copo" transform="translate(1210 410) scale(.8)"/>
+      <use href="#copo" transform="translate(760 600) scale(1.15)"/>
+      <use href="#copo" transform="translate(90 640) scale(.75)"/>
+      <use href="#copo" transform="translate(1000 760) scale(.9)"/>
+      <use href="#copo" transform="translate(560 190) scale(.7)"/>
+    </g>
+
+    <!-- Bastones, en el vino decorativo -->
+    <g color="#8c2f39" opacity=".15">
+      <use href="#bastón" transform="translate(260 380)"/>
+      <use href="#bastón" transform="translate(890 220) rotate(18)"/>
+      <use href="#bastón" transform="translate(1310 700) rotate(-12)"/>
+      <use href="#bastón" transform="translate(620 760) rotate(8)"/>
+    </g>
+  </g>
+</svg>

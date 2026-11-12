@@ -65,6 +65,24 @@ const CONFIG = {
     0: null,
     1: [8, 16], 2: [8, 16], 3: [8, 16], 4: [8, 16], 5: [8, 16],
     6: [8, 15]
+  },
+
+  // Días sueltos en que la clínica no abre, además de los domingos.
+  // La agenda deja de ofrecerlos y el rótulo de «abierto ahora» los
+  // respeta. Formato aaaa-mm-dd.
+  cerrados: [
+    '2026-12-24', '2026-12-25',   // Nochebuena y Navidad
+    '2026-12-30', '2026-12-31',   // fin de año
+    '2027-01-01', '2027-01-02'    // año nuevo
+  ],
+
+  // ── Temporada navideña ───────────────────────────────────
+  // El adorno se enciende y se apaga solo entre estas dos fechas.
+  // Nadie tiene que acordarse de quitarlo en enero, que es lo que
+  // de verdad pasa con las decoraciones de los sitios web.
+  navidad: {
+    desde: '2026-12-01',
+    hasta: '2027-01-06'
   }
 };
 
@@ -130,10 +148,30 @@ function formatHora(h) {
  * Calcula si la clínica está abierta ahora mismo y devuelve el texto
  * que se muestra en el indicador.
  */
+/** aaaa-mm-dd en hora local, sin que el huso corra el día. */
+function claveDia(f) {
+  return f.getFullYear() + '-' +
+         String(f.getMonth() + 1).padStart(2, '0') + '-' +
+         String(f.getDate()).padStart(2, '0');
+}
+
+/** ¿La clínica cierra ese día por feriado o asueto? */
+function estaCerrado(f) {
+  return (CONFIG.cerrados || []).indexOf(claveDia(f)) !== -1;
+}
+
+/** ¿Estamos dentro de la temporada navideña? */
+function esNavidad(ahora = new Date()) {
+  const n = CONFIG.navidad;
+  if (!n || !n.desde || !n.hasta) return false;
+  const hoy = claveDia(ahora);
+  return hoy >= n.desde && hoy <= n.hasta;
+}
+
 function estadoActual(ahora = new Date()) {
   const dia = ahora.getDay();
   const hora = ahora.getHours() + ahora.getMinutes() / 60;
-  const hoy = CONFIG.horario[dia];
+  const hoy = estaCerrado(ahora) ? null : CONFIG.horario[dia];
 
   if (hoy && hora >= hoy[0] && hora < hoy[1]) {
     return { abierto: true, texto: `Abierto ahora — cerramos a las ${formatHora(hoy[1])}` };
@@ -145,9 +183,11 @@ function estadoActual(ahora = new Date()) {
   }
 
   // Si no, buscamos el siguiente día con horario.
-  for (let i = 1; i <= 7; i++) {
-    const d = (dia + i) % 7;
-    const turno = CONFIG.horario[d];
+  for (let i = 1; i <= 14; i++) {
+    const f = new Date(ahora);
+    f.setDate(f.getDate() + i);
+    const d = f.getDay();
+    const turno = estaCerrado(f) ? null : CONFIG.horario[d];
     if (turno) {
       const cuando = i === 1 ? 'mañana' : `el ${DIAS[d]}`;
       return { abierto: false, texto: `Cerrado — abrimos ${cuando} a las ${formatHora(turno[0])}` };
@@ -165,6 +205,7 @@ function estadoActual(ahora = new Date()) {
 
 /** Bloques de una hora que cubren el horario de ese día. */
 function bloquesDe(fecha) {
+  if (estaCerrado(fecha)) return [];
   const turno = CONFIG.horario[fecha.getDay()];
   if (!turno) return [];
   const bloques = [];
@@ -799,6 +840,27 @@ function iniciarSuspensionDomicilio() {
 }
 
 
+/** La cinta de fiestas, encima del encabezado. */
+function ponerCintaNavidad() {
+  const cabecera = document.querySelector('.site-header');
+  if (!cabecera || document.querySelector('.cinta-navidad')) return;
+
+  const cinta = document.createElement('div');
+  cinta.className = 'cinta-navidad';
+  cinta.innerHTML =
+    '<div class="wrap">' +
+    // Un gorrito, que es más de temporada que una estrella.
+    '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M5 16c0-6 3-11 7-11s7 5 7 11z" fill="#b8434f"/>' +
+    '<rect x="3.5" y="15" width="17" height="3.6" rx="1.8" fill="currentColor"/>' +
+    '<path d="M12 5c2-2.6 4.6-3.6 6.4-3-.5 2.4-2.2 3.8-4 4.4" fill="#b8434f"/>' +
+    '<circle cx="19.4" cy="2.6" r="2" fill="currentColor"/></svg>' +
+    '<span>Felices fiestas. <b>Revisa nuestros días de cierre</b> antes de agendar: ' +
+    '<a href="#navidad">verlos aquí</a>.</span>' +
+    '</div>';
+  cabecera.parentNode.insertBefore(cinta, cabecera);
+}
+
 /** Dibuja una reseña aprobada. */
 function tarjetaResena(r) {
   const n = Math.max(1, Math.min(5, Number(r.estrellas) || 5));
@@ -934,6 +996,32 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   iniciarSuspensionDomicilio();
+
+  /* ── Navidad ─────────────────────────────────────────────
+     El adorno vive entre dos fechas y se apaga solo. Fuera de
+     temporada no se agrega la clase, así que la sección y la
+     cinta siguen ocultas por CSS y nadie tiene que acordarse
+     de quitarlas en enero.
+     --------------------------------------------------------- */
+  if (esNavidad()) {
+    document.body.classList.add('navidad');
+    document.querySelectorAll('.solo-navidad').forEach(el => { el.hidden = false; });
+
+    // Los días cerrados se escriben solos desde CONFIG, para que la
+    // lista y lo que bloquea la agenda no puedan contradecirse.
+    const lista = document.querySelector('[data-dias-cerrados]');
+    if (lista) {
+      (CONFIG.cerrados || []).forEach(clave => {
+        const f = new Date(clave + 'T12:00:00');
+        const li = document.createElement('li');
+        li.textContent = f.toLocaleDateString('es-GT',
+          { weekday: 'long', day: 'numeric', month: 'long' }).replace(',', '');
+        lista.append(li);
+      });
+    }
+
+    ponerCintaNavidad();
+  }
 
   /* ── Reseñas ─────────────────────────────────────────────
      Las aprobadas se piden al mismo script. Si no responde, se
