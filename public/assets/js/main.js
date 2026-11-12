@@ -81,8 +81,8 @@ const CONFIG = {
   // Nadie tiene que acordarse de quitarlo en enero, que es lo que
   // de verdad pasa con las decoraciones de los sitios web.
   navidad: {
-    desde: '2026-12-01',
-    hasta: '2027-01-06'
+    desde: '2026-11-12',
+    hasta: '2027-01-06'   // el 7 de enero el sitio amanece normal
   }
 };
 
