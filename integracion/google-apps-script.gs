@@ -311,24 +311,42 @@ const BASE = {
 /** Horas que se guarda el resultado antes de volver a contar. */
 const CACHE_CONTEO_MIN = 180;
 
+/**
+ * Zona en la que se cierran los días del conteo. Fija, para no
+ * depender de la zona del proyecto ni de la del calendario.
+ */
+const ZONA_CONTEO = 'America/Guatemala';
+
+/** Medianoche (inicio) de una fecha 'yyyy-MM-dd' en la zona del conteo. */
+function inicioDia(f) {
+  return Utilities.parseDate(f + ' 00:00:00', ZONA_CONTEO, 'yyyy-MM-dd HH:mm:ss');
+}
+
 function conteoAtenciones() {
+  const tz = ZONA_CONTEO;
+  const hoyTxt = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+
+  // La clave lleva la fecha: a la medianoche cambia y se cuenta el
+  // día que acaba de cerrar, sin esperar a que venza la caché.
   const cache = CacheService.getScriptCache();
-  const guardado = cache.get('conteo');
+  const guardado = cache.get('conteo-' + hoyTxt);
   if (guardado) return JSON.parse(guardado);
 
-  const zona = calendario().getTimeZone();
-  const hoy = new Date();
-  const ayer = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-  ayer.setDate(ayer.getDate() - 1);           // último día cerrado
+  const hoy = inicioDia(hoyTxt);                               // medianoche de hoy
+  const ayerTxt = Utilities.formatDate(new Date(hoy.getTime() - 86400000), tz, 'yyyy-MM-dd');
 
-  const desde = new Date(BASE.hasta + 'T00:00:00');
-  desde.setDate(desde.getDate() + 1);          // el día siguiente a la base
+  const desde = new Date(inicioDia(BASE.hasta).getTime() + 86400000); // día siguiente a la base
 
   const suma = { cd: BASE.cd, rcd: BASE.rcd, pa: BASE.pa, cg: BASE.cg };
+  let hasta = BASE.hasta;
 
-  if (desde <= ayer) {
-    const fin = new Date(ayer.getTime() + 24 * 3600 * 1000);
-    calendario().getEvents(desde, fin).forEach(function (ev) {
+  if (desde < hoy) {
+    hasta = ayerTxt;
+    calendario().getEvents(desde, hoy).forEach(function (ev) {
+      // getEvents trae también los que empezaron antes y siguen en curso;
+      // esos ya están en BASE.
+      if (ev.getStartTime() < desde) return;
+
       const t = normalizar(ev.getTitle());
       const esRe = /(^|[^A-Z])RCD([^A-Z]|$)|RE\s*-?\s*CONSULTA/.test(t);
       const esPA = /(^|[^A-Z])PA([^A-Z]|$)|PRUEBA\s+DE\s+ALERGIA|PANEL\s+DE\s+ALERGIA/.test(t);
@@ -348,9 +366,9 @@ function conteoAtenciones() {
   const salida = {
     ok: true,
     cd: suma.cd, rcd: suma.rcd, pa: suma.pa, cg: suma.cg,
-    hasta: Utilities.formatDate(ayer, zona, 'yyyy-MM-dd')
+    hasta: hasta
   };
-  cache.put('conteo', JSON.stringify(salida), CACHE_CONTEO_MIN * 60);
+  cache.put('conteo-' + hoyTxt, JSON.stringify(salida), CACHE_CONTEO_MIN * 60);
   return salida;
 }
 
@@ -373,8 +391,10 @@ function normalizar(texto) {
  * no devuelva el de hace un rato.
  */
 function probarConteo() {
-  CacheService.getScriptCache().remove('conteo');
+  const hoy = Utilities.formatDate(new Date(), ZONA_CONTEO, 'yyyy-MM-dd');
+  CacheService.getScriptCache().remove('conteo-' + hoy);
   const r = conteoAtenciones();
+  Logger.log('Hoy en Guatemala         : %s', hoy);
   Logger.log('Consultas dermatológicas : %s', r.cd);
   Logger.log('Reconsultas              : %s', r.rcd);
   Logger.log('Pruebas de alergia       : %s', r.pa);
