@@ -1338,6 +1338,26 @@ body.navidad .hero-card::before{
    izquierda rompe la sangría del texto. Ahí va solo el de la derecha. */
 body.navidad .hero-card .eyebrow::before{content:none}
 
+/* ── La foto de portada, en versión de temporada ──
+   La imagen es una banda de 3:1 con el perro a la derecha y verde
+   abierto al centro, justo donde cae la tarjeta. El relleno borroso
+   y el color de respaldo se cambian para que acompañen. */
+body.navidad .hero-foto{
+  background:linear-gradient(180deg,#0a4435 0%,#06412f 58%,#032a20 100%);
+}
+body.navidad .hero-foto::before{
+  background-image:url("../img/portada-navidad.webp");
+}
+body.navidad .hero-foto>img{object-fit:cover}
+
+@media (max-width:860px){
+  /* En celular la banda de 3:1 dejaría al perro diminuto. Se recorta
+     a una proporción usable y se encuadra en él. */
+  body.navidad .hero-foto>img{
+    aspect-ratio:16/11;object-fit:cover;object-position:right center;
+  }
+}
+
 /* ── Los destellos, ahora en todos los rótulos ── */
 body.navidad .eyebrow::before,
 body.navidad .eyebrow::after{

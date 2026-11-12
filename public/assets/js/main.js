@@ -1022,6 +1022,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ponerCintaNavidad();
 
+    // La foto de portada, en versión de temporada. Se cambia desde
+    // aquí y no en el HTML porque depende de la fecha.
+    const portada = document.querySelector('.hero-foto > img');
+    if (portada) {
+      portada.src = 'assets/img/portada-navidad.webp';
+      portada.width = 2000;
+      portada.height = 667;
+      portada.alt = 'Perro shih tzu con cuernos de reno y moño verde, ' +
+                    'junto a un árbol de Navidad y regalos';
+    }
+
     // El ícono de la pestaña, en versión de temporada. Se cambia desde
     // aquí y no en el HTML porque depende de la fecha.
     const icono = document.querySelector('link[rel="icon"]');
