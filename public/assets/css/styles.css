@@ -258,7 +258,13 @@ a:hover{color:var(--teal)}
 
 /* ─── Franja de confianza ─────────────────────────────────── */
 .trust{border-block:1px solid var(--line);background:var(--surface)}
-.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.trust-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line)}
+/* Cinco casillas: a 5 columnas encajan justas. A 3 y a 2 sobra la
+   última, así que se estira a lo que quede libre en su fila. */
+@media (max-width:1040px){
+  .trust-grid{grid-template-columns:repeat(3,1fr)}
+  .trust-item:last-child{grid-column:span 2}
+}
 .trust-item{background:var(--surface);padding:26px 22px;text-align:center;
   display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* El title reserva siempre el alto de dos renglones, así los subtítulos de
@@ -269,6 +275,7 @@ a:hover{color:var(--teal)}
 .trust-item span{font-size:.9rem;color:var(--muted);font-weight:600;line-height:1.4;display:block}
 @media (max-width:760px){
   .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .trust-item:last-child{grid-column:1/-1}
   .trust-item{padding:20px 14px}
   .trust-item b{font-size:1.4rem}
 }
