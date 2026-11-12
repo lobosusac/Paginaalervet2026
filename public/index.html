@@ -391,6 +391,86 @@
     </div>
   </section>
 
+  <!-- ── Reseñas ────────────────────────────────────────── -->
+  <section class="section section-deco deco-botanico" id="resenas">
+    <div class="wrap">
+      <div class="section-head center">
+        <p class="eyebrow">Opiniones</p>
+        <h2>Lo que dicen quienes ya vinieron</h2>
+        <p>Reseñas de tutores que trajeron a su mascota con nosotros.</p>
+      </div>
+
+      <!-- Se llenan con las reseñas aprobadas. Hasta que el Apps Script
+           responda, se ve el aviso de abajo en lugar de un hueco. -->
+      <div class="resenas" data-resenas hidden></div>
+
+      <p class="resenas-vacio" data-resenas-vacio>
+        Todavía no hay reseñas publicadas. Si ya viniste con nosotros, tu opinión le sirve
+        a quien está decidiendo.
+      </p>
+
+      <div class="panel resena-form" id="dejar-resena">
+        <h3>Deja tu opinión</h3>
+        <p class="resena-intro">La revisamos antes de publicarla. Tu correo no aparece en la página: lo usamos solo por si necesitamos escribirte.</p>
+
+        <form class="form" data-form-resena>
+          <p class="reserva-error" data-error hidden></p>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="re-nombre">Tu nombre <span class="req">*</span></label>
+              <input id="re-nombre" name="nombre" type="text" required autocomplete="name" maxlength="60">
+            </div>
+            <div class="field">
+              <label for="re-correo">Correo electrónico <span class="req">*</span></label>
+              <input id="re-correo" name="correo" type="email" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="re-mascota">Nombre de tu mascota</label>
+            <input id="re-mascota" name="mascota" type="text" maxlength="40" placeholder="Opcional">
+          </div>
+
+          <div class="field">
+            <span class="etiqueta-estrellas" id="re-cal">Tu calificación <span class="req">*</span></span>
+            <div class="estrellas-elige" role="radiogroup" aria-labelledby="re-cal">
+              <input type="radio" id="re-e5" name="estrellas" value="5" required><label for="re-e5" title="5 estrellas">&#9733;</label>
+              <input type="radio" id="re-e4" name="estrellas" value="4"><label for="re-e4" title="4 estrellas">&#9733;</label>
+              <input type="radio" id="re-e3" name="estrellas" value="3"><label for="re-e3" title="3 estrellas">&#9733;</label>
+              <input type="radio" id="re-e2" name="estrellas" value="2"><label for="re-e2" title="2 estrellas">&#9733;</label>
+              <input type="radio" id="re-e1" name="estrellas" value="1"><label for="re-e1" title="1 estrella">&#9733;</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="re-comentario">Tu comentario <span class="req">*</span></label>
+            <textarea id="re-comentario" name="comentario" required minlength="10" maxlength="1200"
+                      placeholder="¿Qué le pasaba a tu mascota y cómo le fue?"></textarea>
+          </div>
+
+          <!-- Señuelo para robots: va oculto, una persona nunca lo llena. -->
+          <div class="trampa" aria-hidden="true">
+            <label for="re-sitio">No llenar</label>
+            <input id="re-sitio" name="sitio" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div>
+            <button class="btn btn-solid" type="submit">Enviar mi opinión</button>
+          </div>
+        </form>
+
+        <div class="reserva-ok" data-resena-ok hidden>
+          <div class="tick">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h3>¡Gracias por escribirnos!</h3>
+          <p>La leemos y la publicamos en los próximos días. No aparece de una vez porque revisamos todas antes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Contacto ───────────────────────────────────────── -->
   <section class="section section-alt" id="contacto">
     <div class="wrap narrow">

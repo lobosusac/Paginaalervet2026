@@ -1144,3 +1144,58 @@ a.bifurca-op:hover .bifurca-mas{color:var(--teal-darker)}
 @media (prefers-reduced-motion:reduce){
   .ev-barra i{transition:none}
 }
+
+/* ─── Reseñas ─────────────────────────────────────────────
+   Las aprobadas se dibujan solas; el formulario queda debajo.
+   --------------------------------------------------------- */
+.resenas{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:18px;margin-bottom:34px;
+}
+.resena{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px 24px 22px;display:flex;flex-direction:column;gap:11px;
+  box-shadow:0 1px 2px rgba(26,66,133,.04),0 14px 36px -28px rgba(26,66,133,.3);
+}
+.resena blockquote{margin:0;font-size:1rem;line-height:1.6;color:var(--body)}
+.resena blockquote::before{content:"\201C"}
+.resena blockquote::after{content:"\201D"}
+.resena-pie{margin-top:auto;padding-top:6px}
+.resena-pie b{display:block;color:var(--ink);font-size:.97rem}
+.resena-pie span{font-size:.87rem;color:var(--muted)}
+
+.estrellas{display:flex;gap:3px;color:var(--ambar);font-size:1.05rem;line-height:1}
+.estrellas i{font-style:normal}
+.estrellas i.vacia{color:var(--line)}
+
+.resenas-vacio{
+  text-align:center;color:var(--muted);font-size:.98rem;
+  max-width:520px;margin:0 auto 34px;
+}
+
+.resena-form{max-width:720px;margin-inline:auto}
+.resena-form h3{color:var(--navy);margin-bottom:8px}
+.resena-intro{font-size:.95rem;color:var(--muted);margin-bottom:22px}
+
+/* Las estrellas para elegir van al revés en el marcado, de 5 a 1, para
+   que al pasar por una se pinten también las de su izquierda. */
+.etiqueta-estrellas{
+  display:block;font-weight:700;font-size:.93rem;color:var(--ink);margin-bottom:8px;
+}
+.estrellas-elige{display:inline-flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px}
+.estrellas-elige input{position:absolute;opacity:0;width:0;height:0}
+.estrellas-elige label{
+  font-size:2rem;line-height:1;color:var(--line);cursor:pointer;
+  transition:color .12s ease,transform .12s ease;
+}
+.estrellas-elige label:hover,
+.estrellas-elige label:hover ~ label,
+.estrellas-elige input:checked ~ label{color:var(--ambar)}
+.estrellas-elige label:hover{transform:scale(1.12)}
+.estrellas-elige input:focus-visible + label{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+
+/* El señuelo para robots: fuera de la vista, pero no display:none,
+   porque algunos lo detectan y lo saltan. */
+.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+[data-resena-ok] .tick{margin-inline:auto}

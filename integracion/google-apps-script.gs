@@ -41,7 +41,9 @@ function doGet(e) {
   try {
     const accion = (e.parameter.accion || '').trim();
 
-    if (accion === 'conteo') return responder(conteoAtenciones());
+    if (accion === 'conteo')  return responder(conteoAtenciones());
+    if (accion === 'resenas') return responder({ ok: true, resenas: resenasAprobadas() });
+    if (accion === 'moderar') return moderar(e.parameter.id, e.parameter.v);
 
     if (accion !== 'disponibilidad') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
@@ -58,6 +60,9 @@ function doGet(e) {
 function doPost(e) {
   try {
     const datos = JSON.parse(e.postData.contents);
+
+    if (datos.accion === 'resena') return guardarResena(datos);
+
     if (datos.accion !== 'reservar') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
     // ── Validación ──
@@ -379,4 +384,212 @@ function probarConteo() {
   Logger.log('Si estos números son menores que los de la página, el');
   Logger.log('calendario que lee el script no es el de recepción.');
   return r;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   Reseñas de clientes
+   ----------------------------------------------------------
+   Quien quiere dejar su opinión llena el formulario del sitio.
+   La reseña NO aparece sola: cae en una hoja de cálculo con
+   «Aprobado» en NO, y a la clínica le llega un correo con el
+   texto y dos enlaces, Aprobar y Rechazar. Solo lo aprobado se
+   publica.
+
+   La hoja se crea sola la primera vez y su identificador queda
+   guardado, así que no hay nada que configurar a mano.
+
+   El correo de quien escribe se guarda para poder contactarlo,
+   pero NUNCA sale publicado: resenasAprobadas() no lo devuelve.
+   ══════════════════════════════════════════════════════════ */
+
+const HOJA_RESENAS = 'Reseñas';
+const ENCABEZADOS = ['Fecha', 'Nombre', 'Correo', 'Mascota',
+                     'Estrellas', 'Comentario', 'Aprobado', 'Clave'];
+const TOPE_RESENAS_POR_CORREO = 2;
+
+/** La hoja donde viven las reseñas. La crea si todavía no existe. */
+function hojaResenas() {
+  const props = PropertiesService.getScriptProperties();
+  let id = props.getProperty('HOJA_RESENAS_ID');
+  let libro = null;
+
+  if (id) {
+    try { libro = SpreadsheetApp.openById(id); } catch (err) { libro = null; }
+  }
+  if (!libro) {
+    libro = SpreadsheetApp.create('Alervet — Reseñas del sitio web');
+    props.setProperty('HOJA_RESENAS_ID', libro.getId());
+  }
+
+  let hoja = libro.getSheetByName(HOJA_RESENAS);
+  if (!hoja) {
+    hoja = libro.getSheets()[0];
+    hoja.setName(HOJA_RESENAS);
+  }
+  if (hoja.getLastRow() === 0) {
+    hoja.appendRow(ENCABEZADOS);
+    hoja.getRange(1, 1, 1, ENCABEZADOS.length).setFontWeight('bold');
+    hoja.setFrozenRows(1);
+  }
+  return hoja;
+}
+
+/** Dirección de la hoja, para abrirla desde el correo. */
+function urlHojaResenas() {
+  const id = PropertiesService.getScriptProperties().getProperty('HOJA_RESENAS_ID');
+  return id ? 'https://docs.google.com/spreadsheets/d/' + id + '/edit' : '';
+}
+
+function guardarResena(datos) {
+  const nombre     = String(datos.nombre || '').trim();
+  const correo     = String(datos.correo || '').trim();
+  const mascota    = String(datos.mascota || '').trim();
+  const comentario = String(datos.comentario || '').trim();
+  const estrellas  = Math.round(Number(datos.estrellas) || 0);
+
+  // Campo señuelo: está oculto en la página, así que si viene lleno
+  // lo rellenó un robot. Se responde bien para que no insista.
+  if (String(datos.sitio || '').trim()) return responder({ ok: true });
+
+  if (!nombre || nombre.length < 2)   return responder({ ok: false, mensaje: 'Falta tu nombre.' });
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo))
+                                      return responder({ ok: false, mensaje: 'El correo no parece válido.' });
+  if (estrellas < 1 || estrellas > 5) return responder({ ok: false, mensaje: 'Elige de 1 a 5 estrellas.' });
+  if (comentario.length < 10)         return responder({ ok: false, mensaje: 'Cuéntanos un poco más, por favor.' });
+  if (comentario.length > 1200)       return responder({ ok: false, mensaje: 'El comentario es demasiado largo.' });
+
+  const hoja = hojaResenas();
+
+  // Freno a quien manda la misma reseña varias veces.
+  if (hoja.getLastRow() > 1) {
+    const correos = hoja.getRange(2, 3, hoja.getLastRow() - 1, 1).getValues();
+    const repetidas = correos.filter(function (f) {
+      return String(f[0]).trim().toLowerCase() === correo.toLowerCase();
+    }).length;
+    if (repetidas >= TOPE_RESENAS_POR_CORREO) {
+      return responder({ ok: false, mensaje: 'Ya recibimos tu opinión. ¡Gracias!' });
+    }
+  }
+
+  const clave = Utilities.getUuid();
+  hoja.appendRow([new Date(), nombre, correo, mascota, estrellas, comentario, 'NO', clave]);
+
+  avisarResena({ nombre: nombre, correo: correo, mascota: mascota,
+                 estrellas: estrellas, comentario: comentario, clave: clave });
+
+  return responder({ ok: true });
+}
+
+/** Correo a la clínica con el texto y los dos enlaces de moderación. */
+function avisarResena(r) {
+  if (!AJUSTES.CORREO_AVISO) return;
+
+  const base = ScriptApp.getService().getUrl();
+  const si = base + '?accion=moderar&id=' + encodeURIComponent(r.clave) + '&v=si';
+  const no = base + '?accion=moderar&id=' + encodeURIComponent(r.clave) + '&v=no';
+
+  const cuerpo =
+    '<p style="font:600 15px sans-serif">Nueva reseña, pendiente de aprobar</p>' +
+    '<table style="font:14px sans-serif;border-collapse:collapse">' +
+    fila('Nombre', r.nombre) + fila('Correo', r.correo) +
+    fila('Mascota', r.mascota || '—') +
+    fila('Calificación', r.estrellas + ' de 5') +
+    '</table>' +
+    '<p style="font:14px sans-serif;background:#f3f4f2;padding:14px 16px;' +
+    'border-left:3px solid #287c68;white-space:pre-wrap">' + escapar(r.comentario) + '</p>' +
+    '<p style="font:14px sans-serif">' +
+    '<a href="' + si + '" style="background:#287c68;color:#fff;text-decoration:none;' +
+    'padding:11px 20px;border-radius:100px;display:inline-block">Aprobar y publicar</a>' +
+    '&nbsp;&nbsp;&nbsp;' +
+    '<a href="' + no + '" style="color:#a01a18">Rechazar</a></p>' +
+    '<p style="font:12px sans-serif;color:#666">Hasta que no se apruebe, no aparece en la ' +
+    'página. También se puede cambiar la columna «Aprobado» directamente en ' +
+    '<a href="' + urlHojaResenas() + '">la hoja de reseñas</a>.</p>';
+
+  try {
+    MailApp.sendEmail({
+      to: AJUSTES.CORREO_AVISO,
+      subject: 'Reseña por aprobar — ' + r.nombre + ' (' + r.estrellas + '/5)',
+      htmlBody: cuerpo
+    });
+  } catch (err) {}
+
+  function fila(etiqueta, valor) {
+    return '<tr><td style="padding:3px 14px 3px 0;color:#666">' + etiqueta +
+           '</td><td style="padding:3px 0"><b>' + escapar(String(valor)) + '</b></td></tr>';
+  }
+}
+
+function escapar(texto) {
+  return String(texto)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/** Aprueba o rechaza desde el enlace del correo. */
+function moderar(clave, valor) {
+  const aprobar = valor === 'si';
+  if (!clave) return paginaModeracion('Enlace incompleto.', false);
+
+  const hoja = hojaResenas();
+  if (hoja.getLastRow() < 2) return paginaModeracion('No hay reseñas registradas.', false);
+
+  const claves = hoja.getRange(2, 8, hoja.getLastRow() - 1, 1).getValues();
+  for (let i = 0; i < claves.length; i++) {
+    if (String(claves[i][0]) === String(clave)) {
+      hoja.getRange(i + 2, 7).setValue(aprobar ? 'SI' : 'NO');
+      const nombre = hoja.getRange(i + 2, 2).getValue();
+      return paginaModeracion(
+        aprobar ? 'Listo. La reseña de ' + nombre + ' ya aparece en la página.'
+                : 'La reseña de ' + nombre + ' no se publicará.', aprobar);
+    }
+  }
+  return paginaModeracion('No encontramos esa reseña. Puede que el enlace sea viejo.', false);
+}
+
+function paginaModeracion(mensaje, bien) {
+  const color = bien ? '#287c68' : '#59646e';
+  return HtmlService.createHtmlOutput(
+    '<div style="font:16px/1.6 sans-serif;max-width:460px;margin:60px auto;text-align:center;' +
+    'color:#22303f"><div style="font-size:40px;color:' + color + '">' +
+    (bien ? '&#10003;' : '&#9679;') + '</div>' +
+    '<p>' + escapar(mensaje) + '</p>' +
+    '<p style="font-size:14px;color:#59646e"><a href="' + urlHojaResenas() +
+    '" style="color:#287c68">Ver todas las reseñas</a></p></div>')
+    .setTitle('Alervet — Reseñas');
+}
+
+/** Las aprobadas, de la más reciente a la más vieja. Sin correos. */
+function resenasAprobadas() {
+  const hoja = hojaResenas();
+  if (hoja.getLastRow() < 2) return [];
+
+  const filas = hoja.getRange(2, 1, hoja.getLastRow() - 1, ENCABEZADOS.length).getValues();
+  const zona = calendario().getTimeZone();
+
+  return filas
+    .filter(function (f) { return String(f[6]).trim().toUpperCase() === 'SI'; })
+    .map(function (f) {
+      return {
+        nombre: String(f[1]),
+        mascota: String(f[3]),
+        estrellas: Number(f[4]) || 5,
+        comentario: String(f[5]),
+        fecha: f[0] instanceof Date ? Utilities.formatDate(f[0], zona, 'yyyy-MM-dd') : ''
+      };
+    })
+    .reverse();
+}
+
+/**
+ * Para probar las reseñas desde el editor, sin publicar nada.
+ * Crea la hoja si falta, mete una reseña de prueba y enseña dónde quedó.
+ */
+function probarResenas() {
+  const hoja = hojaResenas();
+  Logger.log('Hoja de reseñas: %s', urlHojaResenas());
+  Logger.log('Filas registradas: %s', Math.max(hoja.getLastRow() - 1, 0));
+  Logger.log('Aprobadas y visibles en el sitio: %s', resenasAprobadas().length);
+  Logger.log('');
+  Logger.log('Si es la primera vez, la hoja acaba de crearse y está vacía.');
 }

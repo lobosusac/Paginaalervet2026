@@ -799,6 +799,42 @@ function iniciarSuspensionDomicilio() {
 }
 
 
+/** Dibuja una reseña aprobada. */
+function tarjetaResena(r) {
+  const n = Math.max(1, Math.min(5, Number(r.estrellas) || 5));
+
+  const art = document.createElement('article');
+  art.className = 'resena';
+
+  const estrellas = document.createElement('div');
+  estrellas.className = 'estrellas';
+  estrellas.setAttribute('aria-label', n + ' de 5 estrellas');
+  for (let i = 1; i <= 5; i++) {
+    const e = document.createElement('i');
+    e.textContent = '★';
+    if (i > n) e.className = 'vacia';
+    e.setAttribute('aria-hidden', 'true');
+    estrellas.append(e);
+  }
+
+  const cita = document.createElement('blockquote');
+  cita.textContent = r.comentario;
+
+  const pie = document.createElement('div');
+  pie.className = 'resena-pie';
+  const quien = document.createElement('b');
+  quien.textContent = r.nombre;
+  pie.append(quien);
+  if (r.mascota) {
+    const m = document.createElement('span');
+    m.textContent = 'Tutor de ' + r.mascota;
+    pie.append(m);
+  }
+
+  art.append(estrellas, cita, pie);
+  return art;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Menú en celular ─────────────────────────────────────── */
@@ -898,6 +934,65 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   iniciarSuspensionDomicilio();
+
+  /* ── Reseñas ─────────────────────────────────────────────
+     Las aprobadas se piden al mismo script. Si no responde, se
+     queda el aviso de que todavía no hay ninguna, que es mejor
+     que un hueco o un error.
+     --------------------------------------------------------- */
+  const cajaResenas = document.querySelector('[data-resenas]');
+  if (cajaResenas && CONFIG.reservas.endpoint) {
+    fetch(CONFIG.reservas.endpoint + '?accion=resenas')
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(d => {
+        if (!d || !d.ok || !Array.isArray(d.resenas) || !d.resenas.length) return;
+        cajaResenas.textContent = '';
+        d.resenas.forEach(r => cajaResenas.append(tarjetaResena(r)));
+        cajaResenas.hidden = false;
+        const vacio = document.querySelector('[data-resenas-vacio]');
+        if (vacio) vacio.hidden = true;
+      })
+      .catch(err => console.warn('[Alervet] No se pudieron cargar las reseñas:', err));
+  }
+
+  const formResena = document.querySelector('[data-form-resena]');
+  if (formResena) {
+    formResena.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!formResena.reportValidity()) return;
+
+      const error = formResena.querySelector('[data-error]');
+      const boton = formResena.querySelector('button[type="submit"]');
+      const texto = boton.textContent;
+      error.hidden = true;
+      boton.setAttribute('aria-busy', 'true');
+      boton.textContent = 'Enviando…';
+
+      const datos = Object.fromEntries(
+        [...new FormData(formResena).entries()].map(([k, v]) => [k, String(v).trim()])
+      );
+
+      try {
+        const r = await fetch(CONFIG.reservas.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ accion: 'resena', ...datos })
+        });
+        const resp = await r.json();
+        if (!resp.ok) throw new Error(resp.mensaje || 'No se pudo enviar.');
+
+        formResena.hidden = true;
+        document.querySelector('[data-resena-ok]').hidden = false;
+      } catch (err) {
+        error.textContent = err.message ||
+          'No pudimos enviar tu opinión. Intenta de nuevo o escríbenos por WhatsApp.';
+        error.hidden = false;
+      } finally {
+        boton.removeAttribute('aria-busy');
+        boton.textContent = texto;
+      }
+    });
+  }
 
   /* ── Conteo de atenciones ────────────────────────────────
      Los números de la franja vienen escritos en el HTML con el
