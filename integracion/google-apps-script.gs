@@ -330,3 +330,28 @@ function normalizar(texto) {
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .toUpperCase();
 }
+
+
+/**
+ * Para probar el conteo desde el editor, sin publicar nada.
+ *
+ * Seleccionar «probarConteo» en la lista de funciones, darle a
+ * Ejecutar, y mirar el registro de abajo. Debe imprimir los cuatro
+ * números y hasta qué día cuentan.
+ *
+ * Borra primero el resultado guardado, para que cuente de verdad y
+ * no devuelva el de hace un rato.
+ */
+function probarConteo() {
+  CacheService.getScriptCache().remove('conteo');
+  const r = conteoAtenciones();
+  Logger.log('Consultas dermatológicas : %s', r.cd);
+  Logger.log('Reconsultas              : %s', r.rcd);
+  Logger.log('Pruebas de alergia       : %s', r.pa);
+  Logger.log('Consultas generales      : %s', r.cg);
+  Logger.log('Contado hasta            : %s', r.hasta);
+  Logger.log('');
+  Logger.log('Si estos números son menores que los de la página, el');
+  Logger.log('calendario que lee el script no es el de recepción.');
+  return r;
+}
