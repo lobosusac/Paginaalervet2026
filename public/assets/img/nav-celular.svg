@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900" role="img" aria-hidden="true">
+  <!-- Capa de temporada para el fondo «celular». Los objetos riman
+       con los motivos que ya tiene la sección y van en los márgenes,
+       no detrás del texto. Se apaga sola fuera de la temporada. -->
+  <defs>
+    <linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".2" stop-color="#fff" stop-opacity="1"/>
+      <stop offset=".8" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="m"><rect width="1400" height="900" fill="url(#d)"/></mask>
+    <g id="copo" stroke="#5b86c9" stroke-width="2.4" stroke-linecap="round" fill="none">
+    <path d="M0-15V15M-13-7.5 13 7.5M-13 7.5 13-7.5"/>
+    <path d="M0-15l-4 4M0-15l4 4M0 15l-4-4M0 15l4-4"/>
+  </g>
+    <g id="esfera">
+    <circle cx="0" cy="4" r="15" fill="none" stroke="#2f7d68" stroke-width="3"/>
+    <path d="M-13 0a15 15 0 0126 0" fill="none" stroke="#c9a24a" stroke-width="2.6"/>
+    <rect x="-4" y="-14" width="8" height="6" rx="1.6" fill="#c9a24a"/>
+    <path d="M0-14v-5a3.5 3.5 0 017 0" fill="none" stroke="#c9a24a" stroke-width="2.4"/>
+  </g>
+    <g id="estrella"><path d="M0-14 3.9-3.9 14 0 3.9 3.9 0 14-3.9 3.9-14 0-3.9-3.9z" fill="#c9a24a"/></g>
+  </defs>
+  <g mask="url(#m)" opacity=".3">
+    <use href="#esfera" transform="translate(140 200) scale(1.6)"/>
+    <use href="#esfera" transform="translate(1260 300) scale(1.25)"/>
+    <use href="#esfera" transform="translate(250 700) scale(1.35)"/>
+    <use href="#estrella" transform="translate(1150 150) scale(0.85)"/>
+    <use href="#esfera" transform="translate(1180 740) scale(1.1)"/>
+    <use href="#copo" transform="translate(380 120) scale(0.9)"/>
+  </g>
+</svg>

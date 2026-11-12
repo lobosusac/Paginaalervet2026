@@ -1302,6 +1302,23 @@ body.navidad .trust::after{
 /* Sobre el lavado de color de las secciones decoradas se nota más,
    así que ahí va todavía más tenue. */
 body.navidad .section-deco::after{opacity:.055}
+
+/* Cada sección decorada cambia el mosaico genérico por una capa propia,
+   con objetos que riman con sus motivos: esferas donde hay partículas de
+   alérgeno, un trineo donde hay una ruta, bastones donde hay agujas. La
+   opacidad va horneada en el archivo, por eso aquí sube a 1. */
+body.navidad .section-deco::after{
+  background-size:100% auto;background-repeat:no-repeat;background-position:center;
+  opacity:1;
+}
+body.navidad .section-deco::after            {background-image:url("../img/nav-clinico.svg")}
+body.navidad .deco-derma::after              {background-image:url("../img/nav-derma.svg")}
+body.navidad .deco-celular::after            {background-image:url("../img/nav-celular.svg")}
+body.navidad .deco-botanico::after           {background-image:url("../img/nav-botanico.svg")}
+body.navidad .deco-ruta::after               {background-image:url("../img/nav-ruta.svg")}
+body.navidad .deco-agenda::after             {background-image:url("../img/nav-agenda.svg")}
+body.navidad .deco-inmuno::after             {background-image:url("../img/nav-inmuno.svg")}
+body.navidad .deco-acupuntura::after         {background-image:url("../img/nav-acupuntura.svg")}
 /* La franja de números es blanca y pequeña: el mosaico se come los
    dígitos si no se baja. */
 body.navidad .trust::after{opacity:.045;background-size:300px 300px}

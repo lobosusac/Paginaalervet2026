@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900" role="img" aria-hidden="true">
+  <!-- Capa de temporada para el fondo «ruta». Los objetos riman
+       con los motivos que ya tiene la sección y van en los márgenes,
+       no detrás del texto. Se apaga sola fuera de la temporada. -->
+  <defs>
+    <linearGradient id="d" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".2" stop-color="#fff" stop-opacity="1"/>
+      <stop offset=".8" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="m"><rect width="1400" height="900" fill="url(#d)"/></mask>
+    <g id="copo" stroke="#5b86c9" stroke-width="2.4" stroke-linecap="round" fill="none">
+    <path d="M0-15V15M-13-7.5 13 7.5M-13 7.5 13-7.5"/>
+    <path d="M0-15l-4 4M0-15l4 4M0 15l-4-4M0 15l4-4"/>
+  </g>
+    <g id="estrella"><path d="M0-14 3.9-3.9 14 0 3.9 3.9 0 14-3.9 3.9-14 0-3.9-3.9z" fill="#c9a24a"/></g>
+    <g id="regalo">
+    <rect x="-16" y="-6" width="32" height="24" rx="2" fill="#2f7d68"/>
+    <rect x="-18" y="-10" width="36" height="8" rx="2" fill="#2f7d68"/>
+    <rect x="-3.5" y="-10" width="7" height="28" fill="#c9a24a"/>
+    <path d="M-3-10c-8-2-12-8-8-11s8 4 8 11M3-10c8-2 12-8 8-11s-8 4-8 11" fill="#c9a24a"/>
+  </g>
+    <g id="reno">
+    <g fill="none" stroke="#2f7d68" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-7-14c-7-6-11-13-10-20 6 3 10 8 13 14"/>
+      <path d="M-14-29c-6-3-12-2-16 2"/>
+      <path d="M-11-22c-5-1-9 1-12 4"/>
+      <path d="M7-14c7-6 11-13 10-20-6 3-10 8-13 14"/>
+      <path d="M14-29c6-3 12-2 16 2"/>
+      <path d="M11-22c5-1 9 1 12 4"/>
+    </g>
+    <ellipse cx="0" cy="2" rx="13" ry="16" fill="none" stroke="#2f7d68" stroke-width="3"/>
+    <circle cx="-5" cy="-1" r="2.2" fill="#2f7d68"/><circle cx="5" cy="-1" r="2.2" fill="#2f7d68"/>
+    <circle cx="0" cy="11" r="4.5" fill="#b8434f"/>
+  </g>
+    <g id="trineo">
+    <path d="M-20 6h34l6-14H-14z" fill="none" stroke="#b8434f" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-24 14h42a6 6 0 006-6" fill="none" stroke="#b8434f" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-14 6v8M6 6v8" stroke="#b8434f" stroke-width="2.6"/>
+    <rect x="-10" y="-16" width="16" height="9" rx="2" fill="#c9a24a"/>
+  </g>
+  </defs>
+  <g mask="url(#m)" opacity=".3">
+    <use href="#trineo" transform="translate(1230 230) scale(1.5)"/>
+    <use href="#reno" transform="translate(150 200) scale(1.4)"/>
+    <use href="#reno" transform="translate(270 700) scale(1.15)"/>
+    <use href="#regalo" transform="translate(1190 740) scale(1.2)"/>
+    <use href="#estrella" transform="translate(620 110) scale(0.8)"/>
+    <use href="#copo" transform="translate(900 820) scale(0.95)"/>
+  </g>
+</svg>
