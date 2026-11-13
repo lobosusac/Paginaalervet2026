@@ -8,7 +8,7 @@
 const CONFIG = {
   whatsapp: '50234819108',            // Con código de país (502) y sin espacios
   telefono: '3481 9108',              // Número principal
-  correo: 'info@alervet.com',
+  correo: 'recepcionalervet@gmail.com',
 
   // ── Servicio a domicilio ─────────────────────────────────
   // Suspendido de forma indefinida. Mientras «suspendido» sea true,
