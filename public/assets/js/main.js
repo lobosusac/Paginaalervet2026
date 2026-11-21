@@ -83,6 +83,20 @@ const CONFIG = {
   navidad: {
     desde: '2026-11-12',
     hasta: '2027-01-06'   // el 7 de enero el sitio amanece normal
+  },
+
+  /* Temporada de cohetes. Enciende el enlace del menú y el bloque de
+     la portada; la página flores-de-bach.html queda disponible todo
+     el año, porque en Guatemala hay pirotecnia fuera de diciembre.
+     Las fechas son las noches fuertes, en orden. */
+  cohetes: {
+    desde: '2026-11-21',
+    hasta: '2027-01-07',   // el 8 de enero el sitio amanece normal
+    fechas: [
+      { dia: '2026-12-07', nombre: 'la Quema del Diablo' },
+      { dia: '2026-12-24', nombre: 'la Nochebuena' },
+      { dia: '2026-12-31', nombre: 'el Año Nuevo' }
+    ]
   }
 };
 
@@ -166,6 +180,58 @@ function esNavidad(ahora = new Date()) {
   if (!n || !n.desde || !n.hasta) return false;
   const hoy = claveDia(ahora);
   return hoy >= n.desde && hoy <= n.hasta;
+}
+
+/** ¿Estamos dentro de la temporada de cohetes? */
+function esTemporadaCohetes(ahora = new Date()) {
+  const c = CONFIG.cohetes;
+  if (!c || !c.desde || !c.hasta) return false;
+  const hoy = claveDia(ahora);
+  return hoy >= c.desde && hoy <= c.hasta;
+}
+
+/** Días entre dos claves aaaa-mm-dd, sin que el huso corra el día. */
+function diasEntre(a, b) {
+  const [a1, a2, a3] = a.split('-').map(Number);
+  const [b1, b2, b3] = b.split('-').map(Number);
+  return Math.round((new Date(b1, b2 - 1, b3) - new Date(a1, a2 - 1, a3)) / 86400000);
+}
+
+/** La próxima noche fuerte que queda por delante, o null si ya pasaron. */
+function proximaNocheFuerte(ahora = new Date()) {
+  const fechas = (CONFIG.cohetes || {}).fechas || [];
+  const hoy = claveDia(ahora);
+  const sig = fechas.find(f => f.dia >= hoy);
+  return sig ? { nombre: sig.nombre, dia: sig.dia, dias: diasEntre(hoy, sig.dia),
+                 primera: fechas[0].dia === sig.dia } : null;
+}
+
+/**
+ * Escribe la cuenta regresiva y tacha las noches que ya pasaron.
+ * Antes de la primera, el texto además recuerda cuándo empezar la
+ * fórmula; después ya solo cuenta los días.
+ */
+function ponerCuentaCohetes() {
+  const p = proximaNocheFuerte();
+
+  document.querySelectorAll('[data-cuenta]').forEach(el => {
+    if (!p) { el.hidden = true; return; }
+    if (p.dias === 0) {
+      el.textContent = `Hoy es ${p.nombre}.`;
+    } else {
+      const falta = p.dias === 1 ? 'Falta 1 día' : `Faltan ${p.dias} días`;
+      el.textContent =
+        !p.primera            ? `${falta} para ${p.nombre}.`
+        : p.dias > 14         ? `${falta} para ${p.nombre}. La fórmula conviene empezarla una o dos semanas antes.`
+        :                       `${falta} para ${p.nombre}: es momento de empezar la fórmula.`;
+    }
+    el.hidden = false;
+  });
+
+  const hoy = claveDia(new Date());
+  document.querySelectorAll('[data-fechas] li[data-dia]').forEach(li => {
+    if (li.dataset.dia < hoy) li.classList.add('pasada');
+  });
 }
 
 function estadoActual(ahora = new Date()) {
@@ -694,6 +760,69 @@ function lineasServicio(nombre) {
   return precios[nombre] ? [{ etiqueta: nombre, monto: precios[nombre] }] : [];
 }
 
+/* ─────────────────────────────────────────────────────────
+   Haz tu pedido (flores de Bach)
+
+   No hay servidor: el formulario arma el mensaje y lo manda por
+   WhatsApp. Por eso nada se guarda aquí, y así se lo decimos al
+   cliente debajo del botón.
+   --------------------------------------------------------- */
+function iniciarPedido() {
+  const form = document.querySelector('[data-pedido]');
+  if (!form) return;
+
+  const especie = form.querySelector('#p-especie');
+  const otra    = form.querySelector('[data-especie-otra]');
+  const entrega = form.querySelector('#p-entrega');
+  const envio   = form.querySelector('[data-envio]');
+  const error   = form.querySelector('[data-error]');
+
+  /* Un campo escondido y obligatorio bloquea el envío sin que el
+     cliente vea por qué: el required se pone y se quita con el campo. */
+  const exigir = (caja, si) => {
+    caja.hidden = !si;
+    caja.querySelectorAll('input').forEach(i => {
+      if (si) { i.setAttribute('required', ''); }
+      else    { i.removeAttribute('required'); i.value = ''; }
+    });
+  };
+
+  const pintar = () => {
+    exigir(otra, especie.value === 'Otro');
+    exigir(envio, entrega.value === 'Quiero que me lo envíen');
+  };
+
+  especie.addEventListener('change', pintar);
+  entrega.addEventListener('change', pintar);
+  pintar();
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const d = Object.fromEntries(
+      [...new FormData(form).entries()].map(([k, v]) => [k, String(v).trim()])
+    );
+    const especieTxt = d.especie === 'Otro' && d.especieOtra ? d.especieOtra : d.especie;
+
+    const lineas = [
+      'Hola, quiero hacer un pedido de flores de Bach.',
+      '',
+      'Producto: ' + d.producto,
+      'Mascota: ' + d.mascota + ' (' + especieTxt + ', ' + d.peso + ')',
+      'A nombre de: ' + d.nombre,
+      'Teléfono: ' + d.telefono,
+      'Entrega: ' + d.entrega
+    ];
+    if (d.direccion) {
+      lineas.push('Dirección: ' + d.direccion + (d.zona ? ', ' + d.zona : ''));
+    }
+
+    error.hidden = true;
+    abrirWhatsApp(waLink(lineas.join('\n')), form);
+  });
+}
+
 function iniciarCalculadora(raiz) {
   const campo  = raiz.querySelector('[data-km]');
   const salida = raiz.querySelector('[data-resultado]');
@@ -1032,6 +1161,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   iniciarSuspensionDomicilio();
+  iniciarPedido();
+  ponerCuentaCohetes();
+
+  /* ── Temporada de cohetes ────────────────────────────────
+     Igual que lo navideño: el enlace del menú y el bloque de la
+     portada viven entre dos fechas y se apagan solos. La página
+     flores-de-bach.html no se esconde, porque en Guatemala hay
+     cohetes fuera de diciembre y el enlace que la clínica mande
+     por WhatsApp tiene que seguir sirviendo en marzo.
+     --------------------------------------------------------- */
+  if (esTemporadaCohetes()) {
+    document.querySelectorAll('.solo-cohetes').forEach(el => { el.hidden = false; });
+  }
 
   /* ── Navidad ─────────────────────────────────────────────
      El adorno vive entre dos fechas y se apaga solo. Fuera de
