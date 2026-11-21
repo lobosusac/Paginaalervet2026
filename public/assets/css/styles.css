@@ -484,6 +484,12 @@ a:hover{color:var(--teal)}
 /* Para imágenes cuadradas, como la del vial. */
 .story-photo.cuadrada{aspect-ratio:1/1}
 .story-photo.cuadrada>img{object-position:center}
+
+/* El frasco es mucho más alto que ancho. Con «cover» el marco de 4/5
+   le corta el gotero y la base, así que aquí se muestra entero y lo
+   que sobra se rellena con el mismo crema del fondo de la foto. */
+.story-photo.frasco{aspect-ratio:3/4;background:#f3ebdc}
+.story-photo.frasco>img{object-fit:contain;object-position:center}
 .quote{
   font-family:"Encode Sans",Arial,sans-serif;font-stretch:condensed;font-size:clamp(1.3rem,2.6vw,1.8rem);line-height:1.35;
   color:var(--ink);font-style:italic;margin:0 0 24px;
