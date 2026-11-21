@@ -66,8 +66,7 @@ function doPost(e) {
     if (datos.accion !== 'reservar') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
     // ── Validación ──
-    const obligatorios = ['inicio', 'tutor', 'telefono', 'mascota',
-                          'especie', 'sexo', 'raza', 'edad', 'consulta'];
+    const obligatorios = ['inicio', 'tutor', 'telefono', 'mascota', 'raza', 'edad', 'consulta'];
     for (const campo of obligatorios) {
       if (!datos[campo] || !String(datos[campo]).trim()) {
         return responder({ ok: false, mensaje: 'Faltan datos: ' + campo });
@@ -97,8 +96,8 @@ function doPost(e) {
       'Teléfono: ' + datos.telefono,
       datos.correo ? 'Correo: ' + datos.correo : '',
       'Mascota: ' + datos.mascota,
-      'Especie: ' + especieDe(datos),
-      'Sexo: ' + datos.sexo,
+      datos.especie ? 'Especie: ' + especieDe(datos) : '',
+      datos.sexo ? 'Sexo: ' + datos.sexo : '',
       'Raza: ' + datos.raza,
       'Edad: ' + datos.edad,
       'Consulta: ' + datos.consulta,
