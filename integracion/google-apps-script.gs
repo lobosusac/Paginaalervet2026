@@ -66,7 +66,8 @@ function doPost(e) {
     if (datos.accion !== 'reservar') return responder({ ok: false, mensaje: 'Acción no válida.' });
 
     // ── Validación ──
-    const obligatorios = ['inicio', 'tutor', 'telefono', 'mascota', 'raza', 'edad', 'consulta'];
+    const obligatorios = ['inicio', 'tutor', 'telefono', 'mascota',
+                          'especie', 'sexo', 'raza', 'edad', 'consulta'];
     for (const campo of obligatorios) {
       if (!datos[campo] || !String(datos[campo]).trim()) {
         return responder({ ok: false, mensaje: 'Faltan datos: ' + campo });
@@ -96,6 +97,8 @@ function doPost(e) {
       'Teléfono: ' + datos.telefono,
       datos.correo ? 'Correo: ' + datos.correo : '',
       'Mascota: ' + datos.mascota,
+      'Especie: ' + especieDe(datos),
+      'Sexo: ' + datos.sexo,
       'Raza: ' + datos.raza,
       'Edad: ' + datos.edad,
       'Consulta: ' + datos.consulta,
@@ -113,25 +116,32 @@ function doPost(e) {
     const correo = String(datos.correo || '').trim();
     const invitar = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo);
 
-    const opciones = { description: resumen };
-    if (invitar) {
-      opciones.guests = correo;
-      opciones.sendInvites = true;
-    }
-
     const evento = cal.createEvent(
       'Por confirmar · ' + datos.mascota + ' (' + datos.tutor + ')',
       inicio, fin,
-      opciones
+      { description: resumen }
     );
 
-    // El invitado no reenvía la cita ni la modifica: es su copia, no la agenda.
+    // Las consultas son presenciales. Si la cuenta tiene activado
+    // «añadir videollamadas automáticamente», Google le pega un enlace de
+    // Meet al evento recién creado y el tutor puede creer que la cita es
+    // en línea. Se borra ANTES de invitar, para que no viaje en el correo.
+    quitarVideollamada(cal, evento);
+
     if (invitar) {
+      // El invitado no reenvía la cita ni la modifica: es su copia, no la agenda.
       try {
         evento.setGuestsCanInviteOthers(false);
         evento.setGuestsCanModify(false);
         evento.setGuestsCanSeeGuests(false);
       } catch (err) {}
+
+      // Se invita de último: así la invitación que recibe ya va sin Meet.
+      try {
+        evento.addGuest(correo);
+      } catch (err) {
+        console.log('No se pudo invitar a ' + correo + ': ' + err);
+      }
     }
 
     // Amarillo, para distinguir lo no confirmado de un vistazo.
@@ -225,6 +235,48 @@ function diagnostico() {
 }
 
 /** Avisa a la clínica por correo y, si está configurado, por WhatsApp. */
+/** La especie que se reporta: si eligió «Otro», vale lo que escribió. */
+function especieDe(datos) {
+  const otra = String(datos.especieOtra || '').trim();
+  return (datos.especie === 'Otro' && otra) ? otra : datos.especie;
+}
+
+/**
+ * Le quita al evento el enlace de Meet que Google pone solo cuando la
+ * cuenta tiene activado «añadir videollamadas automáticamente a los
+ * eventos que creo». CalendarApp no sabe borrarlo, así que se hace con
+ * la API de Calendar usando el permiso que el script ya tiene.
+ *
+ * sendUpdates=none: nadie recibe un correo por este cambio.
+ * Si algo falla no truena la reserva: solo queda anotado en el registro.
+ */
+function quitarVideollamada(cal, evento) {
+  try {
+    const id  = String(evento.getId()).replace(/@google\.com$/, '');
+    const url = 'https://www.googleapis.com/calendar/v3/calendars/' +
+                encodeURIComponent(cal.getId()) + '/events/' +
+                encodeURIComponent(id) +
+                '?conferenceDataVersion=1&sendUpdates=none';
+
+    const r = UrlFetchApp.fetch(url, {
+      method: 'patch',
+      contentType: 'application/json',
+      headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() },
+      payload: JSON.stringify({ conferenceData: null }),
+      muteHttpExceptions: true
+    });
+
+    if (r.getResponseCode() >= 300) {
+      console.log('No se pudo quitar la videollamada: ' + r.getContentText());
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.log('No se pudo quitar la videollamada: ' + err);
+    return false;
+  }
+}
+
 function avisar(datos, inicio, resumen) {
   const cuando = Utilities.formatDate(
     inicio, calendario().getTimeZone(), "EEEE d 'de' MMMM 'a las' h:mm a"

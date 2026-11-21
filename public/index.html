@@ -736,8 +736,36 @@
               <input id="r-mascota" name="mascota" type="text" required>
             </div>
             <div class="field">
+              <label for="r-especie">Especie <span class="req">*</span></label>
+              <select id="r-especie" name="especie" required>
+                <option value="">Selecciona una opción</option>
+                <option>Perro</option>
+                <option>Gato</option>
+                <option>Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Solo aparece si eligió «Otro». El required lo pone y lo quita
+               main.js, para que un campo escondido no bloquee el envío. -->
+          <div class="field" data-especie-otra hidden>
+            <label for="r-especie-otra">¿Qué especie es? <span class="req">*</span></label>
+            <input id="r-especie-otra" name="especieOtra" type="text"
+                   placeholder="Conejo, hámster, ave, tortuga…">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
               <label for="r-raza">Raza <span class="req">*</span></label>
               <input id="r-raza" name="raza" type="text" required placeholder="Mestizo, labrador…">
+            </div>
+            <div class="field">
+              <label for="r-sexo">Sexo <span class="req">*</span></label>
+              <select id="r-sexo" name="sexo" required>
+                <option value="">Selecciona una opción</option>
+                <option>Macho</option>
+                <option>Hembra</option>
+              </select>
             </div>
           </div>
 

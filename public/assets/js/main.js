@@ -498,6 +498,35 @@ function iniciarAgenda(raiz) {
 
 let reservaActual = null;   // { fecha, hora }
 
+/** La especie que se reporta: si eligió «Otro», vale lo que escribió. */
+function especieDe(datos) {
+  return datos.especie === 'Otro' && datos.especieOtra
+    ? datos.especieOtra
+    : datos.especie;
+}
+
+/**
+ * Muestra el campo de texto solo cuando la especie es «Otro», y le pone
+ * el required únicamente mientras se ve: un campo escondido y obligatorio
+ * bloquea el envío sin que el cliente sepa por qué.
+ */
+function pintarEspecieOtra(dlg) {
+  const select = dlg.querySelector('#r-especie');
+  const caja   = dlg.querySelector('[data-especie-otra]');
+  if (!select || !caja) return;
+
+  const otro  = select.value === 'Otro';
+  const input = caja.querySelector('input');
+
+  caja.hidden = !otro;
+  if (otro) {
+    input.setAttribute('required', '');
+  } else {
+    input.removeAttribute('required');
+    input.value = '';
+  }
+}
+
 function abrirReserva(fecha, hora) {
   const dlg = document.getElementById('reserva');
   if (!dlg) return;
@@ -513,6 +542,7 @@ function abrirReserva(fecha, hora) {
   dlg.querySelector('.reserva-pie').hidden = false;
   dlg.querySelector('[data-error]').hidden = true;
   dlg.querySelector('form').reset();
+  pintarEspecieOtra(dlg);
 
   dlg.showModal();
 }
@@ -524,6 +554,8 @@ function resumenReserva(datos, fecha, hora) {
     `Tutor: ${datos.tutor}`,
     `Teléfono: ${datos.telefono}`,
     `Mascota: ${datos.mascota}`,
+    `Especie: ${especieDe(datos)}`,
+    `Sexo: ${datos.sexo}`,
     `Raza: ${datos.raza}`,
     `Edad: ${datos.edad}`,
     `Consulta: ${datos.consulta}`,
@@ -542,6 +574,10 @@ function iniciarReserva() {
   dlg.querySelectorAll('[data-cerrar]').forEach(b => {
     b.addEventListener('click', () => dlg.close());
   });
+
+  const especie = dlg.querySelector('#r-especie');
+  if (especie) especie.addEventListener('change', () => pintarEspecieOtra(dlg));
+  pintarEspecieOtra(dlg);
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
