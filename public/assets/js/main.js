@@ -85,18 +85,26 @@ const CONFIG = {
     hasta: '2027-01-06'   // el 7 de enero el sitio amanece normal
   },
 
-  /* Temporada de cohetes. Enciende el enlace del menú y el bloque de
-     la portada; la página flores-de-bach.html queda disponible todo
-     el año, porque en Guatemala hay pirotecnia fuera de diciembre.
-     Las fechas son las noches fuertes, en orden. */
+  /* Flores de Bach. Con «desde» y «hasta» en null, el enlace del
+     menú y el bloque de la portada se quedan puestos por tiempo
+     indefinido. Para volverlo de temporada basta con poner otra vez
+     dos fechas aaaa-mm-dd y se apaga solo, como lo navideño.
+
+     Las noches fuertes se escriben mes-día, sin año: son las mismas
+     todos los años, así que la cuenta regresiva se arma sola con el
+     año en curso y nadie tiene que venir a actualizar esto. */
   cohetes: {
-    desde: '2026-11-21',
-    hasta: '2027-01-07',   // el 8 de enero el sitio amanece normal
+    desde: null,
+    hasta: null,
     fechas: [
-      { dia: '2026-12-07', nombre: 'la Quema del Diablo' },
-      { dia: '2026-12-24', nombre: 'la Nochebuena' },
-      { dia: '2026-12-31', nombre: 'el Año Nuevo' }
-    ]
+      { dia: '12-07', nombre: 'la Quema del Diablo' },
+      { dia: '12-24', nombre: 'la Nochebuena' },
+      { dia: '12-31', nombre: 'el Año Nuevo' }
+    ],
+    /* Cuántos días antes empieza a verse la cuenta regresiva. En
+       marzo, «faltan 267 días» no le sirve a nadie y hasta se lee a
+       broma; con mes y medio sí hay tiempo de comprar y empezar. */
+    avisarDesdeDias: 45
   }
 };
 
@@ -169,24 +177,47 @@ function claveDia(f) {
          String(f.getDate()).padStart(2, '0');
 }
 
+/**
+ * El día de hoy en Guatemala, aaaa-mm-dd, sin importar dónde esté
+ * el visitante ni cómo tenga puesto el reloj.
+ *
+ * Las temporadas son de la clínica, no del navegador: si alguien
+ * abre el sitio desde España a medianoche, lo navideño y la
+ * temporada de cohetes tienen que empezar y terminar el mismo día
+ * que aquí. «en-CA» da la fecha ya en formato aaaa-mm-dd.
+ */
+function hoyGuatemala() {
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Guatemala',
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+  } catch (err) {
+    // Navegador viejo sin husos horarios: vale más mostrar algo
+    // con la fecha local que no mostrar nada.
+    return claveDia(new Date());
+  }
+}
+
 /** ¿La clínica cierra ese día por feriado o asueto? */
 function estaCerrado(f) {
   return (CONFIG.cerrados || []).indexOf(claveDia(f)) !== -1;
 }
 
 /** ¿Estamos dentro de la temporada navideña? */
-function esNavidad(ahora = new Date()) {
+function esNavidad(ahora) {
   const n = CONFIG.navidad;
   if (!n || !n.desde || !n.hasta) return false;
-  const hoy = claveDia(ahora);
+  const hoy = ahora ? claveDia(ahora) : hoyGuatemala();
   return hoy >= n.desde && hoy <= n.hasta;
 }
 
 /** ¿Estamos dentro de la temporada de cohetes? */
-function esTemporadaCohetes(ahora = new Date()) {
+function esTemporadaCohetes(ahora) {
   const c = CONFIG.cohetes;
-  if (!c || !c.desde || !c.hasta) return false;
-  const hoy = claveDia(ahora);
+  if (!c) return false;
+  if (!c.desde || !c.hasta) return true;   // sin fechas, se queda puesto
+  const hoy = ahora ? claveDia(ahora) : hoyGuatemala();
   return hoy >= c.desde && hoy <= c.hasta;
 }
 
@@ -198,12 +229,25 @@ function diasEntre(a, b) {
 }
 
 /** La próxima noche fuerte que queda por delante, o null si ya pasaron. */
-function proximaNocheFuerte(ahora = new Date()) {
+function proximaNocheFuerte(ahora) {
   const fechas = (CONFIG.cohetes || {}).fechas || [];
-  const hoy = claveDia(ahora);
-  const sig = fechas.find(f => f.dia >= hoy);
-  return sig ? { nombre: sig.nombre, dia: sig.dia, dias: diasEntre(hoy, sig.dia),
-                 primera: fechas[0].dia === sig.dia } : null;
+  if (!fechas.length) return null;
+
+  const hoy  = ahora ? claveDia(ahora) : hoyGuatemala();
+  const anio = Number(hoy.slice(0, 4));
+
+  // Las de este año y, detrás, las del siguiente: así en enero la
+  // cuenta salta sola a la próxima temporada en vez de apagarse.
+  const delAnio = a => fechas.map(f => ({ nombre: f.nombre, dia: a + '-' + f.dia }));
+  const sig = delAnio(anio).concat(delAnio(anio + 1)).find(f => f.dia >= hoy);
+  if (!sig) return null;
+
+  return {
+    nombre: sig.nombre,
+    dia: sig.dia,
+    dias: diasEntre(hoy, sig.dia),
+    primera: sig.dia.slice(5) === fechas[0].dia
+  };
 }
 
 /**
@@ -214,8 +258,11 @@ function proximaNocheFuerte(ahora = new Date()) {
 function ponerCuentaCohetes() {
   const p = proximaNocheFuerte();
 
+  const tope = (CONFIG.cohetes || {}).avisarDesdeDias || 45;
+
   document.querySelectorAll('[data-cuenta]').forEach(el => {
-    if (!p) { el.hidden = true; return; }
+    // Fuera de ese margen la cuenta estorba más de lo que ayuda.
+    if (!p || p.dias > tope) { el.hidden = true; return; }
     if (p.dias === 0) {
       el.textContent = `Hoy es ${p.nombre}.`;
     } else {
@@ -228,9 +275,13 @@ function ponerCuentaCohetes() {
     el.hidden = false;
   });
 
-  const hoy = claveDia(new Date());
+  // Se tachan las noches anteriores a la próxima, dentro de su misma
+  // temporada. Fuera de diciembre no se tacha ninguna: la tanda que
+  // viene todavía no empieza.
   document.querySelectorAll('[data-fechas] li[data-dia]').forEach(li => {
-    if (li.dataset.dia < hoy) li.classList.add('pasada');
+    if (!p) { li.classList.remove('pasada'); return; }
+    const suyo = p.dia.slice(0, 4) + '-' + li.dataset.dia;
+    li.classList.toggle('pasada', suyo < p.dia);
   });
 }
 
