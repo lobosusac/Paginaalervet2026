@@ -233,7 +233,6 @@ function diagnostico() {
   Logger.log('Horas que el sitio marcará ocupadas: ' + JSON.stringify(horasOcupadas(hoy)));
 }
 
-/** Avisa a la clínica por correo y, si está configurado, por WhatsApp. */
 /** La especie que se reporta: si eligió «Otro», vale lo que escribió. */
 function especieDe(datos) {
   const otra = String(datos.especieOtra || '').trim();
@@ -276,6 +275,7 @@ function quitarVideollamada(cal, evento) {
   }
 }
 
+/** Avisa a la clínica por correo y, si está configurado, por WhatsApp. */
 function avisar(datos, inicio, resumen) {
   const cuando = Utilities.formatDate(
     inicio, calendario().getTimeZone(), "EEEE d 'de' MMMM 'a las' h:mm a"
