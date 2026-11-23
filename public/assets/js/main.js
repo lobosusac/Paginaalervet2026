@@ -1355,13 +1355,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── El flotante cede el paso ────────────────────────────
      Va fijo abajo a la derecha, así que a ciertas alturas queda
-     justo encima de un botón de la página. Mientras eso pase se
-     desvanece: un botón de WhatsApp que tapa uno de agendar
-     cuesta citas.
+     justo encima de algo de la página. Mientras eso pase se
+     desvanece: un botón de WhatsApp que tapa uno de agendar cuesta
+     citas, y uno que tapa la cuenta regresiva deja el aviso a
+     medias.
      --------------------------------------------------------- */
   const flotante = document.querySelector('.wa-float');
   if (flotante) {
-    const PULSABLES = '.btn, .slot, .ev-opcion, .bifurca-op, .video-play';
+    // Botones, y también lo que hay que poder leer entero.
+    const PULSABLES = '.btn, .slot, .ev-opcion, .bifurca-op, .video-play, .cuenta';
     const MARGEN = 10;
     let pedido = false;
 
